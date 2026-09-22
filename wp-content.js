@@ -17,6 +17,12 @@ function localizeWordPressLinks(container) {
   container.querySelectorAll('a[href]').forEach(link => {
     try {
       const url = new URL(link.href);
+      if (url.hostname === 'dingodorone.github.io' && url.pathname.startsWith('/dingodor-app')) {
+        link.href = 'guide-camera.html';
+        link.removeAttribute('target');
+        link.removeAttribute('rel');
+        return;
+      }
       if (url.hostname !== 'dingodoronetech.wordpress.com') return;
       if (url.pathname.startsWith('/wp-content/')) return;
       const parts = url.pathname.split('/').filter(Boolean);
@@ -50,6 +56,10 @@ async function showSingle(kind) {
   const slug = new URLSearchParams(location.search).get('slug');
   const status = document.querySelector('#status');
   if (!slug) { status.textContent = 'Contenu introuvable : adresse incomplète.'; return; }
+  if (kind === 'page' && slug === 'quelle-camera-de-surveillance-choisir-le-guide-interactif-gratuit') {
+    location.replace('guide-camera.html');
+    return;
+  }
   try {
     const post = await getJson(`${API}/posts/slug:${encodeURIComponent(slug)}`);
     if (kind === 'post' && post.type !== 'post') throw new Error('Cet article est introuvable.');
