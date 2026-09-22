@@ -36,6 +36,64 @@ function localizeWordPressLinks(container) {
   });
 }
 
+function showCopyToast(message) {
+  let toast = document.querySelector('#copy-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'copy-toast';
+    toast.className = 'copy-toast';
+    toast.setAttribute('role', 'status');
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(showCopyToast.timer);
+  showCopyToast.timer = setTimeout(() => toast.classList.remove('show'), 1800);
+}
+
+async function copyText(value) {
+  try {
+    await navigator.clipboard.writeText(value);
+  } catch (_) {
+    const field = document.createElement('textarea');
+    field.value = value;
+    field.style.position = 'fixed';
+    field.style.opacity = '0';
+    document.body.appendChild(field);
+    field.select();
+    document.execCommand('copy');
+    field.remove();
+  }
+}
+
+function enhancePromoPage(container) {
+  document.body.classList.add('promo-page');
+  const helper = document.createElement('div');
+  helper.className = 'promo-helper';
+  helper.innerHTML = '<span aria-hidden="true">✦</span><div><strong>Copie instantanée</strong><small>Clique sur n’importe quel code pour le copier, puis colle-le dans la boutique.</small></div>';
+  container.prepend(helper);
+
+  container.querySelectorAll('span[style*="font-family:monospace"]').forEach(code => {
+    const value = code.textContent.trim();
+    if (!value) return;
+    code.classList.add('copyable-code');
+    code.setAttribute('role', 'button');
+    code.setAttribute('tabindex', '0');
+    code.setAttribute('aria-label', `Copier le code ${value}`);
+    code.setAttribute('title', 'Cliquer pour copier');
+    const copy = async () => {
+      await copyText(value);
+      code.classList.add('copied');
+      showCopyToast(`Code ${value} copié !`);
+      setTimeout(() => code.classList.remove('copied'), 1400);
+    };
+    code.addEventListener('click', copy);
+    code.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); copy(); }
+    });
+  });
+}
+
 function menu() {
   const button = document.querySelector('.menu-button');
   const nav = document.querySelector('#navigation');
@@ -80,6 +138,7 @@ async function showSingle(kind) {
     const content = document.querySelector('#wp-content');
     content.innerHTML = post.content || '<p>Cette page ne contient pas encore de texte.</p>';
     localizeWordPressLinks(content);
+    if (slug === 'code-promo-2') enhancePromoPage(content);
     status.remove();
     content.hidden = false;
   } catch (error) {
