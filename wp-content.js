@@ -53,8 +53,17 @@ async function showSingle(kind) {
   try {
     const post = await getJson(`${API}/posts/slug:${encodeURIComponent(slug)}`);
     if (kind === 'post' && post.type !== 'post') throw new Error('Cet article est introuvable.');
-    document.title = `${textOnly(post.title) || 'Dingodor One Tech'} — Dingodor One Tech`;
-    document.querySelector('#content-title').textContent = textOnly(post.title) || (slug === 'code-promo-2' ? 'Codes promo' : 'Dingodor One Tech');
+    const pageNames = {
+      'code-promo-2': 'Codes promo',
+      'site-partenaires': 'Boutiques partenaires',
+      'quelle-camera-de-surveillance-choisir-le-guide-interactif-gratuit': 'Guide caméra',
+      'occasion-dingo2': 'Occasions Dingodor'
+    };
+    const pageTitle = pageNames[slug] || textOnly(post.title) || 'Dingodor One Tech';
+    document.title = `${pageTitle} — Dingodor One Tech`;
+    document.querySelector('#content-title').textContent = pageTitle;
+    document.body.dataset.slug = slug;
+    if (pageNames[slug]) document.body.classList.add('custom-landing');
     const meta = document.querySelector('#content-meta');
     if (post.type === 'post') meta.textContent = new Intl.DateTimeFormat('fr-FR', {dateStyle:'long'}).format(new Date(post.date));
     else meta.remove();
