@@ -74,7 +74,10 @@ async function enhancePromoPage(container) {
     const promos = await response.json();
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const activePromos = promos.filter(p => !p.expires || new Date(`${p.expires}T23:59:59`) >= today);
+    const activeCodes = promos.filter(p => p.type !== 'store' && (!p.expires || new Date(`${p.expires}T23:59:59`) >= today));
+    const storesWithCodes = new Set(activeCodes.map(p => p.shop));
+    const activeStores = promos.filter(p => p.type === 'store' && !storesWithCodes.has(p.shop));
+    const activePromos = [...activeCodes, ...activeStores];
     const brands = [...new Set(activePromos.map(p => p.shop || p.brand.replace(/\s[🇫🇷🇧🇪].*$/, '')))];
     const countries = [...new Set(activePromos.flatMap(p => p.countries || []))];
     const formatDate = value => value ? new Intl.DateTimeFormat('fr-FR', {day:'numeric', month:'long', year:'numeric'}).format(new Date(`${value}T12:00:00`)) : '';
@@ -82,13 +85,14 @@ async function enhancePromoPage(container) {
       const expiry = p.expires ? `Valable jusqu’au ${formatDate(p.expires)}` : 'Durée non communiquée';
       const shop = p.shop || p.brand.replace(/\s[🇫🇷🇧🇪].*$/, '');
       const countriesText = (p.countries || []).join(' ');
-      return `<article class="promo-card${p.featured ? ' featured' : ''}" data-shop="${esc(shop)}" data-country="${esc((p.countries || []).join(','))}" data-search="${esc(`${p.brand} ${p.desc} ${p.code} ${shop}`.toLowerCase())}">
+      const hasCode = Boolean(p.code);
+      return `<article class="promo-card${p.featured ? ' featured' : ''}${hasCode ? '' : ' store-card'}" data-shop="${esc(shop)}" data-country="${esc((p.countries || []).join(','))}" data-search="${esc(`${p.brand} ${p.desc} ${p.code || ''} ${shop}`.toLowerCase())}">
         <div class="promo-card-top"><span class="promo-shop">${esc(p.brand)}</span>${p.featured ? '<span class="promo-badge">À la une</span>' : ''}</div>
         <h2>${esc(p.desc)}</h2>
         <p class="promo-meta"><span>${esc(countriesText || 'Europe')}</span><span>${esc(expiry)}</span></p>
         ${p.note ? `<p class="promo-note">${esc(p.note)}</p>` : ''}
-        <button class="promo-code" type="button" data-code="${esc(p.code)}" aria-label="Copier le code ${esc(p.code)}"><span>${esc(p.code)}</span><small>Copier</small></button>
-        <a class="promo-link" href="${esc(p.url)}" target="_blank" rel="noopener sponsored">Voir l’offre <span aria-hidden="true">→</span></a>
+        ${hasCode ? `<button class="promo-code" type="button" data-code="${esc(p.code)}" aria-label="Copier le code ${esc(p.code)}"><span>${esc(p.code)}</span><small>Copier</small></button>` : '<div class="promo-direct"><strong>Code promo via mon lien</strong><span>Les codes et promotions sont disponibles directement sur la boutique.</span></div>'}
+        <a class="promo-link" href="${esc(p.url)}" target="_blank" rel="noopener sponsored">${hasCode ? 'Voir l’offre' : 'Voir les codes et promotions'} <span aria-hidden="true">→</span></a>
       </article>`;
     };
     container.innerHTML = `<section class="promo-intro"><p class="promo-kicker">Bons plans vérifiés</p><h2>Trouvez votre code en quelques secondes</h2><p>Recherchez une boutique ou filtrez par pays. Les codes arrivés à expiration sont automatiquement retirés de la liste.</p><p class="promo-sync">Dernière vérification : 23 septembre 2026 · Liste partagée avec l’application Dingodor.</p></section>
@@ -119,7 +123,7 @@ async function enhancePromoPage(container) {
         card.hidden = !show;
         if (show) visible += 1;
       });
-      count.textContent = `${visible} code${visible > 1 ? 's' : ''} disponible${visible > 1 ? 's' : ''}`;
+      count.textContent = `${visible} offre${visible > 1 ? 's' : ''} partenaire${visible > 1 ? 's' : ''}`;
       empty.hidden = visible !== 0;
     };
     search.addEventListener('input', applyFilters);
