@@ -1,5 +1,5 @@
-Warning: truncated output (original token count: 39761)
-Total output lines: 2690
+Warning: truncated output (original token count: 39821)
+Total output lines: 2694
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -953,30 +953,34 @@ body.camera-standalone{max-width:none;padding-bottom:0;background:radial-gradien
 
 <script>
 // === DATA ===
-// Articles chargés dynamiquement depuis WordPress RSS
+// Articles chargés directement depuis la même API WordPress que le site
 let articles = [];
 
-async function loadArticlesFromRSS() {
+function articleText(value = '') {
+  const node = document.createElement('div');
+  node.innerHTML = value;
+  return (node.textContent || '').replace(/\s+/g, ' ').trim();
+}
+
+async function loadArticlesFromAPI() {
   showLoadingArticles();
-  const FEED = 'https://dingodoronetech.wordpress.com/feed/?posts_per_rss=100';
-  const PROXY = 'https://corsproxy.io/?';
-  const URL = PROXY + 'https://feed2json.org/convert?url=' + encodeURIComponent(FEED);
+  const API = 'https://public-api.wordpress.com/rest/v1.1/sites/dingodoronetech.wordpress.com/posts/?number=100';
 
   try {
-    const res = await fetch(URL);
+    const res = await fetch(API, {cache: 'no-store'});
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    if (data.items && data.items.length > 0) {
-      articles = data.items.map(item => {
-        // Extract first image from content_html
-        const imgMatch = (item.content_html || '').match(/src="([^"]+\.(jpg|jpeg|png|webp)[^"]*)"/i);
-        const img = imgMatch ? imgMatch[1].split('?')[0] + '?w=400' : null;
+    if (data.posts && data.posts.length > 0) {
+      articles = data.posts.map(post => {
+        const attachment = Object.values(post.attachments || {})[0];
+        const img = post.featured_image || attachment?.thumbnails?.medium || attachment?.URL || null;
+        const excerpt = articleText(post.excerpt || post.content).slice(0, 150);
         return {
-          title: item.title || 'Sans titre',
-          date: new Date(item.date_published).toLocaleDateString('fr-FR', {day:'numeric', month:'short', year:'numeric'}),
+          title: articleText(post.title) || 'Sans titre',
+          date: new Date(post.date).toLocaleDateString('fr-FR', {day:'numeric', month:'short', year:'numeric'}),
           tag: 'Article',
-          excerpt: (item.summary || '').replace(/<[^>]*>/g,'').replace(/&#[0-9]+;/g,' ').trim().substring(0,150) + '...',
-          url: item.url,
+          excerpt: excerpt + (excerpt.length === 150 ? '…' : ''),
+          url: `article.html?slug=${encodeURIComponent(post.slug)}`,
           img: img
         };
       });
@@ -994,7 +998,7 @@ function showLoadingArticles() {
 }
 
 function showArticleError() {
-  const err = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px">Impossible de charger les articles.<br>Vérifiez votre connexion.</div>';
+  const err = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px">Impossible de charger les articles.<br><button class="btn-secondary" type="button" onclick="loadArticlesFromAPI()" style="margin-top:10px">Réessayer</button></div>';
   document.getElementById('home-articles').innerHTML = err;
   document.getElementById('all-articles').innerHTML = err;
 }
@@ -1096,8 +1100,8 @@ function promoCard(p) {
   </a>`;
 }
 
-// Load articles from WordPress RSS
-loadArticlesFromRSS();
+// Load articles from the shared WordPress API
+loadArticlesFromAPI();
 document.getElementById('home-socials').innerHTML = socials.slice(0, 4).map(socialCard).join('');
 // socials rendered on DOMContentLoaded
 let promos = [];
@@ -1408,11 +1412,7 @@ const CAM_STEPS = {
       { value: 'nouveau', label: "Non, c'est mon premier achat connecté", sub: "Peu importe la marque ou l'appli" },
       { value: 'une_app', label: "J'ai déjà des objets connectés, je veux tout dans une seule appli", sub: "Je préfère rester dans le même écosystème" },
       { value: 'peu_importe_app', label: "J'ai déjà des objets connectés, plusieurs applis ne me dérangent pas", sub: "" },
-      { value: 'home_assistant', label: "J'utilise (ou je veux utiliser) Home Assistant ou un hub tiers", sub: "Je veux un flux exploitable en local (RTSP/ONVIF), pas juste l'appli du fabricant" }
-    ]
-  },
-  existing_brand: {
-    question: "Quelle marque utilises-tu d…9761 tokens truncated…caméras) ou Home Hub, pas d'abonnement obligatoire", "Audio bidirectionnel, mode confidentialité en un geste", "Compatible RTSP/ONVIF confirmé, Alexa et Google Assistant"],
+      { value: 'home_assistant…9821 tokens truncated…caméras) ou Home Hub, pas d'abonnement obligatoire", "Audio bidirectionnel, mode confidentialité en un geste", "Compatible RTSP/ONVIF confirmé, Alexa et Google Assistant"],
     asin: 'B0F835G7MS', nightVision: 'ir', petDetection: true, packageDetection: false, maxSD: '512 Go', category: 'interieur', haCompatible: true, hasSiren: false, hasIntercom: true, hasAutoTracking: true,
     sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
   }
