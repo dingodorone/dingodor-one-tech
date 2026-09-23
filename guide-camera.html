@@ -1011,7 +1011,7 @@ function loadMoreArticles() {
   btn.style.display = articles.length > articlesShown ? 'block' : 'none';
 }
 
-const promos = [
+const LEGACY_PROMOS = [
   // AliExpress France - 14/09 au 20/09/2026
   { code: "FRFW02", brand: "AliExpress 🇫🇷", desc: "2€ dès 18€ d'achat", url: "https://s.click.aliexpress.com/e/_opGvt8K" },
   { code: "FRFW06", brand: "AliExpress 🇫🇷", desc: "6€ dès 45€ d'achat", url: "https://s.click.aliexpress.com/e/_opGvt8K" },
@@ -1096,7 +1096,20 @@ function promoCard(p) {
 loadArticlesFromRSS();
 document.getElementById('home-socials').innerHTML = socials.slice(0, 4).map(socialCard).join('');
 // socials rendered on DOMContentLoaded
-document.getElementById('promos-list').innerHTML = promos.map(promoCard).join('');
+let promos = [];
+async function loadSharedPromos() {
+  const list = document.getElementById('promos-list');
+  list.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center">Chargement des codes à jour…</div>';
+  try {
+    const response = await fetch(`https://raw.githubusercontent.com/dingodorone/dingodor-data/main/promos.json?v=${Date.now()}`, {cache:'no-store'});
+    if (!response.ok) throw new Error(`Erreur ${response.status}`);
+    promos = await response.json();
+  } catch (_) {
+    promos = LEGACY_PROMOS;
+  }
+  list.innerHTML = promos.map(promoCard).join('');
+}
+loadSharedPromos();
   document.getElementById('all-socials').innerHTML = socials.map(socialCard).join('');
 
 
@@ -1262,10 +1275,11 @@ const CAM_STEPS = {
     ]
   },
   power: {
-    question: "As-tu une prise électrique ou un câble réseau (Ethernet) à cet endroit précis ?",
+    question: "Quelle alimentation est disponible à cet endroit précis ?",
     options: [
-      { value: 'oui', label: "Oui", sub: "Une prise secteur ou une prise réseau est accessible" },
-      { value: 'non', label: "Non", sub: "L'endroit est isolé, sans électricité ni câble" }
+      { value: 'ethernet', label: "Un câble réseau Ethernet (PoE)", sub: "Un seul câble apporte la connexion et l'alimentation : idéal pour une caméra PoE" },
+      { value: 'secteur', label: "Une prise électrique uniquement", sub: "La caméra utilisera le Wi-Fi et son adaptateur secteur" },
+      { value: 'non', label: "Aucune alimentation", sub: "Il faut une caméra sur batterie avec panneau solaire" }
     ]
   },
   multi: {
@@ -1507,7 +1521,7 @@ const CAM_PROFILES = {
     title: "Imou Caméra Extérieure WiFi (3MP)",
     desc: "Alternative à la Reolink RLC-810A, généralement moins chère : fonctionne en WiFi, pas de câble réseau à tirer, mais a quand même besoin d'une prise secteur à proximité. Compatibilité ONVIF/RTSP confirmée par le fabricant.",
     specs: ["Résolution 2304x1296 (3MP), vision nocturne EN COULEUR jusqu'à 30m", "Détection et suivi intelligent personne/véhicule", "WiFi 2,4/5GHz, alimentation secteur 12V, pas de PoE ni de batterie", "Compatible ONVIF et RTSP confirmé par Imou (NVR/NAS/Home Assistant)", "Étanche IP66, audio bidirectionnel, appli Imou Life"],
-    asin: 'B08BXZY1D2', nightVision: 'color', petDetection: false, packageDetection: false, maxSD: null, category: 'exterieur', haCompatible: true, hasSiren: false, hasIntercom: true,
+    asin: 'B08BXZY1D2', image: 'https://static-website.imou.com/43a04dbb-46f4-4b56-8f2a-a4fa4fa2ab3e.jpg', nightVision: 'color', petDetection: false, packageDetection: false, maxSD: null, category: 'exterieur', haCompatible: true, hasSiren: false, hasIntercom: true,
     sdAsin: null
   },
   zoom: {
@@ -1667,7 +1681,7 @@ const CAM_PROFILES = {
     title: "Imou Ranger 2C",
     desc: "Caméra intérieure motorisée à un excellent rapport qualité-prix, avec détection de forme humaine qui filtre déjà bien les animaux, sans même avoir besoin de reconnaissance animale dédiée.",
     specs: ["Résolution 2304x1296 (3MP), rotation 355° horizontale et 80° verticale, motorisée", "Détection de forme humaine par IA (distingue humains des animaux/objets), suivi intelligent", "Sirène intégrée, audio bidirectionnel", "Stockage carte microSD, cloud Imou, ou NVR compatible RTSP/ONVIF", "Appli Imou Life, compatible Alexa"],
-    asin: 'B09RGZ94LG', nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: '256 Go', category: 'interieur', haCompatible: true, hasSiren: true, hasIntercom: true, hasAutoTracking: true,
+    asin: 'B09RGZ94LG', image: 'https://static-website.imou.com/a799df97-c3d9-4173-929b-cef0a3012617.png', nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: '256 Go', category: 'interieur', haCompatible: true, hasSiren: true, hasIntercom: true, hasAutoTracking: true,
     sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
   },
   imou_zoom: {
@@ -1675,7 +1689,7 @@ const CAM_PROFILES = {
     title: "Imou Cruiser 2 AI (PTZ)",
     desc: "Alternative motorisée à la Reolink RLC-823A : rotation 360° avec suivi automatique et détection IA personne/véhicule qui réduit fortement les fausses alertes liées à la pluie, aux insectes ou à la lumière.",
     specs: ["Résolution 2880x1620 (5MP), rotation 340° horizontale et 90° verticale, motorisée avec suivi automatique", "Détection IA personne (jusqu'à 22m) et véhicule (jusqu'à 44m), 95% de fausses alertes en moins annoncées", "Vision nocturne EN COULEUR jusqu'à 30m, zoom numérique 8x, sirène et alarme sonore personnalisable", "WiFi 2,4GHz et Wi-Fi 6, alimentation secteur (pas de PoE)", "Stockage carte microSD (jusqu'à 256 Go), NVR compatible RTSP/ONVIF, ou cloud Imou"],
-    asin: 'B0BP1RJTJ2', nightVision: 'color', petDetection: false, packageDetection: false, maxSD: '256 Go', category: 'exterieur', haCompatible: true, hasSiren: true, hasIntercom: true, hasAutoTracking: true,
+    asin: 'B0BP1RJTJ2', image: 'https://static-website.imou.com/43a04dbb-46f4-4b56-8f2a-a4fa4fa2ab3e.jpg', nightVision: 'color', petDetection: false, packageDetection: false, maxSD: '256 Go', category: 'exterieur', haCompatible: true, hasSiren: true, hasIntercom: true, hasAutoTracking: true,
     sdAsin: 'B084CJJRBW', sdLabel: "SanDisk Max Endurance 256 Go"
   },
   imou_solar_pt: {
@@ -1691,7 +1705,7 @@ const CAM_PROFILES = {
     title: "Imou Doorbell Kit 2S (DB2S)",
     desc: "Alternative à la sonnette Reolink : livrée avec un carillon filaire qui sert aussi de répéteur WiFi pour renforcer le signal jusqu'à la porte. Bon exemple de fonction réservée au cloud payant : la détection gratuite ne reconnaît que les personnes, la reconnaissance voiture/animal/colis nécessite l'abonnement Imou Protect.",
     specs: ["Résolution 2304x1296 (3MP), caméra orientable à 30°, vision nocturne EN COULEUR jusqu'à 5m", "Détection de personnes gratuite ; détection voiture/animal/colis réservée à l'abonnement Imou Protect (30 jours d'essai)", "Carillon filaire inclus qui fait aussi répéteur WiFi, son personnalisable", "Audio bidirectionnel avec modificateur de voix, réponses vocales préenregistrées", "Stockage carte microSD jusqu'à 512 Go dans le carillon, ou cloud Imou Protect"],
-    asin: 'B0D7HNQQLY', nightVision: 'color', petDetection: false, packageDetection: false, maxSD: '512 Go', category: 'exterieur', haCompatible: false, hasSiren: false, hasIntercom: true,
+    asin: 'B0D7HNQQLY', image: 'https://static-website.imou.com/ba1eff8a-68dc-4104-ac34-bfb754f61baa.png', nightVision: 'color', petDetection: false, packageDetection: false, maxSD: '512 Go', category: 'exterieur', haCompatible: false, hasSiren: false, hasIntercom: true,
     sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
   },
   tapo_doorbell: {
@@ -1742,11 +1756,17 @@ const CAM_COLOR_ALT = { poe_premium: 'poe_premium_color', zoom: 'zoom_color' };
 
 // Pour certaines catégories, on a une 2e marque vérifiée à montrer en comparaison
 const CAM_PAIR_OF = {
-  tapo_budget: ['tapo_budget', 'switchbot_budget'],
-  tapo_premium: ['tapo_premium', 'switchbot_premium'],
-  poe_premium: ['poe_premium', 'imou_premium'],
-  kit: ['kit', 'kit_annke'],
-  solar_wifi: ['solar_wifi', 'solar_wifi_ezviz']
+  tapo_budget: ['tapo_budget', 'switchbot_budget', 'imou_indoor'],
+  tapo_premium: ['tapo_premium', 'imou_indoor', 'ezviz_indoor'],
+  tapo_fixed: ['tapo_fixed', 'aqara_indoor_fixed'],
+  doorbell: ['doorbell', 'tapo_doorbell', 'aqara_doorbell'],
+  doorbell_battery: ['doorbell_battery', 'imou_doorbell', 'tapo_doorbell'],
+  poe_budget: ['poe_budget', 'imou_premium'],
+  poe_premium: ['poe_premium', 'imou_premium', 'aqara_outdoor_poe'],
+  zoom: ['zoom', 'imou_zoom', 'ezviz_zoom'],
+  kit: ['kit', 'kit_annke', 'kit_imou'],
+  solar_wifi: ['solar_wifi', 'solar_wifi_ezviz', 'switchbot_outdoor'],
+  solar_wifi_pt: ['solar_wifi_pt', 'imou_solar_pt', 'switchbot_outdoor_ptz']
 };
 
 // Regroupe les catégories de base en familles plus larges, pour retrouver une marque même
@@ -1755,6 +1775,7 @@ const CAM_FAMILY_OF_BASECATEGORY = {
   interieur_motorisee: 'interieur', interieur_fixe: 'interieur',
   doorbell: 'doorbell', doorbell_battery: 'doorbell', doorbell_screen: 'doorbell',
   poe_fixe: 'exterieur_filaire', zoom: 'exterieur_filaire',
+  wifi_secteur_fixe: 'exterieur_filaire', wifi_secteur_pt: 'exterieur_filaire',
   kit: 'kit',
   solar_wifi_fixe: 'exterieur_sans_fil', solar_wifi_pt: 'exterieur_sans_fil', solar_4g: 'exterieur_sans_fil', solar_4g_pt: 'exterieur_sans_fil'
 };
@@ -1868,6 +1889,8 @@ const BUDGET_RESOLVE = {
   doorbell_battery: { eco: 'doorbell_battery', moyen: 'doorbell_battery', peu_importe: 'doorbell_battery' },
   doorbell_screen: { eco: 'switchbot_doorbell', moyen: 'switchbot_doorbell', peu_importe: 'switchbot_doorbell' },
   poe_fixe: { eco: 'poe_budget', moyen: 'poe_premium', peu_importe: 'poe_premium' },
+  wifi_secteur_fixe: { eco: 'imou_premium', moyen: 'imou_premium', peu_importe: 'imou_premium' },
+  wifi_secteur_pt: { eco: 'ezviz_zoom', moyen: 'imou_zoom', peu_importe: 'imou_zoom' },
   zoom: { eco: 'zoom', moyen: 'zoom', peu_importe: 'zoom' },
   kit: { eco: 'kit', moyen: 'kit', peu_importe: 'kit' },
   solar_wifi_fixe: { eco: 'solar_wifi', moyen: 'solar_wifi', peu_importe: 'solar_wifi' },
@@ -1956,6 +1979,10 @@ function camZoneCategoryStep(a, place) {
     if (!a.motorized) return 'motorized_solar';
     if (a.wifi === 'non') return { baseCategory: a.motorized === 'motorisee' ? 'solar_4g_pt' : 'solar_4g' };
     return { baseCategory: a.motorized === 'motorisee' ? 'solar_wifi_pt' : 'solar_wifi_fixe' };
+  }
+  if (a.power === 'secteur') {
+    if (!a.motorized) return 'motorized_poe';
+    return { baseCategory: a.motorized === 'motorisee' ? 'wifi_secteur_pt' : 'wifi_secteur_fixe' };
   }
   if (!a.multi) return 'multi';
   if (a.multi === 'plusieurs') return { baseCategory: 'kit' };
@@ -2341,12 +2368,12 @@ function camRenderZoneBlock(profile, baseCategory, ans, zoneLabel) {
   const noHaCompatible = ans.ecosystem === 'home_assistant' && profileKeys.every(k => !CAM_PROFILES[k].haCompatible);
   const cardsHtml = profileKeys.map((key, i) => {
     const isAlt = hasBrandPref && CAM_PROFILES[key].brand === ans.existing_brand;
-    const badge = profileKeys.length > 1 ? (i === 0 ? '🅰️ Option 1' : '🅱️ Option 2, autre marque') : null;
+    const badge = profileKeys.length > 1 ? `Choix ${i + 1}${i > 0 ? ' · autre marque' : ' · recommandé'}` : null;
     const extraNote = isAlt ? brandNote : '';
     return camRenderCard(CAM_PROFILES[key], badge, baseCategory, extraNote, ans);
   }).join('');
   const compareNote = profileKeys.length > 1
-    ? `<div class="cam-note" style="margin-bottom:14px">Deux marques différentes pour le même besoin, à toi de choisir selon ton budget et l'appli ou l'écosystème que tu préfères.</div>`
+    ? `<div class="cam-note" style="margin-bottom:14px">${profileKeys.length} modèles de marques différentes pour ce besoin : compare le budget, le stockage et l'écosystème avant de choisir.</div>`
     : '';
   const brandMismatchWarning = brandNoMatch
     ? `<div class="cam-note" style="margin-bottom:14px;color:#ff8a65">⚠️ Je n'ai pas de modèle ${ans.existing_brand} vérifié pour ce besoin précis. Le vrai compromis : soit tu utilises le modèle ci-dessous, avec une appli en plus à gérer pour cette caméra, soit tu envisages Home Assistant pour centraliser plusieurs marques dans un seul tableau de bord, ça demande un peu plus de mise en place technique, soit tu me dis le modèle ${ans.existing_brand} précis que tu as en tête et je vérifie s'il correspond.</div>`

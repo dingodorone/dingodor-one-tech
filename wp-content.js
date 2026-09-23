@@ -66,8 +66,19 @@ async function copyText(value) {
   }
 }
 
-function enhancePromoPage(container) {
+async function enhancePromoPage(container) {
   document.body.classList.add('promo-page');
+  try {
+    const response = await fetch(`https://raw.githubusercontent.com/dingodorone/dingodor-data/main/promos.json?v=${Date.now()}`, {cache: 'no-store'});
+    if (!response.ok) throw new Error(`Erreur ${response.status}`);
+    const promos = await response.json();
+    container.innerHTML = `<p>Cette liste est partagée avec l’application Dingodor : une seule mise à jour suffit désormais pour les deux.</p><div class="shared-promos">${promos.map(p => `<article class="shared-promo"><div><strong>${esc(p.brand)}</strong><p>${esc(p.desc)}</p></div><span style="font-family:monospace">${esc(p.code)}</span><a href="${esc(p.url)}" target="_blank" rel="noopener sponsored">Voir l’offre →</a></article>`).join('')}</div>`;
+  } catch (_) {
+    const warning = document.createElement('p');
+    warning.className = 'promo-sync-warning';
+    warning.textContent = 'La liste partagée n’a pas pu être chargée. Les codes ci-dessous proviennent de la dernière version enregistrée.';
+    container.prepend(warning);
+  }
   const helper = document.createElement('div');
   helper.className = 'promo-helper';
   helper.innerHTML = '<span aria-hidden="true">✦</span><div><strong>Copie instantanée</strong><small>Clique sur n’importe quel code pour le copier, puis colle-le dans la boutique.</small></div>';
@@ -187,7 +198,7 @@ async function showSingle(kind) {
     const content = document.querySelector('#wp-content');
     content.innerHTML = post.content || '<p>Cette page ne contient pas encore de texte.</p>';
     localizeWordPressLinks(content);
-    if (slug === 'code-promo-2') enhancePromoPage(content);
+    if (slug === 'code-promo-2') await enhancePromoPage(content);
     status.remove();
     content.hidden = false;
     if (kind === 'post') showComments(post);
