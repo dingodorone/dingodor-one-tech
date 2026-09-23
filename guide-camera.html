@@ -177,7 +177,7 @@
   .cam-question { font-family:'Syne', sans-serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:16px; line-height:1.3; }
   .cam-options { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
   .cam-option {
-    background: var(--bg2);
+    background: linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.012)), var(--bg2);
     border: 1px solid var(--border);
     border-radius: var(--card-r);
     padding: 14px 16px;
@@ -189,6 +189,8 @@
     cursor: pointer;
     transition: all 0.2s;
   }
+  .cam-option:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,0,0,.2); }
+  .cam-option::after { content:'›'; float:right; color:var(--accent2); font-size:22px; line-height:18px; }
   .cam-option:active { background: var(--bg3); transform: scale(0.99); border-color: var(--accent); }
   .cam-option-sub { display:block; font-size:12px; color:var(--muted); font-weight:400; margin-top:2px; }
   .cam-back {
@@ -199,9 +201,18 @@
     background: var(--bg2);
     border: 1px solid rgba(26,122,255,0.3);
     border-radius: var(--card-r);
-    padding: 20px;
+    padding: 0;
+    overflow:hidden;
+    box-shadow:0 16px 40px rgba(0,0,0,.22);
     animation: fadeUp 0.4s ease both;
   }
+  .cam-result-content { padding:20px; }
+  .cam-result-media { height:210px; background:linear-gradient(145deg,#fff,#e8eef8); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+  .cam-result-media img { width:100%; height:100%; object-fit:contain; padding:18px; mix-blend-mode:multiply; }
+  .cam-result-media-fallback { display:block; font-size:64px; }
+  .cam-result-media img + .cam-result-media-fallback { display:none; }
+  .cam-result-media img[style*="display: none"] + .cam-result-media-fallback { display:block; }
+  .cam-result-brand { position:absolute; left:12px; bottom:12px; background:rgba(8,15,28,.88); color:#fff; border-radius:999px; padding:6px 10px; font-size:11px; font-weight:700; }
   .cam-result-badge {
     display:inline-flex; align-items:center; gap:5px;
     background: rgba(26,122,255,0.15); border: 1px solid rgba(26,122,255,0.3);
@@ -216,9 +227,12 @@
   .cam-result-specs li::before { content:'✓'; color:var(--accent2); font-weight:700; flex-shrink:0; }
   .cam-buy-row { display:flex; gap:10px; margin-bottom:12px; }
   .cam-buy-btn {
-    flex:1; text-align:center; text-decoration:none; padding:13px 10px; border-radius:12px;
-    font-size:13px; font-weight:600; background: linear-gradient(135deg, var(--accent), var(--accent2)); color:#fff;
+    flex:1; text-align:center; text-decoration:none; padding:15px 12px; border-radius:12px;
+    font-size:13px; font-weight:800; background: linear-gradient(135deg, #ff8a00, #ffb000); color:#151515;
+    box-shadow:0 8px 22px rgba(255,153,0,.2); border:1px solid rgba(255,255,255,.18);
   }
+  .cam-buy-btn::after { content:'  →'; }
+  .cam-buy-btn:hover { filter:brightness(1.08); transform:translateY(-1px); }
   .cam-buy-btn:active { opacity:0.85; }
   .cam-restart-btn {
     display:block; width:100%; text-align:center; background:transparent; border:1px solid var(--border);
@@ -226,6 +240,10 @@
   }
   .cam-restart-btn:active { background:var(--bg3); }
   .cam-note { font-size:11px; color:var(--muted); text-align:center; margin-top:10px; line-height:1.5; }
+  .cam-system-summary { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; margin-bottom:16px; border:1px solid rgba(26,122,255,.35); border-radius:14px; background:rgba(26,122,255,.08); }
+  .cam-system-summary strong { color:var(--text); font-size:14px; }
+  .cam-system-count { min-width:34px; height:34px; display:grid; place-items:center; border-radius:50%; background:var(--accent); color:#fff; font-weight:800; }
+  @media(max-width:560px){.cam-buy-row{flex-direction:column}.cam-result-media{height:180px}.cam-buy-btn{width:100%}}
 
   /* HERO BANNER */
   .hero {
@@ -1158,6 +1176,11 @@ const CAM_TAG_BE = 'dingodor00e-21';
 function camLinkFR(asin) { return `https://www.amazon.fr/dp/${asin}?tag=${CAM_TAG_FR}`; }
 function camLinkBE(asin) { return `https://www.amazon.com.be/dp/${asin}?tag=${CAM_TAG_BE}`; }
 function camLinkSwitchBot(productPath) { return `https://eu.switch-bot.com/fr/products/${productPath}?sca_ref=2274537.x1K7OdVgTO&utm_source=uppromote&utm_medium=affiliate&utm_campaign=2274537`; }
+function camProductImage(p) {
+  if (p.image) return p.image;
+  if (p.asin) return `https://images-na.ssl-images-amazon.com/images/P/${p.asin}.01.LZZZZZZZ.jpg`;
+  return '';
+}
 
 const CAM_STEPS = {
   scope: {
@@ -1967,7 +1990,11 @@ function camResolveZoneProfile(a) {
   const baseProfile = BUDGET_RESOLVE[cat.baseCategory][a.budget];
   let profile = baseProfile;
   if (a.nv === 'couleur' && CAM_COLOR_ALT[baseProfile]) profile = CAM_COLOR_ALT[baseProfile];
-  return { profile, baseCategory: cat.baseCategory, place, answersSnapshot: Object.assign({}, a) };
+  // Ne jamais recopier les zones précédentes dans chaque nouvelle zone : cela faisait
+  // grossir l'état de façon exponentielle et pouvait figer le guide dès la 3e caméra.
+  const answersSnapshot = Object.assign({}, a);
+  delete answersSnapshot.zones;
+  return { profile, baseCategory: cat.baseCategory, place, answersSnapshot };
 }
 
 // Ajoute les questions transverses une fois la catégorie de base déterminée
@@ -2251,6 +2278,12 @@ function camRenderCard(p, extraBadge, baseCategory, extraNote, ansOverride) {
   const tipsBlock = [usageTip, installTip, aiTip, zoomTip, ecoTip, noAltTip, streetTip, chimeTip, brandCompromiseTip].filter(Boolean).map(t => `<div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px">${t}</div>`).join('');
   return `
     <div class="cam-result-card" style="margin-bottom:14px">
+      <div class="cam-result-media">
+        ${camProductImage(p) ? `<img src="${camProductImage(p)}" alt="${p.title}" loading="lazy" onerror="this.style.display='none'">` : ''}
+        <span class="cam-result-media-fallback" aria-hidden="true">📷</span>
+        <span class="cam-result-brand">${p.brand}</span>
+      </div>
+      <div class="cam-result-content">
       <div class="cam-result-badge">${extraBadge ? extraBadge + ' · ' : ''}${p.badge}</div>
       <div class="cam-result-title">${p.title}</div>
       <div class="cam-result-desc">${p.desc}</div>
@@ -2265,6 +2298,7 @@ function camRenderCard(p, extraBadge, baseCategory, extraNote, ansOverride) {
       ${camStorageBlock(p, ans.storage, ans.retention)}
       ${chimeAccessoryBlock}
       ${haHubBlock}
+      </div>
     </div>`;
 }
 
@@ -2423,6 +2457,10 @@ function camRenderWizard() {
       : '';
 
     container.innerHTML = `
+      <div class="cam-system-summary">
+        <div><strong>${isMultiZone ? `${zones.length + 1} caméras configurées` : 'Ta sélection personnalisée'}</strong><div class="cam-option-sub">Résultats adaptés à tes réponses</div></div>
+        <div class="cam-system-count">${isMultiZone ? zones.length + 1 : '✓'}</div>
+      </div>
       ${systemIntro}
       ${kitSystemNote}
       ${multiBrandWarning}
@@ -2448,6 +2486,7 @@ function camRenderWizard() {
     questionText = zoneCount === 0
       ? "Cette première caméra, c'est pour l'intérieur ou l'extérieur ?"
       : "Cette prochaine caméra, c'est pour l'intérieur ou l'extérieur ?";
+    preQuestionNote = `<div class="cam-system-summary"><div><strong>${zoneCount} caméra${zoneCount > 1 ? 's' : ''} déjà configurée${zoneCount > 1 ? 's' : ''}</strong><div class="cam-option-sub">Tu peux continuer avec une 3e caméra et au-delà.</div></div><div class="cam-system-count">${zoneCount + 1}</div></div>`;
   }
   if (result === 'existing_brand') {
     const baseCategories = camGetAllZoneBaseCategories(camAnswers);
