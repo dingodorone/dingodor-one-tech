@@ -137,7 +137,32 @@ async function showSingle(kind) {
     document.querySelector('#content-title').textContent = 'Contact';
     document.querySelector('#content-meta')?.remove();
     const content = document.querySelector('#wp-content');
-    content.innerHTML = `<div class="contact-intro"><p>Une question, une proposition de partenariat ou un produit à présenter ? Remplissez le formulaire ci-dessous.</p><p class="contact-help">Le formulaire est sécurisé et envoyé par WordPress.</p></div><iframe class="contact-frame" src="https://dingodoronetech.wordpress.com/contact/" title="Formulaire de contact Dingodor One Tech" loading="eager"></iframe><p class="contact-fallback"><a href="https://dingodoronetech.wordpress.com/contact/" target="_blank" rel="noopener">Ouvrir le formulaire dans une nouvelle fenêtre</a></p>`;
+    content.classList.add('contact-page');
+    content.innerHTML = `<div class="contact-layout"><div class="contact-copy"><p class="contact-kicker">Échangeons</p><h2>Une question ou un projet ?</h2><p>Une question sur la domotique, une proposition de partenariat ou un produit à présenter ? Envoyez-moi directement votre message.</p><ul><li>Réponse directement par e-mail</li><li>Adresse de réception protégée</li><li>Formulaire sécurisé et protégé contre le spam</li></ul></div><form id="contact-form" class="contact-form"><input type="hidden" name="access_key" value="07a073f2-b629-4e3d-b00f-7389cfa083b5"><input type="hidden" name="subject" value="Nouveau message depuis Dingodor One Tech"><input type="checkbox" name="botcheck" class="botcheck" tabindex="-1" autocomplete="off"><div class="form-grid"><label>Nom <input type="text" name="name" autocomplete="name" required placeholder="Votre nom"></label><label>Adresse e-mail <input type="email" name="email" autocomplete="email" required placeholder="vous@exemple.com"></label></div><label>Sujet <input type="text" name="sujet" required placeholder="Objet de votre message"></label><label>Message <textarea name="message" rows="7" required placeholder="Écrivez votre message…"></textarea></label><label class="consent"><input type="checkbox" required> <span>J’accepte que mes informations soient utilisées uniquement pour répondre à ma demande.</span></label><button type="submit"><span>Envoyer mon message</span></button><p id="contact-result" class="contact-result" role="status" aria-live="polite"></p></form></div>`;
+    const form = content.querySelector('#contact-form');
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      const button = form.querySelector('button[type="submit"]');
+      const result = form.querySelector('#contact-result');
+      button.disabled = true;
+      button.querySelector('span').textContent = 'Envoi en cours…';
+      result.textContent = '';
+      result.className = 'contact-result';
+      try {
+        const response = await fetch('https://api.web3forms.com/submit', {method:'POST', body:new FormData(form)});
+        const data = await response.json();
+        if (!data.success) throw new Error(data.message || 'Envoi impossible');
+        form.reset();
+        result.textContent = '✓ Votre message a bien été envoyé. Merci !';
+        result.classList.add('success');
+      } catch (_) {
+        result.textContent = 'Le message n’a pas pu être envoyé. Veuillez réessayer dans quelques instants.';
+        result.classList.add('error');
+      } finally {
+        button.disabled = false;
+        button.querySelector('span').textContent = 'Envoyer mon message';
+      }
+    });
     status.remove();
     content.hidden = false;
     return;
