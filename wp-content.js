@@ -110,6 +110,20 @@ async function getJson(url) {
   return response.json();
 }
 
+async function showComments(post) {
+  const section = document.querySelector('#comments');
+  if (!section || !post?.ID) return;
+  section.hidden = false;
+  section.innerHTML = '<h2>Commentaires</h2><p class="comments-loading">Chargement des commentaires…</p>';
+  let comments = [];
+  try {
+    const data = await getJson(`${API}/posts/${post.ID}/replies/?number=50`);
+    comments = data.comments || [];
+  } catch (_) {}
+  const list = comments.length ? `<div class="comment-list">${comments.map(item => `<article class="comment"><header><strong>${esc(item.author?.name || item.author_name || 'Lecteur')}</strong><time>${new Intl.DateTimeFormat('fr-FR',{dateStyle:'long'}).format(new Date(item.date))}</time></header><div>${item.content || ''}</div></article>`).join('')}</div>` : '<p class="no-comments">Aucun commentaire pour le moment. Soyez le premier à participer.</p>';
+  section.innerHTML = `<div class="comments-head"><div><p class="comments-kicker">La communauté</p><h2>Commentaires</h2></div><span>${comments.length}</span></div>${list}<div class="comment-form-card"><h3>Laisser un commentaire</h3><p>Votre adresse e-mail ne sera pas publiée. Le commentaire peut être modéré avant son affichage.</p><form action="${WP_ROOT}wp-comments-post.php" method="post" target="comment-result"><div class="form-grid"><label>Nom <input type="text" name="author" autocomplete="name" required></label><label>E-mail <input type="email" name="email" autocomplete="email" required></label></div><label>Commentaire <textarea name="comment" rows="6" required></textarea></label><input type="hidden" name="comment_post_ID" value="${post.ID}"><input type="hidden" name="comment_parent" value="0"><button type="submit">Publier mon commentaire</button></form><iframe name="comment-result" class="comment-result" title="Résultat de l’envoi du commentaire"></iframe></div>`;
+}
+
 async function showSingle(kind) {
   const slug = new URLSearchParams(location.search).get('slug');
   const status = document.querySelector('#status');
@@ -151,6 +165,7 @@ async function showSingle(kind) {
     if (slug === 'code-promo-2') enhancePromoPage(content);
     status.remove();
     content.hidden = false;
+    if (kind === 'post') showComments(post);
   } catch (error) {
     status.innerHTML = `<strong>Impossible de charger ce contenu.</strong><br>${esc(error.message)}<br><a href="articles.html">Voir tous les articles</a>`;
   }
