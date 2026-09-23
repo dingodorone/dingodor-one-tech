@@ -72,36 +72,85 @@ async function enhancePromoPage(container) {
     const response = await fetch(`https://raw.githubusercontent.com/dingodorone/dingodor-data/main/promos.json?v=${Date.now()}`, {cache: 'no-store'});
     if (!response.ok) throw new Error(`Erreur ${response.status}`);
     const promos = await response.json();
-    container.innerHTML = `<p>Cette liste est partagée avec l’application Dingodor : une seule mise à jour suffit désormais pour les deux.</p><div class="shared-promos">${promos.map(p => `<article class="shared-promo"><div><strong>${esc(p.brand)}</strong><p>${esc(p.desc)}</p></div><span style="font-family:monospace">${esc(p.code)}</span><a href="${esc(p.url)}" target="_blank" rel="noopener sponsored">Voir l’offre →</a></article>`).join('')}</div>`;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const activePromos = promos.filter(p => !p.expires || new Date(`${p.expires}T23:59:59`) >= today);
+    const brands = [...new Set(activePromos.map(p => p.shop || p.brand.replace(/\s[🇫🇷🇧🇪].*$/, '')))];
+    const countries = [...new Set(activePromos.flatMap(p => p.countries || []))];
+    const formatDate = value => value ? new Intl.DateTimeFormat('fr-FR', {day:'numeric', month:'long', year:'numeric'}).format(new Date(`${value}T12:00:00`)) : '';
+    const renderCard = p => {
+      const expiry = p.expires ? `Valable jusqu’au ${formatDate(p.expires)}` : 'Durée non communiquée';
+      const shop = p.shop || p.brand.replace(/\s[🇫🇷🇧🇪].*$/, '');
+      const countriesText = (p.countries || []).join(' ');
+      return `<article class="promo-card${p.featured ? ' featured' : ''}" data-shop="${esc(shop)}" data-country="${esc((p.countries || []).join(','))}" data-search="${esc(`${p.brand} ${p.desc} ${p.code} ${shop}`.toLowerCase())}">
+        <div class="promo-card-top"><span class="promo-shop">${esc(p.brand)}</span>${p.featured ? '<span class="promo-badge">À la une</span>' : ''}</div>
+        <h2>${esc(p.desc)}</h2>
+        <p class="promo-meta"><span>${esc(countriesText || 'Europe')}</span><span>${esc(expiry)}</span></p>
+        ${p.note ? `<p class="promo-note">${esc(p.note)}</p>` : ''}
+        <button class="promo-code" type="button" data-code="${esc(p.code)}" aria-label="Copier le code ${esc(p.code)}"><span>${esc(p.code)}</span><small>Copier</small></button>
+        <a class="promo-link" href="${esc(p.url)}" target="_blank" rel="noopener sponsored">Voir l’offre <span aria-hidden="true">→</span></a>
+      </article>`;
+    };
+    container.innerHTML = `<section class="promo-intro"><p class="promo-kicker">Bons plans vérifiés</p><h2>Trouvez votre code en quelques secondes</h2><p>Recherchez une boutique ou filtrez par pays. Les codes arrivés à expiration sont automatiquement retirés de la liste.</p><p class="promo-sync">Dernière vérification : 23 septembre 2026 · Liste partagée avec l’application Dingodor.</p></section>
+      <section class="promo-tools" aria-label="Rechercher et filtrer les codes promo">
+        <label class="promo-search"><span aria-hidden="true">⌕</span><input id="promo-search" type="search" placeholder="Rechercher une boutique ou un code…" autocomplete="off"></label>
+        <div class="promo-filters" role="group" aria-label="Filtres par boutique"><button class="active" type="button" data-filter="all">Tous</button>${brands.map(brand => `<button type="button" data-filter="${esc(brand)}">${esc(brand)}</button>`).join('')}</div>
+        ${countries.length ? `<div class="promo-countries" role="group" aria-label="Filtres par pays"><button class="active" type="button" data-country="all">Tous les pays</button>${countries.map(country => `<button type="button" data-country="${esc(country)}">${esc(country)}</button>`).join('')}</div>` : ''}
+        <p id="promo-count" class="promo-count" aria-live="polite"></p>
+      </section>
+      <div class="promo-grid">${activePromos.map(renderCard).join('')}</div>
+      <div id="promo-empty" class="promo-empty" hidden><strong>Aucun code ne correspond à votre recherche.</strong><span>Essayez une autre boutique ou réinitialisez les filtres.</span></div>
+      <p class="promo-disclosure">Liens affiliés : Dingodor One Tech peut recevoir une commission sans augmentation du prix pour vous. Les conditions et stocks restent ceux de la boutique.</p>`;
+
+    let selectedShop = 'all';
+    let selectedCountry = 'all';
+    const search = container.querySelector('#promo-search');
+    const cards = [...container.querySelectorAll('.promo-card')];
+    const count = container.querySelector('#promo-count');
+    const empty = container.querySelector('#promo-empty');
+    const applyFilters = () => {
+      const query = search.value.trim().toLowerCase();
+      let visible = 0;
+      cards.forEach(card => {
+        const matchesSearch = !query || card.dataset.search.includes(query);
+        const matchesShop = selectedShop === 'all' || card.dataset.shop === selectedShop;
+        const matchesCountry = selectedCountry === 'all' || card.dataset.country.split(',').includes(selectedCountry);
+        const show = matchesSearch && matchesShop && matchesCountry;
+        card.hidden = !show;
+        if (show) visible += 1;
+      });
+      count.textContent = `${visible} code${visible > 1 ? 's' : ''} disponible${visible > 1 ? 's' : ''}`;
+      empty.hidden = visible !== 0;
+    };
+    search.addEventListener('input', applyFilters);
+    container.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
+      selectedShop = button.dataset.filter;
+      container.querySelectorAll('[data-filter]').forEach(item => item.classList.toggle('active', item === button));
+      applyFilters();
+    }));
+    container.querySelectorAll('[data-country]').forEach(button => button.addEventListener('click', () => {
+      selectedCountry = button.dataset.country;
+      container.querySelectorAll('[data-country]').forEach(item => item.classList.toggle('active', item === button));
+      applyFilters();
+    }));
+    applyFilters();
   } catch (_) {
     const warning = document.createElement('p');
     warning.className = 'promo-sync-warning';
     warning.textContent = 'La liste partagée n’a pas pu être chargée. Les codes ci-dessous proviennent de la dernière version enregistrée.';
     container.prepend(warning);
   }
-  const helper = document.createElement('div');
-  helper.className = 'promo-helper';
-  helper.innerHTML = '<span aria-hidden="true">✦</span><div><strong>Copie instantanée</strong><small>Clique sur n’importe quel code pour le copier, puis colle-le dans la boutique.</small></div>';
-  container.prepend(helper);
-
-  container.querySelectorAll('span[style*="font-family:monospace"]').forEach(code => {
-    const value = code.textContent.trim();
+  container.querySelectorAll('.promo-code').forEach(code => {
+    const value = code.dataset.code;
     if (!value) return;
-    code.classList.add('copyable-code');
-    code.setAttribute('role', 'button');
-    code.setAttribute('tabindex', '0');
-    code.setAttribute('aria-label', `Copier le code ${value}`);
-    code.setAttribute('title', 'Cliquer pour copier');
     const copy = async () => {
       await copyText(value);
       code.classList.add('copied');
+      code.querySelector('small').textContent = 'Copié ✓';
       showCopyToast(`Code ${value} copié !`);
-      setTimeout(() => code.classList.remove('copied'), 1400);
+      setTimeout(() => { code.classList.remove('copied'); code.querySelector('small').textContent = 'Copier'; }, 1400);
     };
     code.addEventListener('click', copy);
-    code.addEventListener('keydown', event => {
-      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); copy(); }
-    });
   });
 }
 
