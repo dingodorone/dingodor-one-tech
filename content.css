@@ -15,6 +15,7 @@ body.custom-landing{background:radial-gradient(circle at 80% 5%,#0d3451 0,transp
 .custom-landing .wp-content [style*="245,166,35"]{border-color:#00c8d755!important}
 .custom-landing .wp-content a[style]{border-color:#00c8d777!important}
 .custom-landing footer{border-top:1px solid #ffffff12}
+.contact-intro{text-align:center;margin-bottom:1.5rem}.contact-intro p{margin:.35rem 0}.contact-help{color:var(--muted);font-size:.88rem}.contact-frame{width:100%;min-height:820px!important;border:1px solid var(--line)!important;border-radius:14px;background:#fff}.contact-fallback{text-align:center;margin-top:1rem;font-weight:700}
 @media(max-width:800px){.custom-landing .article-head{padding-top:34px}.custom-landing .wp-content{margin-left:-4px;margin-right:-4px}}
 
 /* Page codes promo */

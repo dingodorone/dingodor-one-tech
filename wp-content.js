@@ -118,6 +118,16 @@ async function showSingle(kind) {
     location.replace('guide-camera.html');
     return;
   }
+  if (kind === 'page' && slug === 'contact') {
+    document.title = 'Contact — Dingodor One Tech';
+    document.querySelector('#content-title').textContent = 'Contact';
+    document.querySelector('#content-meta')?.remove();
+    const content = document.querySelector('#wp-content');
+    content.innerHTML = `<div class="contact-intro"><p>Une question, une proposition de partenariat ou un produit à présenter ? Remplissez le formulaire ci-dessous.</p><p class="contact-help">Le formulaire est sécurisé et envoyé par WordPress.</p></div><iframe class="contact-frame" src="https://dingodoronetech.wordpress.com/contact/" title="Formulaire de contact Dingodor One Tech" loading="eager"></iframe><p class="contact-fallback"><a href="https://dingodoronetech.wordpress.com/contact/" target="_blank" rel="noopener">Ouvrir le formulaire dans une nouvelle fenêtre</a></p>`;
+    status.remove();
+    content.hidden = false;
+    return;
+  }
   try {
     const post = await getJson(`${API}/posts/slug:${encodeURIComponent(slug)}`);
     if (kind === 'post' && post.type !== 'post') throw new Error('Cet article est introuvable.');
