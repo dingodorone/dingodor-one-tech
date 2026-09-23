@@ -961,7 +961,7 @@ function articleText(value = '') {
 
 async function loadArticlesFromAPI() {
   showLoadingArticles();
-  const API = 'https://public-api.wordpress.com/rest/v1.1/sites/dingodoronetech.wordpress.com/posts/?number=100';
+  const API = 'https://public-api.wordpress.com/rest/v1.1/sites/dingodoronetech.wordpress.com/posts/?number=50&fields=ID,title,slug,date,excerpt,featured_image';
 
   try {
     const res = await fetch(API, {cache: 'no-store'});
@@ -969,8 +969,7 @@ async function loadArticlesFromAPI() {
     const data = await res.json();
     if (data.posts && data.posts.length > 0) {
       articles = data.posts.map(post => {
-        const attachment = Object.values(post.attachments || {})[0];
-        const img = post.featured_image || attachment?.thumbnails?.medium || attachment?.URL || null;
+        const img = post.featured_image || null;
         const excerpt = articleText(post.excerpt || post.content).slice(0, 150);
         return {
           title: articleText(post.title) || 'Sans titre',
