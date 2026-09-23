@@ -95,7 +95,7 @@ async function enhancePromoPage(container) {
         <a class="promo-link" href="${esc(p.url)}" target="_blank" rel="noopener sponsored">${hasCode ? 'Voir l’offre' : 'Voir les codes et promotions'} <span aria-hidden="true">→</span></a>
       </article>`;
     };
-    container.innerHTML = `<section class="promo-intro"><p class="promo-kicker">Bons plans vérifiés</p><h2>Trouvez votre code en quelques secondes</h2><p>Recherchez une boutique ou filtrez par pays. Les codes arrivés à expiration sont automatiquement retirés de la liste.</p><p class="promo-sync">Dernière vérification : 23 septembre 2026 · Liste partagée avec l’application Dingodor.</p></section>
+    container.innerHTML = `<section class="promo-intro"><p class="promo-kicker">Bons plans vérifiés</p><h2>Trouvez votre code en quelques secondes</h2><p>Recherchez une boutique ou filtrez par pays. Les codes arrivés à expiration sont automatiquement retirés de la liste.</p><p class="promo-sync">Dernière vérification : 23 septembre 2026.</p></section>
       <section class="promo-tools" aria-label="Rechercher et filtrer les codes promo">
         <label class="promo-search"><span aria-hidden="true">⌕</span><input id="promo-search" type="search" placeholder="Rechercher une boutique ou un code…" autocomplete="off"></label>
         <div class="promo-filters" role="group" aria-label="Filtres par boutique"><button class="active" type="button" data-filter="all">Tous</button>${brands.map(brand => `<button type="button" data-filter="${esc(brand)}">${esc(brand)}</button>`).join('')}</div>
