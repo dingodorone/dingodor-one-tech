@@ -1211,10 +1211,25 @@ const CAM_TAG_BE = 'dingodor00e-21';
 function camLinkFR(asin) { return `https://www.amazon.fr/dp/${asin}?tag=${CAM_TAG_FR}`; }
 function camLinkBE(asin) { return `https://www.amazon.com.be/dp/${asin}?tag=${CAM_TAG_BE}`; }
 function camLinkSwitchBot(productPath) { return `https://eu.switch-bot.com/fr/products/${productPath}?sca_ref=2274537.x1K7OdVgTO&utm_source=uppromote&utm_medium=affiliate&utm_campaign=2274537`; }
-function camProductImage(p) {
-  if (p.image) return p.image;
-  if (p.asin) return `https://images-na.ssl-images-amazon.com/images/P/${p.asin}.01.LZZZZZZZ.jpg`;
-  return '';
+function camProductImages(p) {
+  const images = [];
+  if (p.image) images.push(p.image);
+  if (p.asin) {
+    images.push(`https://m.media-amazon.com/images/P/${p.asin}.01._SL500_.jpg`);
+    images.push(`https://images-na.ssl-images-amazon.com/images/P/${p.asin}.01.LZZZZZZZ.jpg`);
+  }
+  return [...new Set(images)];
+}
+
+function camTryNextImage(img) {
+  const sources = JSON.parse(img.dataset.sources || '[]');
+  const nextIndex = Number(img.dataset.sourceIndex || 0) + 1;
+  if (nextIndex < sources.length) {
+    img.dataset.sourceIndex = String(nextIndex);
+    img.src = sources[nextIndex];
+    return;
+  }
+  img.style.display = 'none';
 }
 
 const CAM_STEPS = {
@@ -1486,7 +1501,7 @@ const CAM_PROFILES = {
     title: "SwitchBot Ensemble Caméra Spotlight Extérieure + Panneau Solaire",
     desc: "Alternative fixe à l'Argus 3 Pro et à l'EZVIZ BC1C : caméra sur batterie avec deux projecteurs LED pour filmer en couleur de nuit, vendue ici directement avec son panneau solaire inclus dans le pack.",
     specs: ["Résolution 2304x1296 (3MP), deux projecteurs LED pour la vision nocturne EN COULEUR", "Détection IA humain/animal, réduit les fausses alertes", "Batterie rechargeable + panneau solaire INCLUS dans ce pack (autonomie continue)", "Alarme anti-arrachement 100dB si la caméra est retirée sans autorisation", "Étanche IP65, audio bidirectionnel, stockage carte microSD ou cloud", "Appli SwitchBot, compatible Alexa/Google Home"],
-    store: 'switchbot', storePath: 'combo-camera-projecteur-exterieur',
+    store: 'switchbot', storePath: 'combo-camera-projecteur-exterieur', image: 'https://cdn.shopify.com/s/files/1/0610/2843/4085/files/switchbot-outdoor-spotlight-cam-2k-690685.jpg?v=1720626270',
     nightVision: 'color', petDetection: false, packageDetection: false, maxSD: '256 Go', category: 'exterieur', haCompatible: false, hasSiren: true, hasIntercom: true,
     sdAsin: 'B084CJJRBW', sdLabel: "SanDisk Max Endurance 256 Go"
   },
@@ -1759,7 +1774,7 @@ const CAM_PROFILES = {
     title: "SwitchBot Outdoor Pan/Tilt Cam 3K",
     desc: "Alternative motorisée à la Reolink RLC-823A ou à l'Imou Cruiser 2 AI : rotation 360° horizontale et 90° verticale, alimentation secteur, et surtout un flux RTSP compatible confirmé, rare chez SwitchBot.",
     specs: ["3K/5MP, rotation motorisée 360° horizontale et 90° verticale", "Alimentation secteur (12V), pas de batterie ni de PoE", "Compatible RTSP confirmé (Home Assistant, Frigate AI), en plus de l'appli SwitchBot", "Compatible Alexa et Google Home", "Résiste de -20°C à 45°C"],
-    store: 'switchbot', storePath: 'outdoor-ptc-3k5mp',
+    store: 'switchbot', storePath: 'outdoor-ptc-3k5mp', image: 'https://eu.switch-bot.com/cdn/shop/files/Outdoor_PTC_JP_Amazon_Images_1600x1600_00_2x_60cc22d1-c591-4025-8692-70b505b34389.png?v=1781151766',
     nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: null, category: 'exterieur', longRange: true, haCompatible: true, hasSiren: false, hasIntercom: false, hasAutoTracking: false,
     sdAsin: null
   },
@@ -2096,10 +2111,14 @@ function camAnswerStep(key, value) {
     camRenderWizard();
     return;
   }
-  if (key === 'ecosystem' && (value === 'une_app' || value === 'nouveau' || value === 'home_assistant')) {
-    camAnswers.ecosystem = value;
+  if (key === 'ecosystem' && (value === 'une_app' || value === 'nouveau' || value === 'peu_importe_app' || value === 'home_assistant')) {
     const baseCategories = camGetAllZoneBaseCategories(camAnswers);
-    if (baseCategories.length > 1) {
+    const isMultiCameraSystem = baseCategories.length > 1 || camAnswers.multi === 'plusieurs' || (camAnswers.scope === 'les_deux' && camAnswers.system_scale === 'grand');
+    // Dès qu'il y a plusieurs caméras, le confort quotidien passe avant la comparaison :
+    // on garde une seule marque et donc une seule application pour tout le système.
+    camAnswers.ecosystem = isMultiCameraSystem && value !== 'home_assistant' ? 'une_app' : value;
+    camAnswers._forceSingleBrand = isMultiCameraSystem;
+    if (isMultiCameraSystem) {
       // Système à plusieurs zones : on choisit nous-mêmes la meilleure marque, pas la peine de demander au client
       let ranked = camRankBrandsByCoverage(baseCategories);
       if (value === 'home_assistant') {
@@ -2233,6 +2252,7 @@ function camNvrNasBlock(p) {
 
 function camRenderCard(p, extraBadge, baseCategory, extraNote, ansOverride) {
   const ans = ansOverride || camAnswers;
+  const productImages = camProductImages(p);
   const nvNote = p.nightVision === 'color'
     ? `<li style="color:var(--accent2)">✓ Vision nocturne EN COULEUR</li>`
     : `<li style="color:var(--muted)">ℹ️ Vision nocturne infrarouge classique, noir et blanc</li>`;
@@ -2328,7 +2348,7 @@ function camRenderCard(p, extraBadge, baseCategory, extraNote, ansOverride) {
   return `
     <div class="cam-result-card" style="margin-bottom:14px">
       <div class="cam-result-media">
-        ${camProductImage(p) ? `<img src="${camProductImage(p)}" alt="${p.title}" loading="lazy" onerror="this.style.display='none'">` : ''}
+        ${productImages.length ? `<img src="${productImages[0]}" data-sources='${JSON.stringify(productImages)}' data-source-index="0" alt="${p.title}" loading="lazy" onerror="camTryNextImage(this)">` : ''}
         <span class="cam-result-media-fallback" aria-hidden="true">📷</span>
         <span class="cam-result-brand">${p.brand}</span>
       </div>
@@ -2359,7 +2379,7 @@ function camResolveDisplayKeys(profile, baseCategory, ans) {
   let profileKeys = defaultPair;
   let brandNote = '';
   let brandNoMatch = false;
-  const wantsSingleApp = ans.ecosystem === 'une_app';
+  const wantsSingleApp = ans.ecosystem === 'une_app' || ans._forceSingleBrand;
   const hasBrandPref = ans.existing_brand && ans.existing_brand !== 'autre';
 
   if (hasBrandPref) {
@@ -2374,7 +2394,9 @@ function camResolveDisplayKeys(profile, baseCategory, ans) {
         brandNote = familyAlt.note(ans, baseCategory);
         profileKeys = wantsSingleApp ? [altKey] : [altKey, profile];
       } else {
-        profileKeys = [profile];
+        // Dans un système multi-caméras, ne jamais glisser silencieusement une autre marque :
+        // mieux vaut signaler l'absence de modèle vérifié que d'imposer une deuxième appli.
+        profileKeys = wantsSingleApp ? [] : [profile];
         brandNoMatch = true;
       }
     }
@@ -2387,7 +2409,7 @@ function camResolveDisplayKeys(profile, baseCategory, ans) {
 // comme pour les zones déjà accumulées dans le système
 function camRenderZoneBlock(profile, baseCategory, ans, zoneLabel) {
   const { profileKeys, brandNote, brandNoMatch, hasBrandPref } = camResolveDisplayKeys(profile, baseCategory, ans);
-  const noHaCompatible = ans.ecosystem === 'home_assistant' && profileKeys.every(k => !CAM_PROFILES[k].haCompatible);
+  const noHaCompatible = ans.ecosystem === 'home_assistant' && profileKeys.length > 0 && profileKeys.every(k => !CAM_PROFILES[k].haCompatible);
   const cardsHtml = profileKeys.map((key, i) => {
     const isAlt = hasBrandPref && CAM_PROFILES[key].brand === ans.existing_brand;
     const badge = profileKeys.length > 1 ? `Choix ${i + 1}${i > 0 ? ' · autre marque' : ' · recommandé'}` : null;
@@ -2398,7 +2420,7 @@ function camRenderZoneBlock(profile, baseCategory, ans, zoneLabel) {
     ? `<div class="cam-note" style="margin-bottom:14px">${profileKeys.length} modèles de marques différentes pour ce besoin : compare le budget, le stockage et l'écosystème avant de choisir.</div>`
     : '';
   const brandMismatchWarning = brandNoMatch
-    ? `<div class="cam-note" style="margin-bottom:14px;color:#ff8a65">⚠️ Je n'ai pas de modèle ${ans.existing_brand} vérifié pour ce besoin précis. Le vrai compromis : soit tu utilises le modèle ci-dessous, avec une appli en plus à gérer pour cette caméra, soit tu envisages Home Assistant pour centraliser plusieurs marques dans un seul tableau de bord, ça demande un peu plus de mise en place technique, soit tu me dis le modèle ${ans.existing_brand} précis que tu as en tête et je vérifie s'il correspond.</div>`
+    ? `<div class="cam-note" style="margin-bottom:14px;color:#ff8a65">⚠️ Je n'ai pas de modèle ${ans.existing_brand} vérifié pour ce besoin précis. Pour conserver une seule application, je n'ajoute pas automatiquement une caméra d'une autre marque. Modifie ce besoin, choisis une autre marque commune à tout le système, ou utilise Home Assistant si tu acceptes une configuration plus technique.</div>`
     : '';
   const haWarning = noHaCompatible
     ? (profile === 'solar_4g'
@@ -2424,7 +2446,8 @@ function camRenderWizard() {
     const pastZonesHtml = zones.map((z, i) => {
       const sharedAns = Object.assign({}, z.answersSnapshot, {
         ecosystem: camAnswers.ecosystem, existing_brand: camAnswers.existing_brand,
-        storage: camAnswers.storage, retention: camAnswers.retention
+        storage: camAnswers.storage, retention: camAnswers.retention,
+        _forceSingleBrand: camAnswers._forceSingleBrand
       });
       const label = `${CAM_ZONE_PLACE_LABEL[z.place] || ''} n°${i + 1}`;
       return camRenderZoneBlock(z.profile, z.baseCategory, sharedAns, label);
@@ -2439,12 +2462,12 @@ function camRenderWizard() {
     if (isMultiZone || (camAnswers.scope === 'les_deux' && camAnswers.system_scale === 'grand')) {
       const brandsUsed = new Set();
       zones.forEach(z => {
-        const sharedAns = Object.assign({}, z.answersSnapshot, { ecosystem: camAnswers.ecosystem, existing_brand: camAnswers.existing_brand });
+        const sharedAns = Object.assign({}, z.answersSnapshot, { ecosystem: camAnswers.ecosystem, existing_brand: camAnswers.existing_brand, _forceSingleBrand: camAnswers._forceSingleBrand });
         const dk = camResolveDisplayKeys(z.profile, z.baseCategory, sharedAns);
-        brandsUsed.add(CAM_PROFILES[dk.profileKeys[0]].brand);
+        if (dk.profileKeys[0]) brandsUsed.add(CAM_PROFILES[dk.profileKeys[0]].brand);
       });
       const dkCurrent = camResolveDisplayKeys(result.profile, result.baseCategory, camAnswers);
-      brandsUsed.add(CAM_PROFILES[dkCurrent.profileKeys[0]].brand);
+      if (dkCurrent.profileKeys[0]) brandsUsed.add(CAM_PROFILES[dkCurrent.profileKeys[0]].brand);
       const wasAutoChosen = !!camAnswers._autoBrandChoice;
       const hasBrandSet = !!camAnswers.existing_brand;
       const overrideBtn = `<button class="cam-restart-btn" onclick="camPickDifferentBrand()" style="margin-top:10px;padding:9px">🔄 Choisir moi-même une autre marque</button>`;
