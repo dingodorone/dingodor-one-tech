@@ -270,29 +270,53 @@ async function showSingle(kind) {
 
 let offset = 0;
 const batch = 12;
+const POSTS_CACHE_KEY = 'dingodor-posts-cache-v1';
+
+function appendPostCards(posts, {replace = false} = {}) {
+  const grid = document.querySelector('#post-grid');
+  if (replace) grid.innerHTML = '';
+  posts.forEach(post => {
+    const image = post.featured_image || '';
+    const excerpt = textOnly(post.excerpt || '').slice(0, 150);
+    const card = document.createElement('a');
+    card.className = 'post-card';
+    card.href = `article.html?slug=${encodeURIComponent(post.slug)}`;
+    card.innerHTML = `${image ? `<img src="${esc(image)}" alt="" loading="lazy" decoding="async">` : ''}<div class="post-card-body"><time>${new Intl.DateTimeFormat('fr-FR',{dateStyle:'long'}).format(new Date(post.date))}</time><h2>${esc(textOnly(post.title))}</h2><p>${esc(excerpt)}${excerpt.length >= 150 ? '…' : ''}</p></div>`;
+    grid.appendChild(card);
+  });
+}
+
+function showCachedPosts() {
+  try {
+    const cached = JSON.parse(localStorage.getItem(POSTS_CACHE_KEY) || 'null');
+    if (!cached?.posts?.length) return false;
+    appendPostCards(cached.posts, {replace: true});
+    document.querySelector('#status')?.remove();
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
 async function loadPosts() {
   const status = document.querySelector('#status');
   const more = document.querySelector('#more');
   more.disabled = true;
   more.textContent = 'Chargement…';
   try {
-    const data = await getJson(`${API}/posts/?number=${batch}&offset=${offset}`);
-    const grid = document.querySelector('#post-grid');
-    data.posts.forEach(post => {
-      const image = post.featured_image || Object.values(post.attachments || {})[0]?.thumbnails?.large || '';
-      const excerpt = textOnly(post.excerpt || post.content).slice(0, 150);
-      const card = document.createElement('a');
-      card.className = 'post-card';
-      card.href = `article.html?slug=${encodeURIComponent(post.slug)}`;
-      card.innerHTML = `${image ? `<img src="${esc(image)}" alt="" loading="lazy">` : ''}<div class="post-card-body"><time>${new Intl.DateTimeFormat('fr-FR',{dateStyle:'long'}).format(new Date(post.date))}</time><h2>${esc(textOnly(post.title))}</h2><p>${esc(excerpt)}${excerpt.length >= 150 ? '…' : ''}</p></div>`;
-      grid.appendChild(card);
-    });
+    const fields = 'ID,title,slug,date,excerpt,featured_image';
+    const data = await getJson(`${API}/posts/?number=${batch}&offset=${offset}&fields=${fields}`);
+    const firstPage = offset === 0;
+    appendPostCards(data.posts, {replace: firstPage});
+    if (firstPage) {
+      try { localStorage.setItem(POSTS_CACHE_KEY, JSON.stringify({posts: data.posts, savedAt: Date.now()})); } catch (_) {}
+    }
     offset += data.posts.length;
     status?.remove();
     more.disabled = !data.meta?.next_page;
     more.textContent = more.disabled ? 'Tous les articles sont affichés' : 'Afficher plus d’articles';
   } catch (error) {
-    status.innerHTML = `<strong>Impossible de charger les articles.</strong><br>${esc(error.message)}`;
+    if (status) status.innerHTML = `<strong>Impossible de charger les articles.</strong><br>${esc(error.message)}`;
     more.textContent = 'Réessayer';
     more.disabled = false;
   }
@@ -301,6 +325,10 @@ async function loadPosts() {
 document.addEventListener('DOMContentLoaded', () => {
   menu();
   const type = document.body.dataset.view;
-  if (type === 'articles') { document.querySelector('#more').addEventListener('click', loadPosts); loadPosts(); }
+  if (type === 'articles') {
+    document.querySelector('#more').addEventListener('click', loadPosts);
+    showCachedPosts();
+    loadPosts();
+  }
   if (type === 'post' || type === 'page') showSingle(type);
 });
