@@ -734,19 +734,30 @@
     transform: translateX(-50%) translateY(0);
   }
 /* Version intégrée au site principal */
-body.camera-standalone{max-width:none;padding-bottom:0;background:radial-gradient(circle at 80% 0,#0d3451 0,transparent 32%),#07111f}
+body.camera-standalone{max-width:none;padding-bottom:0;background:radial-gradient(circle at 78% -8%,rgba(27,183,207,.2) 0,transparent 28%),radial-gradient(circle at 8% 28%,rgba(12,120,255,.14) 0,transparent 25%),#07111f}
 .camera-standalone>header{max-width:none;height:76px;padding:0 max(24px,calc((100vw - 1180px)/2));background:#07111ff2;border-bottom:1px solid rgba(255,255,255,.08)}
 .camera-standalone .logo-text{font-size:15px}.camera-standalone .logo-text span{color:#8fa5bb}
 .site-return{margin-left:auto;color:#d9e8f4;text-decoration:none;font-size:13px;font-weight:700;border:1px solid #ffffff25;border-radius:10px;padding:9px 14px}.site-return:hover{border-color:var(--accent);color:var(--accent)}
 .camera-standalone>.tabs,.camera-standalone>.search-overlay,.camera-standalone>.bottom-nav,.camera-standalone>.install-banner{display:none!important}
 .camera-standalone>.section{display:none!important}
-.camera-standalone>#sec-camera{display:block!important;max-width:1000px;margin:0 auto;padding:52px 24px 80px}
-.camera-standalone>#sec-camera>.hero{padding:38px 34px;background:linear-gradient(135deg,#0d1d2c,#10151d);border:1px solid #1e5368;border-radius:22px;box-shadow:0 22px 65px #0005}
-.camera-standalone>#sec-camera>.hero h2{font-size:clamp(28px,5vw,48px);line-height:1.05;max-width:760px;margin:12px auto}.camera-standalone>#sec-camera>.hero p{max-width:720px;margin-left:auto;margin-right:auto;font-size:15px}
-.guide-disclosure{color:#8fa5bb;font-size:12px;line-height:1.55;text-align:center;margin:22px auto 0;max-width:760px}.guide-disclosure strong{color:#dceaf4}
-.camera-standalone #cam-wizard{max-width:820px;margin:26px auto 0}.camera-standalone .cam-card{box-shadow:0 16px 50px #0004}
-@media(min-width:800px){.camera-standalone .cam-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.camera-standalone .cam-option{margin:0;min-height:84px}.camera-standalone .cam-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}}
-@media(max-width:640px){body.camera-standalone{padding-bottom:0}.camera-standalone>header{height:68px;padding:0 16px}.camera-standalone .logo-text span{display:none}.site-return{font-size:12px;padding:8px 10px}.camera-standalone>#sec-camera{padding:24px 14px 55px}.camera-standalone>#sec-camera>.hero{padding:28px 18px}.camera-standalone>#sec-camera>.hero p{font-size:13px}}
+.camera-standalone>#sec-camera{display:block!important;max-width:1180px;margin:0 auto;padding:48px 24px 90px}
+.camera-standalone>#sec-camera>.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);align-items:center;gap:clamp(28px,6vw,78px);padding:clamp(34px,6vw,72px);background:linear-gradient(135deg,rgba(13,36,57,.98),rgba(7,17,31,.98));border:1px solid rgba(67,210,225,.25);border-radius:32px;box-shadow:0 32px 90px rgba(0,0,0,.36);isolation:isolate}
+.camera-standalone>#sec-camera>.hero::after{content:'';position:absolute;inset:auto -12% -60% 35%;height:360px;background:radial-gradient(circle,rgba(32,214,231,.16),transparent 65%);z-index:-1}
+.guide-hero-copy{position:relative;z-index:2}.camera-standalone .hero-label{color:#8ef5ff;background:rgba(32,214,231,.1);border-color:rgba(32,214,231,.25);padding:7px 12px;margin-bottom:18px;font-weight:800}
+.camera-standalone>#sec-camera>.hero h2{font-size:clamp(34px,5vw,64px);letter-spacing:-.045em;line-height:1.02;margin:0 0 18px;max-width:720px}.camera-standalone>#sec-camera>.hero h2 em{font-style:normal;color:#42d8e6}
+.camera-standalone>#sec-camera>.hero p{max-width:690px;font-size:clamp(14px,1.7vw,17px);color:#b8cad8;line-height:1.7}
+.guide-highlights{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}.guide-highlights span{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);color:#d9f9fc;font-size:12px;font-weight:700}
+.guide-visual{min-height:320px;display:grid;place-items:center;position:relative}.guide-camera-body{width:min(340px,90%);aspect-ratio:1.18;border-radius:42% 42% 28% 28%;background:linear-gradient(145deg,#ecf7fb,#a9c8d4);box-shadow:0 38px 70px #0009,0 0 0 12px rgba(255,255,255,.025);display:grid;place-items:center;position:relative;transform:rotate(2deg)}
+.guide-camera-body::before{content:'';position:absolute;top:-24px;width:42%;height:44px;border-radius:22px 22px 8px 8px;background:linear-gradient(#d8eef4,#93b3c0)}.guide-camera-body::after{content:'';position:absolute;bottom:-34px;width:48%;height:42px;border-radius:8px 8px 24px 24px;background:#88a8b6}
+.guide-camera-lens{width:58%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 38% 34%,#b7fbff 0 4%,#158ac9 5% 11%,#06152b 25% 52%,#213e54 53% 59%,#02070c 60%);box-shadow:0 0 0 17px #314f60,0 0 0 24px #bdd4dc,0 0 44px rgba(32,214,231,.48)}
+.guide-camera-status{position:absolute;right:21%;bottom:18%;width:11px;height:11px;border-radius:50%;background:#37eb93;box-shadow:0 0 16px #37eb93}.guide-visual-note{position:absolute;right:-8px;top:22px;padding:10px 14px;border-radius:14px;background:rgba(4,14,25,.86);border:1px solid rgba(66,216,230,.28);box-shadow:0 15px 35px #0008;color:#eafcff;font-size:11px;font-weight:800;backdrop-filter:blur(12px)}
+.guide-disclosure{color:#8299aa;font-size:11px;line-height:1.55;margin:18px 0 0;max-width:690px}.guide-disclosure strong{color:#dceaf4}
+.camera-standalone #cam-wizard{max-width:980px;margin:34px auto 0}.cam-wizard-panel{padding:clamp(22px,4vw,42px);border:1px solid rgba(255,255,255,.09);border-radius:28px;background:linear-gradient(145deg,rgba(20,39,56,.94),rgba(9,20,33,.96));box-shadow:0 24px 70px rgba(0,0,0,.32);position:relative;overflow:hidden}.cam-wizard-panel::before{content:'';position:absolute;width:260px;height:260px;border-radius:50%;right:-150px;top:-170px;background:#20d6e7;filter:blur(90px);opacity:.16;pointer-events:none}.cam-step-label{display:flex;align-items:center;gap:9px;color:#76e8f2;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px}.cam-step-label::before{content:'';width:22px;height:2px;background:#42d8e6;border-radius:2px}
+.camera-standalone .cam-progress{gap:8px;margin-bottom:28px}.camera-standalone .cam-progress span{height:5px;background:rgba(255,255,255,.08)}.camera-standalone .cam-progress span.done{background:linear-gradient(90deg,#0c78ff,#42d8e6);box-shadow:0 0 12px rgba(66,216,230,.3)}
+.camera-standalone .cam-question{font-size:clamp(23px,3.4vw,38px);letter-spacing:-.025em;line-height:1.15;max-width:760px;margin-bottom:26px}.camera-standalone .cam-options{counter-reset:camchoice}.camera-standalone .cam-option{counter-increment:camchoice;position:relative;padding:18px 52px 18px 58px;min-height:88px;border-radius:18px;background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.09);display:flex;flex-direction:column;justify-content:center;font-size:15px}.camera-standalone .cam-option::before{content:counter(camchoice,decimal-leading-zero);position:absolute;left:18px;top:50%;transform:translateY(-50%);color:#42d8e6;font:800 12px/1 'Syne',sans-serif}.camera-standalone .cam-option::after{position:absolute;right:20px;top:50%;transform:translateY(-50%);float:none}.camera-standalone .cam-option:hover{background:rgba(32,214,231,.07);border-color:#42d8e6;box-shadow:0 16px 36px rgba(0,0,0,.24)}.camera-standalone .cam-option-sub{margin-top:5px;color:#91a8b9}.camera-standalone .cam-back{padding:8px 12px;border:1px solid rgba(255,255,255,.08);border-radius:999px;margin:0;color:#9eb3c3}.camera-standalone .cam-result-card{border-radius:24px;border-color:rgba(66,216,230,.24)}
+@media(min-width:800px){.camera-standalone .cam-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.camera-standalone .cam-option{margin:0}.camera-standalone .cam-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}}
+@media(max-width:780px){.camera-standalone>#sec-camera>.hero{grid-template-columns:1fr;padding:34px 24px}.guide-visual{min-height:245px}.guide-camera-body{width:230px}.guide-visual-note{right:4px}.camera-standalone>#sec-camera>.hero h2{font-size:clamp(34px,10vw,50px)}}
+@media(max-width:640px){body.camera-standalone{padding-bottom:0}.camera-standalone>header{height:68px;padding:0 16px}.camera-standalone .logo-text span{display:none}.site-return{font-size:12px;padding:8px 10px}.camera-standalone>#sec-camera{padding:22px 14px 55px}.camera-standalone>#sec-camera>.hero{padding:30px 20px;border-radius:24px}.guide-visual{min-height:205px}.guide-camera-body{width:185px}.guide-visual-note{font-size:10px;top:6px}.guide-disclosure{font-size:10px}.cam-wizard-panel{padding:22px 16px;border-radius:22px}.camera-standalone .cam-option{min-height:76px;padding:15px 44px 15px 52px}.camera-standalone .cam-question{font-size:25px}.camera-standalone .cam-back{font-size:11px;padding:7px 9px}}
 </style>
 </head>
 <body class="camera-standalone">
@@ -883,10 +894,17 @@ body.camera-standalone{max-width:none;padding-bottom:0;background:radial-gradien
 <!-- SECTION CAMÉRAS -->
 <div class="section" id="sec-camera">
   <div class="hero" style="margin-bottom:20px">
-    <div class="hero-label">📹 Guide d'achat</div>
-    <h2>Quelle caméra de surveillance choisir ?</h2>
-    <p>Réponds à quelques questions : le guide compare ton installation, ton budget, le Wi-Fi ou la 4G, l’alimentation, le stockage et les fonctions importantes pour te proposer les modèles les plus adaptés.</p>
-    <div class="guide-disclosure"><strong>Guide indépendant et gratuit.</strong> Certains boutons d’achat sont des liens affiliés : le prix ne change pas pour toi et une petite commission peut soutenir Dingodor One Tech.</div>
+    <div class="guide-hero-copy">
+      <div class="hero-label">📹 Guide d'achat interactif</div>
+      <h2>La bonne caméra, <em>sans se tromper.</em></h2>
+      <p>Décris ton installation, ta connexion et tes besoins. Le guide compare les usages importants pour te proposer les modèles les plus adaptés, sans jargon inutile.</p>
+      <div class="guide-highlights"><span>✓ Environ 2 minutes</span><span>✓ Plusieurs marques</span><span>✓ Résultat personnalisé</span></div>
+      <div class="guide-disclosure"><strong>Guide indépendant et gratuit.</strong> Certains boutons d’achat sont affiliés : le prix ne change pas pour toi et une petite commission peut soutenir Dingodor One Tech.</div>
+    </div>
+    <div class="guide-visual" aria-hidden="true">
+      <div class="guide-camera-body"><span class="guide-camera-lens"></span><span class="guide-camera-status"></span></div>
+      <div class="guide-visual-note">ANALYSE PERSONNALISÉE</div>
+    </div>
   </div>
   <div id="cam-wizard"></div>
 </div>
@@ -2546,19 +2564,22 @@ function camRenderWizard() {
   }
 
   container.innerHTML = `
-    <div class="cam-progress">${dots}</div>
-    <div style="display:flex;gap:8px;margin-bottom:14px">
-      ${camHistory.length > 0 ? `<button class="cam-back" onclick="camGoBack()">← Question précédente</button>` : ''}
-      ${answeredCount > 0 ? `<button class="cam-back" onclick="camRestart()">↺ Recommencer</button>` : ''}
-    </div>
-    ${preQuestionNote}
-    <div class="cam-question">${questionText}</div>
-    <div class="cam-options">
-      ${questionOptions.map(o => `
-        <button class="cam-option" onclick="camAnswerStep('${CAM_STEP_KEY_MAP[result]}', '${o.value}')">
-          ${o.label}${o.sub ? `<span class="cam-option-sub">${o.sub}</span>` : ''}
-        </button>
-      `).join('')}
+    <div class="cam-wizard-panel">
+      <div class="cam-step-label">Votre sélection personnalisée</div>
+      <div class="cam-progress">${dots}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px">
+        ${camHistory.length > 0 ? `<button class="cam-back" onclick="camGoBack()">← Question précédente</button>` : ''}
+        ${answeredCount > 0 ? `<button class="cam-back" onclick="camRestart()">↺ Recommencer</button>` : ''}
+      </div>
+      ${preQuestionNote}
+      <div class="cam-question">${questionText}</div>
+      <div class="cam-options">
+        ${questionOptions.map(o => `
+          <button class="cam-option" onclick="camAnswerStep('${CAM_STEP_KEY_MAP[result]}', '${o.value}')">
+            ${o.label}${o.sub ? `<span class="cam-option-sub">${o.sub}</span>` : ''}
+          </button>
+        `).join('')}
+      </div>
     </div>
   `;
 }
@@ -2689,5 +2710,6 @@ if ('serviceWorker' in navigator) {
 </script>
 
 <script src="mascotte.js?v=1"></script>
+<script src="webpushr.js"></script>
 </body>
 </html>
