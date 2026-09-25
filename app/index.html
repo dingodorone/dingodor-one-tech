@@ -820,17 +820,6 @@
     .bottom-nav { max-width:520px; }
   }
 </style>
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "32adeb26-bc3e-4f21-8a33-212ad164cb4c",
-      serviceWorkerPath: "/sw.js",
-      notifyButton: { enable: false },
-    });
-  });
-</script>
 </head>
 <body>
 
