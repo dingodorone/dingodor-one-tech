@@ -77,7 +77,7 @@ async function enhancePromoPage(container) {
     today.setHours(0, 0, 0, 0);
     const activeCodes = promos.filter(p => p.type !== 'store' && (!p.expires || new Date(`${p.expires}T23:59:59`) >= today));
     const storesWithCodes = new Set(activeCodes.map(p => p.shop));
-    const activeStores = promos.filter(p => p.type === 'store' && !storesWithCodes.has(p.shop));
+    const activeStores = promos.filter(p => p.type === 'store' && (!storesWithCodes.has(p.shop) || p.shop === 'AliExpress'));
     const activePromos = [...activeCodes, ...activeStores];
     const brands = [...new Set(activePromos.map(p => p.shop || p.brand.replace(/\s[🇫🇷🇧🇪].*$/, '')))];
     const countries = [...new Set(activePromos.flatMap(p => p.countries || []))];
@@ -93,10 +93,10 @@ async function enhancePromoPage(container) {
         <p class="promo-meta"><span>${esc(countriesText || 'Europe')}</span><span>${esc(expiry)}</span></p>
         ${p.note ? `<p class="promo-note">${esc(p.note)}</p>` : ''}
         ${hasCode ? `<button class="promo-code" type="button" data-code="${esc(p.code)}" aria-label="Copier le code ${esc(p.code)}"><span>${esc(p.code)}</span><small>Copier</small></button>` : '<div class="promo-direct"><strong>Code promo via mon lien</strong><span>Les codes et promotions sont disponibles directement sur la boutique.</span></div>'}
-        <a class="promo-link" href="${esc(p.url)}" target="_blank" rel="noopener sponsored">${hasCode ? 'Voir l’offre' : 'Voir les codes et promotions'} <span aria-hidden="true">→</span></a>
+        ${p.links?.length ? `<div class="promo-country-links">${p.links.map(link => `<a class="promo-link" data-link-country="${esc(link.country)}" href="${esc(link.url)}" target="_blank" rel="noopener sponsored">Voir les offres ${esc(link.label)} <span aria-hidden="true">→</span></a>`).join('')}</div>` : `<a class="promo-link" href="${esc(p.url)}" target="_blank" rel="noopener sponsored">${hasCode ? 'Voir l’offre' : 'Voir les codes et promotions'} <span aria-hidden="true">→</span></a>`}
       </article>`;
     };
-    container.innerHTML = `<section class="promo-intro"><p class="promo-kicker">Bons plans vérifiés</p><h2>Trouvez votre code en quelques secondes</h2><p>Recherchez une boutique ou filtrez par pays. Les codes arrivés à expiration sont automatiquement retirés de la liste.</p><p class="promo-sync">Dernière vérification : 23 septembre 2026.</p></section>
+    container.innerHTML = `<section class="promo-intro"><p class="promo-kicker">Codes promo et boutiques</p><h2>Trouvez votre code en quelques secondes</h2><p>Recherchez une boutique ou filtrez par pays. Les codes arrivés à expiration sont automatiquement retirés de la liste.</p></section>
       <section class="promo-tools" aria-label="Rechercher et filtrer les codes promo">
         <label class="promo-search"><span aria-hidden="true">⌕</span><input id="promo-search" type="search" placeholder="Rechercher une boutique ou un code…" autocomplete="off"></label>
         <div class="promo-filters" role="group" aria-label="Filtres par boutique"><button class="active" type="button" data-filter="all">Tous</button>${brands.map(brand => `<button type="button" data-filter="${esc(brand)}">${esc(brand)}</button>`).join('')}</div>
@@ -122,6 +122,7 @@ async function enhancePromoPage(container) {
         const matchesCountry = selectedCountry === 'all' || card.dataset.country.split(',').includes(selectedCountry);
         const show = matchesSearch && matchesShop && matchesCountry;
         card.hidden = !show;
+        card.querySelectorAll('[data-link-country]').forEach(link => { link.hidden = selectedCountry !== 'all' && link.dataset.linkCountry !== selectedCountry; });
         if (show) visible += 1;
       });
       count.textContent = `${visible} offre${visible > 1 ? 's' : ''} partenaire${visible > 1 ? 's' : ''}`;
