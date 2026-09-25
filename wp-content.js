@@ -178,7 +178,7 @@ async function getJson(url) {
 async function showPartners(container) {
   const data = await getJson(`${SHARED_DATA_URL}?v=${Date.now()}`);
   const partners = Array.isArray(data.partners) ? data.partners : [];
-  container.innerHTML = `<section class="promo-intro"><p class="promo-kicker">Boutiques partenaires</p><h2>Soutenir Dingodor One Tech sans payer plus cher</h2><p>Choisissez votre boutique. Cette liste est aussi utilisée par l'application : une seule mise à jour suffit.</p></section><div class="promo-grid">${partners.map(partner => `<article class="promo-card store-card"><div class="promo-card-top"><span class="promo-shop">${esc(partner.icon || '🛒')} ${esc(partner.name)}</span></div><h2>${esc(partner.description || '')}</h2><a class="promo-link" href="${esc(partner.url)}" target="_blank" rel="noopener sponsored">Accéder à la boutique <span aria-hidden="true">→</span></a></article>`).join('')}</div><p class="promo-disclosure">Liens affiliés : une commission peut soutenir Dingodor One Tech sans augmentation du prix pour vous.</p>`;
+  container.innerHTML = `<section class="promo-intro"><p class="promo-kicker">Boutiques partenaires</p><h2>Soutenir Dingodor One Tech sans payer plus cher</h2><p>Choisissez votre boutique parmi nos partenaires.</p></section><div class="promo-grid">${partners.map(partner => `<article class="promo-card store-card"><div class="promo-card-top"><span class="promo-shop">${esc(partner.icon || '🛒')} ${esc(partner.name)}</span></div><h2>${esc(partner.description || '')}</h2><a class="promo-link" href="${esc(partner.url)}" target="_blank" rel="noopener sponsored">Accéder à la boutique <span aria-hidden="true">→</span></a></article>`).join('')}</div><p class="promo-disclosure">Liens affiliés : une commission peut soutenir Dingodor One Tech sans augmentation du prix pour vous.</p>`;
 }
 
 async function showComments(post) {
@@ -201,6 +201,22 @@ async function showSingle(kind) {
   if (!slug) { status.textContent = 'Contenu introuvable : adresse incomplète.'; return; }
   if (kind === 'page' && slug === 'quelle-camera-de-surveillance-choisir-le-guide-interactif-gratuit') {
     location.replace('guide-camera.html');
+    return;
+  }
+  if (kind === 'page' && slug === 'site-partenaires') {
+    document.title = 'Boutiques partenaires — Dingodor One Tech';
+    document.querySelector('#content-title').textContent = 'Boutiques partenaires';
+    document.querySelector('#content-meta')?.remove();
+    document.body.dataset.slug = slug;
+    document.body.classList.add('custom-landing');
+    const content = document.querySelector('#wp-content');
+    try {
+      await showPartners(content);
+    } catch (_) {
+      content.innerHTML = '<p>Les boutiques sont momentanément indisponibles. <a href="page.html?slug=site-partenaires">Réessayer</a></p>';
+    }
+    status.remove();
+    content.hidden = false;
     return;
   }
   if (kind === 'page' && slug === 'contact') {
