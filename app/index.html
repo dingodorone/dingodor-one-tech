@@ -435,6 +435,20 @@
   }
   .promo-copy:active { background: rgba(255,92,26,0.2); }
 
+  #promo-filters,#promo-countries { flex-wrap:wrap; overflow:visible; gap:7px; padding:0; margin:0 0 12px; }
+  #promo-countries { margin-bottom:14px; }
+  .app-promo-count { color:#9db4c7; font-size:12px; margin:0 0 16px; }
+  .promos .promo-offer { display:block; cursor:default; border-color:rgba(22,199,216,.23); }
+  .promo-offer .promo-brand { color:#f0f6ff; font-weight:700; font-size:15px; white-space:normal; }
+  .promo-offer .promo-desc { color:#c2d2df; font-size:13px; white-space:normal; line-height:1.5; }
+  .promo-offer .promo-region,.promo-offer .promo-expiry { color:#a4bac9; font-size:11px; margin-top:5px; }
+  .promo-offer .promo-note { color:#eac787; font-size:11px; margin-top:8px; }
+  .promo-actions { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:13px; }
+  .promo-offer .promo-copy { font:800 13px 'DM Sans',sans-serif; padding:10px 13px; }
+  .promo-offer .promo-link-app { display:inline-flex; align-items:center; justify-content:center; min-height:40px; border-radius:10px; background:linear-gradient(135deg,#16c7d8,#0c78ff); color:#fff; text-decoration:none; padding:9px 13px; font-weight:700; font-size:12px; }
+  .promo-store-links { display:flex; flex-wrap:wrap; gap:8px; margin-top:13px; }
+  .promo-offer [hidden] { display:none!important; }
+
   /* RÉSEAUX */
   .socials-grid {
     display: grid;
@@ -901,18 +915,14 @@
 <!-- SECTION PROMOS -->
 <div class="section" id="sec-promos">
   <div class="hero" style="margin-bottom:20px">
-    <div class="hero-label">🛒 Liste synchronisée automatiquement</div>
+    <div class="hero-label">🛒 Codes promo et boutiques</div>
     <h2>Codes promo du moment</h2>
-    <p>AliExpress 🇫🇷🇧🇪, SwitchBot, GeekBuying, GamsGo. Cliquez sur le code pour le copier.</p>
+    <p>Choisissez une boutique et votre pays pour voir les codes et les liens adaptés.</p>
   </div>
   <div class="section-title">Codes actifs</div>
-  <div class="tabs" id="promo-filters" style="padding:0 0 12px 0;margin-bottom:4px">
-    <button class="tab active" onclick="filterPromos('tous', this)">Tous</button>
-    <button class="tab" onclick="filterPromos('AliExpress', this)">AliExpress</button>
-    <button class="tab" onclick="filterPromos('GeekBuying', this)">GeekBuying</button>
-    <button class="tab" onclick="filterPromos('GamsGo', this)">GamsGo</button>
-    <button class="tab" onclick="filterPromos('SwitchBot', this)">SwitchBot</button>
-  </div>
+  <div class="tabs" id="promo-filters" aria-label="Filtrer par boutique"></div>
+  <div class="tabs" id="promo-countries" aria-label="Filtrer par pays"></div>
+  <p id="app-promo-count" class="app-promo-count" aria-live="polite"></p>
   <div class="section-title" style="margin-top:20px">Boutiques partenaires</div>
   <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px" id="affiliate-list">
     <a class="affiliate-card" href="https://amzn.to/415XsVU" target="_blank" rel="noopener">
@@ -1140,18 +1150,70 @@ function renderSharedLists() {
   </a>`).join('');
 }
 
+let selectedPromoBrand = 'tous';
+let selectedPromoCountry = 'tous';
+
+function promoEsc(value = '') {
+  return String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+}
+
+function renderPromoList() {
+  const filtered = promos.filter(p => {
+    const shop = p.shop || p.brand;
+    return (selectedPromoBrand === 'tous' || shop === selectedPromoBrand) &&
+      (selectedPromoCountry === 'tous' || (p.countries || []).includes(selectedPromoCountry));
+  });
+  document.getElementById('promos-list').innerHTML = filtered.length
+    ? filtered.map(promoCard).join('')
+    : '<p class="app-promo-count">Aucune offre pour ces filtres.</p>';
+  document.getElementById('app-promo-count').textContent =
+    `${filtered.length} offre${filtered.length > 1 ? 's' : ''} affichée${filtered.length > 1 ? 's' : ''}`;
+}
+
 async function loadPromos() {
   const list = document.getElementById('promos-list');
-  list.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center">Chargement des codes à jour…</div>';
+  list.innerHTML = '<p class="app-promo-count">Chargement des offres…</p>';
   try {
     const response = await fetch(`${PROMOS_URL}?v=${Date.now()}`, { cache: 'no-store' });
     if (!response.ok) throw new Error(`Erreur ${response.status}`);
-    promos = await response.json();
-    list.innerHTML = promos.map(promoCard).join('');
+    const all = await response.json();
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const activeCodes = all.filter(p => p.type !== 'store' && (!p.expires || new Date(`${p.expires}T23:59:59`) >= now));
+    const storesWithCodes = new Set(activeCodes.map(p => p.shop));
+    const activeStores = all.filter(p => p.type === 'store' && (!storesWithCodes.has(p.shop) || p.shop === 'AliExpress'));
+    promos = [...activeCodes, ...activeStores];
+    const shops = [...new Set(promos.map(p => p.shop || p.brand))];
+    const countries = [...new Set(promos.flatMap(p => p.countries || []))];
+    document.getElementById('promo-filters').innerHTML =
+      '<button class="tab active" type="button" data-brand="tous">Toutes les boutiques</button>' +
+      shops.map(shop => `<button class="tab" type="button" data-brand="${promoEsc(shop)}">${promoEsc(shop)}</button>`).join('');
+    document.getElementById('promo-countries').innerHTML =
+      '<button class="tab active" type="button" data-country="tous">Tous les pays</button>' +
+      countries.map(country => `<button class="tab" type="button" data-country="${promoEsc(country)}">${promoEsc(country)}</button>`).join('');
+    renderPromoList();
   } catch (_) {
-    list.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center">Impossible de charger les codes. Vérifie ta connexion puis réessaie.</div>';
+    list.innerHTML = '<p class="app-promo-count">Impossible de charger les offres. Vérifiez votre connexion puis réessayez.</p>';
   }
 }
+document.getElementById('promo-filters').addEventListener('click', event => {
+  const button = event.target.closest('[data-brand]');
+  if (!button) return;
+  selectedPromoBrand = button.dataset.brand;
+  document.querySelectorAll('#promo-filters .tab').forEach(item => item.classList.toggle('active', item === button));
+  renderPromoList();
+});
+document.getElementById('promo-countries').addEventListener('click', event => {
+  const button = event.target.closest('[data-country]');
+  if (!button) return;
+  selectedPromoCountry = button.dataset.country;
+  document.querySelectorAll('#promo-countries .tab').forEach(item => item.classList.toggle('active', item === button));
+  renderPromoList();
+});
+document.getElementById('promos-list').addEventListener('click', event => {
+  const button = event.target.closest('[data-copy-code]');
+  if (button) copyCode(button.dataset.copyCode, event);
+});
 
 // === RENDER ===
 function articleCard(a) {
@@ -1187,17 +1249,19 @@ function socialCard(s) {
 }
 
 function promoCard(p) {
-  return `<a class="promo-card" href="${p.url}" target="_blank" rel="noopener" style="text-decoration:none">
-    <div class="promo-badge">${p.code}</div>
-    <div class="promo-info">
-      <div class="promo-brand">${p.brand}</div>
-      <div class="promo-desc">${p.desc}</div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
-      <button class="promo-copy" onclick="copyCode('${p.code}', event)" style="font-size:10px;padding:5px 8px">Copier</button>
-      <span style="font-size:10px;color:var(--accent);text-align:center;font-weight:500">Visiter →</span>
-    </div>
-  </a>`;
+  const code = Boolean(p.code);
+  const countries = (p.countries || []).join(' ');
+  const expiry = p.expires ? new Intl.DateTimeFormat('fr-FR', {day:'numeric', month:'long', year:'numeric'}).format(new Date(`${p.expires}T12:00:00`)) : '';
+  const links = p.links?.length
+    ? p.links.map(link => `<a class="promo-link-app" href="${promoEsc(link.url)}" target="_blank" rel="noopener sponsored" ${selectedPromoCountry !== 'tous' && selectedPromoCountry !== link.country ? 'hidden' : ''}>Voir les offres ${promoEsc(link.label)} →</a>`).join('')
+    : `<a class="promo-link-app" href="${promoEsc(p.url)}" target="_blank" rel="noopener sponsored">${code ? 'Voir l’offre' : 'Voir les codes et promotions'} →</a>`;
+  return `<article class="promo-card promo-offer">
+    <div class="promo-brand">${promoEsc(p.brand)}</div>
+    <div class="promo-desc">${promoEsc(p.desc || '')}</div>
+    <div class="promo-region">${promoEsc(countries || 'Europe')}${expiry ? ` · Valable jusqu’au ${promoEsc(expiry)}` : ''}</div>
+    ${p.note ? `<div class="promo-note">${promoEsc(p.note)}</div>` : ''}
+    ${code ? `<div class="promo-actions"><button class="promo-copy" type="button" data-copy-code="${promoEsc(p.code)}">${promoEsc(p.code)} · Copier</button>${links}</div>` : `<div class="promo-region">Code promo via mon lien</div><div class="promo-store-links">${links}</div>`}
+  </article>`;
 }
 
 // Le contenu change sans imposer une nouvelle version de l'application.
@@ -2653,14 +2717,7 @@ function copyCode(code, e) {
 }
 
 // === PROMO FILTER ===
-function filterPromos(brand, el) {
-  document.querySelectorAll('#promo-filters .tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  const filtered = brand === 'tous' ? promos : promos.filter(p => p.brand.includes(brand));
-  document.getElementById('promos-list').innerHTML = filtered.length
-    ? filtered.map(promoCard).join('')
-    : '<div style="color:var(--muted);font-size:13px;padding:20px 0;text-align:center">Aucun code pour cette marque.</div>';
-}
+
 
 // === TOAST ===
 function showToast(msg) {
