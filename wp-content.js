@@ -92,6 +92,7 @@ async function enhancePromoPage(container) {
         <h2>${esc(p.desc)}</h2>
         <p class="promo-meta"><span>${esc(countriesText || 'Europe')}</span><span>${esc(expiry)}</span></p>
         ${p.note ? `<p class="promo-note">${esc(p.note)}</p>` : ''}
+        ${p.highlightUrl ? `<div class="promo-highlight"><strong>${esc(p.highlightTitle)}</strong><p>${esc(p.highlightNote || '')}</p><a href="${esc(p.highlightUrl)}" target="_blank" rel="noopener sponsored">Découvrir la sélection →</a></div>` : ''}
         ${hasCode ? `<button class="promo-code" type="button" data-code="${esc(p.code)}" aria-label="Copier le code ${esc(p.code)}"><span>${esc(p.code)}</span><small>Copier</small></button>` : '<div class="promo-direct"><strong>Code promo via mon lien</strong><span>Les codes et promotions sont disponibles directement sur la boutique.</span></div>'}
         ${p.links?.length ? `<div class="promo-country-links">${p.links.map(link => `<a class="promo-link" data-link-country="${esc(link.country)}" href="${esc(link.url)}" target="_blank" rel="noopener sponsored">Voir les offres ${esc(link.label)} <span aria-hidden="true">→</span></a>`).join('')}</div>` : `<a class="promo-link" href="${esc(p.url)}" target="_blank" rel="noopener sponsored">${hasCode ? 'Voir l’offre' : 'Voir les codes et promotions'} <span aria-hidden="true">→</span></a>`}
       </article>`;
