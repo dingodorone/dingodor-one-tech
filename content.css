@@ -64,3 +64,9 @@ body.custom-landing{background:radial-gradient(circle at 80% 5%,#0d3451 0,transp
 .promo-country-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto}
 .promo-country-links .promo-link{flex:1 1 180px;gap:10px}
 .promo-country-links .promo-link[hidden]{display:none}
+
+/* Sélection spéciale AliExpress, présentée sans promesse sur les droits applicables. */
+.promo-highlight{margin:14px 0;padding:15px;border:1px solid #16c7d877;border-radius:12px;background:#0e394c}
+.promo-highlight strong{color:#92f1f5;font-size:1.06rem}
+.promo-highlight p{margin:6px 0 12px;color:#d3e4ea;font-size:.82rem;line-height:1.5}
+.promo-highlight a{display:inline-block;border-radius:9px;background:#0c78ff;color:#fff!important;padding:9px 13px;font-weight:800;text-decoration:none}
