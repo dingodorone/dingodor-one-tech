@@ -16,7 +16,7 @@ STATE = Path("data/last-notified-post.json")
 
 
 def text(value):
-    return re.sub(r"\\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", value or ""))).strip()
+    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", value or ""))).strip()
 
 
 def fetch_posts():
@@ -27,7 +27,7 @@ def fetch_posts():
 
 def save(post):
     STATE.parent.mkdir(parents=True, exist_ok=True)
-    STATE.write_text(json.dumps({"id": post["ID"], "date": post.get("date", "")}, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    STATE.write_text(json.dumps({"id": post["ID"], "date": post.get("date", "")}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def main():
