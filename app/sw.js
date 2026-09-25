@@ -1,4 +1,4 @@
-const CACHE = 'dingodor-v17-site';
+const CACHE = 'dingodor-v18-site';
 const ASSETS = [
   './',
   './index.html',
