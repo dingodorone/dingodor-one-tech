@@ -1,0 +1,2747 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0c1a2e">
+<meta name="description" content="Dingodor One Tech – Domotique, bons plans & conseils">
+<title>Dingodor One Tech</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="https://dingodorone.github.io/dingodor-app/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dingodor Tech">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0c0c;
+    --bg2: #161616;
+    --bg3: #1e1e1e;
+    --accent: #1a7aff;
+    --accent2: #38b6ff;
+    --text: #f0ede8;
+    --muted: #7a7570;
+    --border: rgba(255,255,255,0.07);
+    --card-r: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Ouvert comme une simple page web (lien depuis le blog) : mise en page plus large, façon site */
+  @media (display-mode: browser) {
+    body {
+      max-width: 900px;
+    }
+    .section {
+      padding-left: 32px;
+      padding-right: 32px;
+    }
+    header {
+      padding-left: 32px;
+      padding-right: 32px;
+    }
+    .tabs {
+      padding-left: 32px;
+      padding-right: 32px;
+      justify-content: center;
+    }
+    .promos {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    #sec-camera {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  }
+
+  /* HEADER */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(12,12,12,0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 18px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 9px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .logo-text span {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* SEARCH */
+  .search-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .search-btn:active { background: var(--bg2); }
+  .search-btn svg { width: 16px; height: 16px; stroke: var(--muted); }
+
+  /* NAV TABS */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    padding: 12px 18px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .tab:not(.active):active { background: var(--bg3); }
+
+  /* SECTIONS */
+  .section { display: none; padding: 16px 18px 100px; }
+  .section.active { display: block; }
+
+  /* CAMERA WIZARD */
+  .cam-progress { display:flex; gap:6px; margin-bottom:18px; }
+  .cam-progress span { flex:1; height:3px; border-radius:3px; background:var(--bg3); }
+  .cam-progress span.done { background:var(--accent); }
+  .cam-question { font-family:'Syne', sans-serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:16px; line-height:1.3; }
+  .cam-options { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+  .cam-option {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--card-r);
+    padding: 14px 16px;
+    text-align: left;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .cam-option:active { background: var(--bg3); transform: scale(0.99); border-color: var(--accent); }
+  .cam-option-sub { display:block; font-size:12px; color:var(--muted); font-weight:400; margin-top:2px; }
+  .cam-back {
+    background: none; border: none; color: var(--muted); font-size: 12px;
+    cursor: pointer; padding: 4px 0; margin-bottom: 14px; display:flex; align-items:center; gap:4px;
+  }
+  .cam-result-card {
+    background: var(--bg2);
+    border: 1px solid rgba(26,122,255,0.3);
+    border-radius: var(--card-r);
+    padding: 20px;
+    animation: fadeUp 0.4s ease both;
+  }
+  .cam-result-badge {
+    display:inline-flex; align-items:center; gap:5px;
+    background: rgba(26,122,255,0.15); border: 1px solid rgba(26,122,255,0.3);
+    border-radius: 20px; padding: 3px 10px; font-size: 11px; color: var(--accent2);
+    font-weight: 500; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .cam-result-title { font-family:'Syne', sans-serif; font-size:19px; font-weight:800; color:var(--text); margin-bottom:8px; line-height:1.25; }
+  .cam-result-desc { font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:14px; }
+  .cam-result-specs { list-style:none; margin-bottom:18px; }
+  .cam-result-specs li { font-size:13px; color:var(--text); padding:6px 0; border-bottom:1px solid var(--border); display:flex; gap:8px; }
+  .cam-result-specs li:last-child { border-bottom:none; }
+  .cam-result-specs li::before { content:'✓'; color:var(--accent2); font-weight:700; flex-shrink:0; }
+  .cam-buy-row { display:flex; gap:10px; margin-bottom:12px; }
+  .cam-buy-btn {
+    flex:1; text-align:center; text-decoration:none; padding:13px 10px; border-radius:12px;
+    font-size:13px; font-weight:600; background: linear-gradient(135deg, var(--accent), var(--accent2)); color:#fff;
+  }
+  .cam-buy-btn:active { opacity:0.85; }
+  .cam-restart-btn {
+    display:block; width:100%; text-align:center; background:transparent; border:1px solid var(--border);
+    color:var(--muted); font-size:13px; font-weight:500; padding:11px; border-radius:12px; cursor:pointer;
+  }
+  .cam-restart-btn:active { background:var(--bg3); }
+  .cam-note { font-size:11px; color:var(--muted); text-align:center; margin-top:10px; line-height:1.5; }
+
+  /* HERO BANNER */
+  .hero {
+    background: linear-gradient(135deg, #000f1a 0%, #001a2e 50%, #0c0c0c 100%);
+    border: 1px solid rgba(26,122,255,0.2);
+    border-radius: var(--card-r);
+    padding: 22px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: 0.07;
+    filter: blur(40px);
+  }
+  .hero-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255,92,26,0.15);
+    border: 1px solid rgba(255,92,26,0.3);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .hero h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .hero p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* SECTION TITLES */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+
+  /* ARTICLE CARDS */
+  .articles { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+
+  .article-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--card-r);
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: block;
+    animation: fadeUp 0.4s ease both;
+  }
+  .article-card:nth-child(1) { animation-delay: 0.05s; }
+  .article-card:nth-child(2) { animation-delay: 0.1s; }
+  .article-card:nth-child(3) { animation-delay: 0.15s; }
+  .article-card:nth-child(4) { animation-delay: 0.2s; }
+  .article-card:nth-child(5) { animation-delay: 0.25s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .article-card:active { background: var(--bg3); transform: scale(0.99); }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .article-tag {
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    background: rgba(255,92,26,0.12);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .article-date {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .article-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .article-excerpt {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .article-arrow {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+  .article-arrow svg {
+    width: 14px; height: 14px;
+    stroke: var(--muted);
+  }
+  .article-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    background: var(--bg3);
+  }
+
+  /* PROMO CARDS */
+  .promos { display: flex; flex-direction: column; gap: 10px; }
+
+  .promo-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--card-r);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    animation: fadeUp 0.35s ease both;
+  }
+  .promo-card:nth-child(1) { animation-delay: 0.05s; }
+  .promo-card:nth-child(2) { animation-delay: 0.1s; }
+  .promo-card:nth-child(3) { animation-delay: 0.15s; }
+  .promo-card:nth-child(4) { animation-delay: 0.2s; }
+  .promo-card:active { background: var(--bg3); }
+
+  .promo-badge {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 8px 12px;
+    border-radius: 10px;
+    min-width: 64px;
+    text-align: center;
+    flex-shrink: 0;
+    line-height: 1.2;
+  }
+  .promo-info { flex: 1; min-width: 0; }
+  .promo-brand {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .promo-desc {
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .promo-copy {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .promo-copy:active { background: rgba(255,92,26,0.2); }
+
+  /* RÉSEAUX */
+  .socials-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .social-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--card-r);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    animation: fadeUp 0.35s ease both;
+  }
+  .social-card:active { transform: scale(0.97); }
+  .social-card:nth-child(1) { animation-delay: 0.05s; }
+  .social-card:nth-child(2) { animation-delay: 0.1s; }
+  .social-card:nth-child(3) { animation-delay: 0.15s; }
+  .social-card:nth-child(4) { animation-delay: 0.2s; }
+  .social-card:nth-child(5) { animation-delay: 0.25s; }
+  .social-card:nth-child(6) { animation-delay: 0.3s; }
+
+  .social-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .social-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .social-handle {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ABOUT */
+  .about-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--card-r);
+    padding: 20px;
+    margin-bottom: 14px;
+    animation: fadeUp 0.35s ease both;
+  }
+  .about-avatar {
+    width: 60px; height: 60px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 14px;
+  }
+  .about-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .about-bio { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  .support-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .support-btn:active { opacity: 0.85; }
+
+  /* SEARCH OVERLAY */
+  .search-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 200;
+    display: none;
+    flex-direction: column;
+    padding: 20px 18px;
+  }
+  .search-overlay.open { display: flex; }
+
+  .search-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .search-input {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+  }
+  .search-input::placeholder { color: var(--muted); }
+  .search-close {
+    color: var(--muted);
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px;
+    white-space: nowrap;
+  }
+  .search-results { overflow-y: auto; }
+  .search-result-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .search-result-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .search-result-date { font-size: 11px; color: var(--muted); }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: rgba(12,12,12,0.95);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 6px 0;
+    transition: color 0.2s;
+    color: var(--muted);
+    border: none;
+    background: none;
+  }
+  .nav-item.active { color: var(--accent); }
+  .nav-item svg { width: 20px; height: 20px; }
+  .nav-item span { font-size: 10px; font-weight: 500; }
+
+  /* AFFILIATE CARD */
+  .affiliate-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--card-r);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+    transition: all 0.2s;
+    animation: fadeUp 0.35s ease both;
+  }
+  .affiliate-card:active { background: var(--bg3); }
+  .affiliate-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: var(--bg3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .affiliate-info { flex: 1; min-width: 0; }
+  .affiliate-name { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .affiliate-desc { font-size: 11px; color: var(--muted); }
+  .affiliate-btn {
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 7px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* INSTALL BANNER */
+  .install-banner {
+    display: none;
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 36px);
+    max-width: 394px;
+    background: var(--bg2);
+    border: 1px solid rgba(26,122,255,0.4);
+    border-radius: 16px;
+    padding: 14px 16px;
+    z-index: 250;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .install-banner.visible { display: flex; }
+  .install-banner-text { flex: 1; }
+  .install-banner-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .install-banner-sub { font-size: 11px; color: var(--muted); }
+  .install-banner-btn {
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .install-banner-close {
+    color: var(--muted);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 13px;
+    color: var(--text);
+    opacity: 0;
+    transition: all 0.25s;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 300;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* INTERFACE 2026 — harmonisée avec Dingodor One Tech */
+  :root {
+    --bg: #07111f;
+    --bg2: #0d1d2c;
+    --bg3: #152a3c;
+    --accent: #16c7d8;
+    --accent2: #0c78ff;
+    --text: #f6fbff;
+    --muted: #91a8b9;
+    --border: rgba(255,255,255,.1);
+    --card-r: 22px;
+  }
+  html { background:#07111f; }
+  body {
+    background:
+      radial-gradient(circle at 88% 0,rgba(22,199,216,.15),transparent 28%),
+      radial-gradient(circle at 0 32%,rgba(12,120,255,.1),transparent 25%),
+      var(--bg);
+    min-height:100dvh;
+  }
+  header {
+    height:68px;
+    padding:0 18px;
+    background:rgba(7,17,31,.88);
+    border-bottom-color:rgba(255,255,255,.08);
+    box-shadow:0 8px 30px rgba(0,0,0,.18);
+  }
+  .logo-icon { border-radius:12px; box-shadow:0 8px 20px rgba(12,120,255,.24); }
+  .logo-text { font-family:'DM Sans',sans-serif; font-weight:700; letter-spacing:-.02em; }
+  .logo-text span { color:#7f98aa; margin-top:3px; }
+  .search-btn { width:40px; height:40px; border-radius:13px; background:rgba(255,255,255,.055); }
+  .search-btn svg { stroke:#d8edf4; }
+  body > .tabs {
+    position:sticky;
+    top:68px;
+    z-index:90;
+    gap:7px;
+    padding:12px 18px;
+    background:rgba(7,17,31,.9);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .tab { padding:8px 14px; border-radius:999px; color:#91a8b9; background:rgba(255,255,255,.025); }
+  .tab.active { background:linear-gradient(135deg,#16c7d8,#0c78ff); border-color:transparent; box-shadow:0 8px 22px rgba(12,120,255,.22); }
+  .section { padding:22px 18px 112px; }
+  .hero {
+    padding:25px 22px;
+    border-radius:26px;
+    background:linear-gradient(145deg,rgba(18,48,70,.96),rgba(8,22,37,.98));
+    border-color:rgba(56,214,228,.24);
+    box-shadow:0 22px 55px rgba(0,0,0,.28);
+  }
+  .hero::before { width:180px; height:180px; background:#16c7d8; opacity:.12; }
+  .hero-label { color:#80edf5; background:rgba(22,199,216,.1); border-color:rgba(22,199,216,.28); font-weight:700; }
+  .hero h2 { font-family:'DM Sans',sans-serif; font-size:25px; line-height:1.15; letter-spacing:-.035em; }
+  .hero p { color:#a9becd; line-height:1.65; }
+  .section-title { font-family:'DM Sans',sans-serif; color:#80edf5; font-weight:700; letter-spacing:.12em; margin:26px 2px 13px; }
+  .article-card,.promo-card,.social-card,.about-card,.affiliate-card {
+    background:linear-gradient(145deg,rgba(19,40,57,.96),rgba(10,25,40,.98));
+    border-color:rgba(255,255,255,.09);
+    box-shadow:0 14px 34px rgba(0,0,0,.18);
+  }
+  .article-card { padding:17px; border-radius:22px; }
+  .article-img { height:175px; border-radius:15px; }
+  .article-title,.about-name,.cam-result-title { font-family:'DM Sans',sans-serif; letter-spacing:-.02em; }
+  .article-tag { color:#78eaf2; background:rgba(22,199,216,.1); }
+  .promo-card { border-radius:18px; padding:15px; }
+  .promo-badge,.support-btn,.cam-buy-btn { background:linear-gradient(135deg,#16c7d8,#0c78ff); }
+  .promo-copy { color:#7cebf3; background:rgba(22,199,216,.08); border-color:rgba(22,199,216,.22); }
+  .social-card { border-radius:18px; }
+  .affiliate-btn { color:#7cebf3; border-color:rgba(22,199,216,.25); background:rgba(22,199,216,.08); }
+  #cam-wizard { padding:20px 16px; border:1px solid rgba(255,255,255,.09); border-radius:24px; background:linear-gradient(145deg,rgba(18,40,58,.94),rgba(8,22,36,.97)); box-shadow:0 18px 45px rgba(0,0,0,.24); }
+  .cam-question { font-family:'DM Sans',sans-serif; font-size:20px; letter-spacing:-.02em; }
+  .cam-option { border-radius:16px; background:rgba(255,255,255,.04); min-height:64px; }
+  .cam-option:active { background:rgba(22,199,216,.1); border-color:#16c7d8; }
+  .cam-progress span { height:4px; background:rgba(255,255,255,.08); }
+  .cam-progress span.done { background:linear-gradient(90deg,#16c7d8,#0c78ff); }
+  .bottom-nav {
+    bottom:10px;
+    width:calc(100% - 20px);
+    max-width:410px;
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+    border:1px solid rgba(255,255,255,.11);
+    border-radius:22px;
+    background:rgba(10,24,38,.94);
+    box-shadow:0 18px 45px rgba(0,0,0,.48);
+  }
+  .nav-item { border-radius:14px; min-height:51px; }
+  .nav-item.active { color:#71e8f1; background:rgba(22,199,216,.09); }
+  .nav-item svg { width:21px; height:21px; }
+  .search-overlay { background:rgba(5,13,23,.97); }
+  .search-input { background:#10263a; border-color:rgba(255,255,255,.12); }
+  .install-banner { left:14px; right:14px; bottom:92px; border-radius:18px; background:#10283d; border:1px solid rgba(22,199,216,.25); box-shadow:0 18px 40px rgba(0,0,0,.4); }
+  .app-shortcuts { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 24px; }
+  .app-shortcut { min-height:92px; padding:15px; border:1px solid rgba(255,255,255,.09); border-radius:18px; background:linear-gradient(145deg,rgba(20,45,65,.96),rgba(10,25,40,.96)); color:var(--text); text-align:left; font:600 13px/1.25 'DM Sans',sans-serif; cursor:pointer; box-shadow:0 12px 28px rgba(0,0,0,.16); }
+  .app-shortcut span { display:grid; place-items:center; width:34px; height:34px; margin-bottom:10px; border-radius:11px; background:rgba(22,199,216,.11); font-size:18px; }
+  .app-shortcut small { display:block; margin-top:4px; color:var(--muted); font-size:10px; font-weight:400; }
+  @media(min-width:700px) {
+    body { max-width:1040px; }
+    .section { padding-left:32px; padding-right:32px; }
+    .app-shortcuts { grid-template-columns:repeat(4,1fr); }
+    .articles { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .bottom-nav { max-width:520px; }
+  }
+</style>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "32adeb26-bc3e-4f21-8a33-212ad164cb4c",
+      serviceWorkerPath: "/sw.js",
+      notifyButton: { enable: false },
+    });
+  });
+</script>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="#">
+    <div class="logo-icon"><img src="data:image/png;base64,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" alt="Dingodor One Tech" style="width:40px;height:40px;object-fit:cover;border-radius:9px;"></div>
+    <div class="logo-text">Dingodor One Tech<span>Domotique & Bons Plans</span></div>
+  </a>
+  <button class="search-btn" onclick="openSearch()" aria-label="Rechercher">
+    <svg fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+  </button>
+</header>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-header">
+    <input class="search-input" id="searchInput" type="search" placeholder="Rechercher un article..." oninput="filterSearch(this.value)" autofocus>
+    <span class="search-close" onclick="closeSearch()">Fermer</span>
+  </div>
+  <div class="search-results" id="searchResults"></div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('accueil', this)">Accueil</button>
+  <button class="tab" onclick="switchTab('articles', this)">Articles</button>
+  <button class="tab" onclick="switchTab('promos', this)">Codes promo</button>
+  <button class="tab" onclick="switchTab('reseaux', this)">Réseaux</button>
+  <button class="tab" onclick="switchTab('camera', this)">Caméras</button>
+  <button class="tab" onclick="switchTab('about', this)">♥ Soutien</button>
+</div>
+
+<!-- SECTION ACCUEIL -->
+<div class="section active" id="sec-accueil">
+  <div class="hero">
+    <div class="hero-label">🏠 Domotique</div>
+    <h2>Le blog 100% domotique & bons plans tech</h2>
+    <p>Guides, astuces, codes promo et tests produits Xiaomi, Tuya, Sonoff et bien d'autres.</p>
+  </div>
+
+  <div class="app-shortcuts" aria-label="Accès rapides">
+    <button class="app-shortcut" onclick="switchSection('articles')"><span>📰</span>Articles<small>Les dernières sorties tech</small></button>
+    <button class="app-shortcut" onclick="switchSection('promos')"><span>🏷️</span>Codes promo<small>Les offres du moment</small></button>
+    <button class="app-shortcut" onclick="switchSection('camera')"><span>📹</span>Guide caméra<small>Trouver le bon modèle</small></button>
+    <button class="app-shortcut" onclick="switchSection('about')"><span>♥</span>Soutenir<small>Aider le projet</small></button>
+  </div>
+
+  <div class="section-title">Derniers articles</div>
+  <div class="articles" id="home-articles"></div>
+
+  <div class="section-title">Rejoindre la communauté</div>
+  <div class="socials-grid" id="home-socials"></div>
+</div>
+
+<!-- SECTION ARTICLES -->
+<div class="section" id="sec-articles">
+  <div class="section-title">Tous les articles</div>
+  <div class="articles" id="all-articles"></div>
+  <div id="load-more-container" style="text-align:center;margin:10px 0 20px;display:none">
+    <button onclick="loadMoreArticles()" style="background:var(--bg2);border:1px solid var(--accent);color:var(--accent);border-radius:20px;padding:10px 28px;font-size:13px;font-weight:600;cursor:pointer">
+      Charger plus d'articles ↓
+    </button>
+  </div>
+</div>
+
+<!-- SECTION PROMOS -->
+<div class="section" id="sec-promos">
+  <div class="hero" style="margin-bottom:20px">
+    <div class="hero-label">🛒 Liste synchronisée automatiquement</div>
+    <h2>Codes promo du moment</h2>
+    <p>AliExpress 🇫🇷🇧🇪, SwitchBot, GeekBuying, GamsGo. Cliquez sur le code pour le copier.</p>
+  </div>
+  <div class="section-title">Codes actifs</div>
+  <div class="tabs" id="promo-filters" style="padding:0 0 12px 0;margin-bottom:4px">
+    <button class="tab active" onclick="filterPromos('tous', this)">Tous</button>
+    <button class="tab" onclick="filterPromos('AliExpress', this)">AliExpress</button>
+    <button class="tab" onclick="filterPromos('GeekBuying', this)">GeekBuying</button>
+    <button class="tab" onclick="filterPromos('GamsGo', this)">GamsGo</button>
+    <button class="tab" onclick="filterPromos('SwitchBot', this)">SwitchBot</button>
+  </div>
+  <div class="section-title" style="margin-top:20px">Boutiques partenaires</div>
+  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px" id="affiliate-list">
+    <a class="affiliate-card" href="https://amzn.to/415XsVU" target="_blank" rel="noopener">
+      <div class="affiliate-icon">📦</div>
+      <div class="affiliate-info">
+        <div class="affiliate-name">Amazon France</div>
+        <div class="affiliate-desc">Mes produits testés & recommandés</div>
+      </div>
+      <span class="affiliate-btn">Visiter →</span>
+    </a>
+    <a class="affiliate-card" href="https://temu.to/m/ulbndn53etv" target="_blank" rel="noopener">
+      <div class="affiliate-icon">🛍️</div>
+      <div class="affiliate-info">
+        <div class="affiliate-name">Temu</div>
+        <div class="affiliate-desc">Bons plans & cadeaux gratuits nouveaux</div>
+      </div>
+      <span class="affiliate-btn">Visiter →</span>
+    </a>
+    <a class="affiliate-card" href="https://www.instant-gaming.com/?igr=dingodor" target="_blank" rel="noopener">
+      <div class="affiliate-icon">🎮</div>
+      <div class="affiliate-info">
+        <div class="affiliate-name">Instant Gaming</div>
+        <div class="affiliate-desc">Jeux PC, PlayStation, Xbox moins chers</div>
+      </div>
+      <span class="affiliate-btn">Visiter →</span>
+    </a>
+  </div>
+  <div class="promos" id="promos-list"></div>
+</div>
+
+
+<!-- SECTION RADIO -->
+<div class="section" id="sec-radio">
+  <div class="hero-label">📻 Radio Dingo</div>
+  <h2 style="margin:0 0 6px">Radio en direct</h2>
+  <p style="color:var(--muted);font-size:13px;margin:0 0 24px">Écoutez la radio directement depuis l'app !</p>
+
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;text-align:center;margin-bottom:20px">
+    <div id="radio-icon" style="font-size:48px;margin-bottom:12px">📻</div>
+    <div id="radio-title" style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px">Radio Dingo</div>
+    <div id="radio-status" style="font-size:12px;color:var(--muted);margin-bottom:20px">Appuyez sur Play pour écouter</div>
+    
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px">
+      <button id="radio-btn" onclick="toggleRadio()" style="background:var(--accent);border:none;border-radius:50%;width:64px;height:64px;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s">▶️</button>
+    </div>
+
+    <div style="margin-top:20px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:12px;color:var(--muted)">🔈</span>
+      <input type="range" id="radio-volume" min="0" max="1" step="0.05" value="0.8" oninput="setVolume(this.value)" style="flex:1;accent-color:var(--accent)">
+      <span style="font-size:12px;color:var(--muted)">🔊</span>
+    </div>
+  </div>
+
+  <audio id="radio-audio" preload="none">
+    <source src="http://icecast.radiofrance.fr/mouv-hifi.aac" type="audio/aac">
+  </audio>
+</div>
+<!-- SECTION RÉSEAUX -->
+<div class="section" id="sec-reseaux">
+  <div class="section-title">Me retrouver sur</div>
+  <div class="socials-grid" id="all-socials"></div>
+</div>
+
+<!-- SECTION CAMÉRAS -->
+<div class="section" id="sec-camera">
+  <div class="hero" style="margin-bottom:20px">
+    <div class="hero-label">📹 Guide d'achat</div>
+    <h2>Quelle caméra de surveillance choisir ?</h2>
+    <p>Réponds à quelques questions, on te recommande le bon modèle selon ton installation, hauteur, distance, WiFi, 4G, solaire.</p>
+  </div>
+  <div id="cam-wizard"></div>
+</div>
+
+<!-- SECTION ABOUT -->
+<div class="section" id="sec-about">
+  <div class="about-card">
+    <div class="about-avatar">D</div>
+    <div class="about-name">Dingodor One Tech</div>
+    <div class="about-bio">Blog 100% indépendant dédié à la domotique, aux objets connectés et aux bons plans tech. Xiaomi, Tuya, Sonoff et bien d'autres marques passées au crible pour vous aider à faire les bons choix.</div>
+    <a href="https://ko-fi.com/dingodorone" target="_blank" class="support-btn">☕ Soutenir le projet</a>
+  </div>
+  <div class="about-card">
+    <div class="section-title" style="margin-bottom:10px">Contact & liens</div>
+    <a href="https://dingodoronetech.eu.org/page.html?slug=contact" target="_blank" style="display:flex;align-items:center;justify-content:space-between;text-decoration:none;padding:10px 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:14px;color:var(--text)">📬 Formulaire de contact</span>
+      <svg width="14" height="14" fill="none" stroke="var(--muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="https://dingodoronetech.eu.org/" target="_blank" style="display:flex;align-items:center;justify-content:space-between;text-decoration:none;padding:10px 0">
+      <span style="font-size:14px;color:var(--text)">🌐 Site complet</span>
+      <svg width="14" height="14" fill="none" stroke="var(--muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</div>
+
+<!-- INSTALL BANNER -->
+<div class="install-banner" id="installBanner">
+  <div class="install-banner-text">
+    <div class="install-banner-title">📲 Installer l'app</div>
+    <div class="install-banner-sub">Accès rapide depuis votre bureau</div>
+  </div>
+  <button class="install-banner-btn" id="installBtn">Installer</button>
+  <span class="install-banner-close" onclick="dismissInstall()">✕</span>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item active" id="nav-accueil" onclick="switchSection('accueil')">
+    <svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Accueil</span>
+  </button>
+  <button class="nav-item" id="nav-articles" onclick="switchSection('articles')">
+    <svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    <span>Articles</span>
+  </button>
+  <button class="nav-item" id="nav-promos" onclick="switchSection('promos')">
+    <svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+    <span>Promos</span>
+  </button>
+  <button class="nav-item" id="nav-radio" onclick="switchSection('radio')">
+    <svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/><line x1="12" y1="12" x2="12" y2="16"/><circle cx="12" cy="12" r="1"/></svg>
+    <span>Radio</span>
+  </button>
+  <button class="nav-item" id="nav-about" onclick="switchSection('about')">
+    <svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span style="color:#ff6b8f;font-weight:700">♥ Soutien</span>
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// === DATA ===
+// Articles chargés directement depuis l'API officielle WordPress
+let articles = [];
+
+function articleText(value) {
+  const node = document.createElement('div');
+  node.innerHTML = value || '';
+  return (node.textContent || '').replace(/\s+/g, ' ').trim();
+}
+
+async function loadArticlesFromAPI() {
+  showLoadingArticles();
+  const API = 'https://public-api.wordpress.com/rest/v1.1/sites/dingodoronetech.wordpress.com/posts/?number=50&fields=ID,title,slug,date,excerpt,featured_image';
+
+  try {
+    const res = await fetch(API, {cache: 'no-store'});
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (data.posts && data.posts.length > 0) {
+      articles = data.posts.map(post => {
+        const excerpt = articleText(post.excerpt).slice(0, 150);
+        return {
+          title: articleText(post.title) || 'Sans titre',
+          date: new Date(post.date).toLocaleDateString('fr-FR', {day:'numeric', month:'short', year:'numeric'}),
+          tag: 'Article',
+          excerpt: excerpt + (excerpt.length === 150 ? '…' : ''),
+          url: `https://dingodoronetech.eu.org/article.html?slug=${encodeURIComponent(post.slug)}`,
+          img: post.featured_image || null
+        };
+      });
+      renderArticles();
+      return;
+    }
+  } catch(e) {}
+  showArticleError();
+}
+
+function showLoadingArticles() {
+  const loading = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px">⏳ Chargement des articles...</div>';
+  document.getElementById('home-articles').innerHTML = loading;
+  document.getElementById('all-articles').innerHTML = loading;
+}
+
+function showArticleError() {
+  const err = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px">Impossible de charger les articles.<br><button type="button" onclick="loadArticlesFromAPI()" style="margin-top:12px;padding:9px 16px;border:1px solid var(--accent);border-radius:999px;background:rgba(22,199,216,.08);color:#7cebf3;cursor:pointer">Réessayer</button></div>';
+  document.getElementById('home-articles').innerHTML = err;
+  document.getElementById('all-articles').innerHTML = err;
+}
+
+let articlesShown = 10;
+
+function renderArticles() {
+  document.getElementById('home-articles').innerHTML = articles.slice(0, 3).map(articleCard).join('');
+  document.getElementById('all-articles').innerHTML = articles.slice(0, articlesShown).map(articleCard).join('');
+  const btn = document.getElementById('load-more-container');
+  btn.style.display = articles.length > articlesShown ? 'block' : 'none';
+}
+
+function loadMoreArticles() {
+  articlesShown += 10;
+  document.getElementById('all-articles').innerHTML = articles.slice(0, articlesShown).map(articleCard).join('');
+  const btn = document.getElementById('load-more-container');
+  btn.style.display = articles.length > articlesShown ? 'block' : 'none';
+}
+
+const SHARED_DATA_URL = 'https://dingodoronetech.eu.org/data/site-data.json';
+const DEFAULT_PROMOS_URL = 'https://raw.githubusercontent.com/dingodorone/dingodor-data/main/promos.json';
+let sharedData = null;
+let PROMOS_URL = DEFAULT_PROMOS_URL;
+let promos = [];
+
+async function loadSharedData() {
+  try {
+    const response = await fetch(`${SHARED_DATA_URL}?v=${Date.now()}`, {cache: 'no-store'});
+    if (!response.ok) throw new Error(`Erreur ${response.status}`);
+    sharedData = await response.json();
+    PROMOS_URL = sharedData.promosUrl || DEFAULT_PROMOS_URL;
+    if (Array.isArray(sharedData.socials) && sharedData.socials.length) {
+      socials = sharedData.socials.map(item => ({...item, desc: item.description}));
+    }
+  } catch (_) {}
+  renderSharedLists();
+}
+
+function renderSharedLists() {
+  document.getElementById('home-socials').innerHTML = socials.slice(0, 4).map(socialCard).join('');
+  document.getElementById('all-socials').innerHTML = socials.map(socialCard).join('');
+  const list = document.getElementById('affiliate-list');
+  if (!list || !sharedData?.partners?.length) return;
+  list.innerHTML = sharedData.partners.map(partner => `<a class="affiliate-card" href="${partner.url}" target="_blank" rel="noopener sponsored">
+    <div class="affiliate-icon">${partner.icon || '🛒'}</div>
+    <div class="affiliate-info"><div class="affiliate-name">${partner.name}</div><div class="affiliate-desc">${partner.description || ''}</div></div>
+    <span class="affiliate-btn">Visiter →</span>
+  </a>`).join('');
+}
+
+async function loadPromos() {
+  const list = document.getElementById('promos-list');
+  list.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center">Chargement des codes à jour…</div>';
+  try {
+    const response = await fetch(`${PROMOS_URL}?v=${Date.now()}`, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Erreur ${response.status}`);
+    promos = await response.json();
+    list.innerHTML = promos.map(promoCard).join('');
+  } catch (_) {
+    list.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center">Impossible de charger les codes. Vérifie ta connexion puis réessaie.</div>';
+  }
+}
+
+// === RENDER ===
+function articleCard(a) {
+  return `<a class="article-card" href="${a.url}" target="_blank" rel="noopener">
+    ${a.img ? `<img class="article-img" src="${a.img}" alt="${a.title}" loading="lazy" onerror="this.style.display='none'">` : ''}
+    <div class="article-meta">
+      <span class="article-tag">${a.tag}</span>
+      <span class="article-date">${a.date}</span>
+    </div>
+    <div class="article-title">${a.title}</div>
+    <div class="article-excerpt">${a.excerpt}</div>
+    <div class="article-arrow"><svg fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+  </a>`;
+}
+
+let socials = [
+  { name: "YouTube", icon: "▶️", desc: "Vidéos & tests domotique", url: "https://www.youtube.com/user/dingodor1", color: "#ff0000" },
+  { name: "Facebook", icon: "📘", desc: "Actus & discussions", url: "https://www.facebook.com/DingodorOne", color: "#1877f2" },
+  { name: "Discord", icon: "💬", desc: "Communauté domotique", url: "https://discord.gg/jKkUg4B", color: "#5865f2" },
+  { name: "TikTok", icon: "🎵", desc: "Shorts & bons plans", url: "https://www.tiktok.com/@dingodorone", color: "#010101" },
+  { name: "Instagram", icon: "📸", desc: "Photos & coulisses", url: "https://www.instagram.com/dingodor_one_tech/", color: "#e1306c" },
+  { name: "Twitch", icon: "🎮", desc: "Lives & démos en direct", url: "https://www.twitch.tv/dingodorone", color: "#9146ff" },
+];
+
+// socials rendered on DOMContentLoaded
+
+function socialCard(s) {
+  return `<a class="social-card" href="${s.url}" target="_blank" style="border-color:rgba(255,255,255,0.08)">
+    <div class="social-icon" style="background:${s.color};font-size:20px">${s.icon}</div>
+    <div class="social-name">${s.name}</div>
+    <div class="social-handle">${s.desc}</div>
+  </a>`;
+}
+
+function promoCard(p) {
+  return `<a class="promo-card" href="${p.url}" target="_blank" rel="noopener" style="text-decoration:none">
+    <div class="promo-badge">${p.code}</div>
+    <div class="promo-info">
+      <div class="promo-brand">${p.brand}</div>
+      <div class="promo-desc">${p.desc}</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+      <button class="promo-copy" onclick="copyCode('${p.code}', event)" style="font-size:10px;padding:5px 8px">Copier</button>
+      <span style="font-size:10px;color:var(--accent);text-align:center;font-weight:500">Visiter →</span>
+    </div>
+  </a>`;
+}
+
+// Le contenu change sans imposer une nouvelle version de l'application.
+loadArticlesFromAPI();
+loadSharedData().finally(loadPromos);
+
+
+// === RADIO ===
+let radioPlaying = false;
+const radioAudio = document.getElementById('radio-audio');
+
+function toggleRadio() {
+  if (radioPlaying) {
+    radioAudio.pause();
+    radioAudio.src = '';
+    radioPlaying = false;
+    document.getElementById('radio-btn').textContent = '▶️';
+    document.getElementById('radio-status').textContent = 'En pause';
+    document.getElementById('radio-icon').textContent = '📻';
+  } else {
+    radioAudio.src = 'http://icecast.radiofrance.fr/mouv-hifi.aac';
+    radioAudio.load();
+    radioAudio.play().then(() => {
+      radioPlaying = true;
+      document.getElementById('radio-btn').textContent = '⏸️';
+      document.getElementById('radio-status').textContent = '🔴 En direct';
+      document.getElementById('radio-icon').textContent = '🎵';
+    }).catch(() => {
+      document.getElementById('radio-status').textContent = '❌ Erreur de connexion';
+    });
+  }
+}
+
+function setVolume(val) {
+  radioAudio.volume = val;
+}
+
+// === NAVIGATION ===
+function switchSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + id);
+  if (navEl) navEl.classList.add('active');
+  // sync tabs
+  document.querySelectorAll('.tab').forEach(t => {
+    if (t.textContent.toLowerCase().includes(id === 'about' ? 'propos' : id === 'accueil' ? 'accueil' : id)) {
+      t.classList.add('active');
+    } else {
+      t.classList.remove('active');
+    }
+  });
+}
+
+function switchTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + id);
+  if (navEl) navEl.classList.add('active');
+}
+
+// Ouvre directement un onglet précis si l'URL contient un lien du type #camera, #promos, etc.
+(function () {
+  const validTabs = ['accueil', 'articles', 'promos', 'reseaux', 'camera', 'about'];
+  const requested = window.location.hash.replace('#', '');
+  if (validTabs.includes(requested)) {
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = Array.from(document.querySelectorAll('.tab')).find(t => t.getAttribute('onclick').includes(`'${requested}'`));
+      if (btn) switchTab(requested, btn);
+    });
+  }
+})();
+
+// === GUIDE CAMÉRAS DE SURVEILLANCE ===
+const CAM_TAG_FR = 'dingodor-21';
+const CAM_TAG_BE = 'dingodor00e-21';
+
+function camLinkFR(asin) { return `https://www.amazon.fr/dp/${asin}?tag=${CAM_TAG_FR}`; }
+function camLinkBE(asin) { return `https://www.amazon.com.be/dp/${asin}?tag=${CAM_TAG_BE}`; }
+function camLinkSwitchBot(productPath) { return `https://eu.switch-bot.com/fr/products/${productPath}?sca_ref=2274537.x1K7OdVgTO&utm_source=uppromote&utm_medium=affiliate&utm_campaign=2274537`; }
+
+const CAM_STEPS = {
+  scope: {
+    question: "Tu veux équiper quelle zone ?",
+    options: [
+      { value: 'interieur', label: "Intérieur uniquement", sub: "Salon, chambre, une pièce à vivre" },
+      { value: 'exterieur', label: "Extérieur uniquement", sub: "Jardin, piscine, allée, façade, porte d'entrée, parking" },
+      { value: 'les_deux', label: "Intérieur ET extérieur", sub: "Système complet pour toute la propriété" }
+    ]
+  },
+  system_scale: {
+    question: "Combien de caméras au total, en comptant l'intérieur et l'extérieur ?",
+    options: [
+      { value: 'petit', label: "2 à 3 caméras", sub: "Une pièce intérieure et une ou deux zones extérieures, chaque caméra autonome dans l'appli" },
+      { value: 'grand', label: "4 caméras ou plus", sub: "Système complet avec enregistreur (NVR) et disque dur, plus simple à gérer à cette échelle" }
+    ]
+  },
+  zone_scope: {
+    question: "Cette prochaine caméra, c'est pour l'intérieur ou l'extérieur ?",
+    options: [
+      { value: 'interieur', label: "Intérieur", sub: "Salon, chambre, une pièce à vivre" },
+      { value: 'exterieur', label: "Extérieur", sub: "Jardin, piscine, allée, façade, porte d'entrée, parking" }
+    ]
+  },
+  add_zone: {
+    question: "Veux-tu ajouter une autre caméra ou zone à ce système ?",
+    options: [
+      { value: 'oui', label: "Oui", sub: "Configurer une caméra de plus (autre pièce, autre zone extérieure...)" },
+      { value: 'non', label: "Non, c'est tout", sub: "Passer aux réglages communs à tout le système" }
+    ]
+  },
+  kit_special_zone: {
+    question: "Une zone du système a-t-elle un besoin particulier, en plus des caméras standards fixes du kit ?",
+    options: [
+      { value: 'non', label: "Non", sub: "Les caméras fixes identiques du kit suffisent partout" },
+      { value: 'zoom', label: "Oui, une caméra zoom motorisée", sub: "Pour un grand terrain ou surveiller un portail éloigné" },
+      { value: 'couleur', label: "Oui, une caméra avec vision nocturne couleur", sub: "Pour mieux identifier une zone précise la nuit" },
+      { value: 'zoom_couleur', label: "Oui, les deux à la fois", sub: "Zoom motorisé ET vision nocturne couleur sur la même caméra" }
+    ]
+  },
+  usage_interieur: {
+    question: "Que veux-tu surveiller principalement à l'intérieur ?",
+    options: [
+      { value: 'salon', label: "Le salon / une pièce à vivre", sub: "Cambriolage, activité générale" },
+      { value: 'animaux', label: "Mes animaux domestiques", sub: "Les observer et leur parler à distance" }
+    ]
+  },
+  usage_exterieur: {
+    question: "Que veux-tu surveiller en priorité à l'extérieur ?",
+    options: [
+      { value: 'porte', label: "La porte d'entrée", sub: "Voir qui sonne, surveiller les colis" },
+      { value: 'jardin', label: "Le jardin", sub: "Intrusions, allées et venues" },
+      { value: 'piscine', label: "La piscine", sub: "Zone de baignade" },
+      { value: 'voiture', label: "Ma voiture / l'allée / le parking", sub: "Rayures, vols, vandalisme" },
+      { value: 'colis', label: "La zone de livraison", sub: "Voir arriver les livreurs de loin" },
+      { value: 'facade', label: "La façade / l'entrée générale", sub: "Vue d'ensemble de la propriété" }
+    ]
+  },
+  doorbell_power: {
+    question: "Tu préfères une sonnette sur batterie ou raccordée au secteur/câblage existant ?",
+    options: [
+      { value: 'batterie', label: "Sur batterie", sub: "Installation libre, sans fil, autonomie de plusieurs mois avant recharge" },
+      { value: 'secteur', label: "Raccordée au secteur ou au câblage existant", sub: "Alimentation continue, pas de recharge à gérer" }
+    ]
+  },
+  doorbell_chime: {
+    question: "Veux-tu un carillon en plus de la notification sur ton téléphone ?",
+    options: [
+      { value: 'non', label: "Non", sub: "La notification sur mon téléphone me suffit" },
+      { value: 'son', label: "Oui, un simple son", sub: "Une sonnerie dans la maison, sans écran" },
+      { value: 'ecran', label: "Oui, avec un écran qui affiche l'image", sub: "Un moniteur pour voir qui sonne sans sortir son téléphone" }
+    ]
+  },
+  doorbell_street: {
+    question: "Ta sonnette donne sur la rue avec du passage, ou sur une allée/un portail privé ?",
+    options: [
+      { value: 'rue', label: "Sur la rue, avec du passage", sub: "Piétons, voitures qui passent régulièrement" },
+      { value: 'prive', label: "Sur une allée ou un portail privé", sub: "Peu ou pas de passage extérieur à ta propriété" }
+    ]
+  },
+  power: {
+    question: "As-tu une prise électrique ou un câble réseau (Ethernet) à cet endroit précis ?",
+    options: [
+      { value: 'oui', label: "Oui", sub: "Une prise secteur ou une prise réseau est accessible" },
+      { value: 'non', label: "Non", sub: "L'endroit est isolé, sans électricité ni câble" }
+    ]
+  },
+  multi: {
+    question: "Combien de caméras veux-tu installer ?",
+    options: [
+      { value: 'une', label: "Une seule caméra" },
+      { value: 'plusieurs', label: "Plusieurs caméras", sub: "Système complet avec enregistreur pour toute une propriété" }
+    ]
+  },
+  motorized_indoor: {
+    question: "Tu préfères une caméra fixe ou motorisée (qui pivote et suit le mouvement) ?",
+    options: [
+      { value: 'motorisee', label: "Motorisée", sub: "Pivote à 360°, suit les mouvements, couvre toute la pièce automatiquement" },
+      { value: 'fixe', label: "Fixe", sub: "Grand angle fixe, généralement moins cher et plus discrète" }
+    ]
+  },
+  motorized_poe: {
+    question: "Tu préfères une caméra fixe ou motorisée (qui pivote et suit le mouvement) ?",
+    options: [
+      { value: 'motorisee', label: "Motorisée", sub: "Pivote à 360°, suit les mouvements, idéale pour couvrir une grande zone ou une longue distance" },
+      { value: 'fixe', label: "Fixe", sub: "Champ de vision fixe, généralement moins cher et plus discret" }
+    ]
+  },
+  motorized_solar: {
+    question: "Tu préfères une caméra fixe ou motorisée (qui pivote et suit le mouvement) ?",
+    options: [
+      { value: 'motorisee', label: "Motorisée", sub: "Pivote à 360°, suit les mouvements automatiquement" },
+      { value: 'fixe', label: "Fixe", sub: "Champ de vision fixe, généralement un peu moins cher" }
+    ]
+  },
+  wifi: {
+    question: "Le WiFi capte-t-il correctement à cet endroit ?",
+    options: [
+      { value: 'oui', label: "Oui", sub: "Le signal WiFi de la maison arrive jusque-là" },
+      { value: 'non', label: "Non", sub: "Aucun réseau : terrain isolé, chalet, ferme, chantier" }
+    ]
+  },
+  budget: {
+    question: "Quel budget pour cette caméra ?",
+    options: [
+      { value: 'eco', label: "Petit budget", sub: "Le modèle le plus simple et le plus abordable pour ce besoin" },
+      { value: 'moyen', label: "Budget moyen", sub: "Un bon compromis entre prix et fonctionnalités" },
+      { value: 'peu_importe', label: "Pas de budget particulier", sub: "La sécurité n'a pas de prix, montre-moi le meilleur choix" }
+    ]
+  },
+  nightvision: {
+    question: "Vision nocturne : noir et blanc (infrarouge classique) ou en couleur (avec projecteur) ?",
+    options: [
+      { value: 'couleur', label: "En couleur", sub: "Projecteur LED intégré, meilleure identification (visage, plaque, vêtements), mais signale ta présence et consomme plus" },
+      { value: 'ir', label: "Noir et blanc (infrarouge)", sub: "Plus discret, portée souvent plus grande, fonctionnement classique" },
+      { value: 'peu_importe', label: "Peu importe", sub: "Montre-moi le meilleur choix disponible" }
+    ]
+  },
+  tracking_detect: {
+    question: "Veux-tu que la caméra suive automatiquement une personne qui se déplace ?",
+    options: [
+      { value: 'oui', label: "Oui", sub: "La caméra pivote toute seule pour garder la personne dans le cadre, pas juste pivoter manuellement depuis l'appli" },
+      { value: 'non', label: "Non", sub: "Pivoter manuellement depuis l'appli me suffit" },
+      { value: 'peu_importe', label: "Peu importe" }
+    ]
+  },
+  animal_detect: {
+    question: "Veux-tu recevoir une notification spécifique quand un animal est détecté ?",
+    options: [
+      { value: 'oui', label: "Oui", sub: "Pour surveiller ton propre animal, ou détecter des nuisibles dans un entrepôt, une ferme..." },
+      { value: 'non', label: "Non" },
+      { value: 'peu_importe', label: "Peu importe" }
+    ]
+  },
+  package_detect: {
+    question: "Veux-tu une détection spécifique des colis livrés ?",
+    options: [
+      { value: 'oui', label: "Oui" },
+      { value: 'non', label: "Non, la détection de personne me suffit" }
+    ]
+  },
+  siren_detect: {
+    question: "Veux-tu une alarme sonore/sirène intégrée à la caméra ?",
+    options: [
+      { value: 'oui', label: "Oui", sub: "Pour dissuader ou faire fuir un intrus à distance" },
+      { value: 'non', label: "Non" },
+      { value: 'peu_importe', label: "Peu importe" }
+    ]
+  },
+  intercom_detect: {
+    question: "Veux-tu pouvoir parler et écouter à travers la caméra, micro et haut-parleur ?",
+    options: [
+      { value: 'oui', label: "Oui", sub: "Pour parler à un livreur, un proche, ou un animal à distance" },
+      { value: 'non', label: "Non" },
+      { value: 'peu_importe', label: "Peu importe" }
+    ]
+  },
+  color_pref: {
+    question: "Une couleur de boîtier en particulier ?",
+    options: [
+      { value: 'blanc', label: "Blanc" },
+      { value: 'noir', label: "Noir / gris foncé" },
+      { value: 'peu_importe', label: "Peu importe" }
+    ]
+  },
+  retention: {
+    question: "Combien de temps veux-tu accéder à l'historique d'enregistrement ?",
+    options: [
+      { value: 'court', label: "Une semaine ou moins", sub: "Tu vérifies vite après un événement (colis volé le jour même, par exemple)" },
+      { value: 'moyen', label: "Plusieurs semaines à quelques mois", sub: "Le bon compromis pour la plupart des gens : le temps de remarquer un souci après une absence ou un dégât découvert plus tard" },
+      { value: 'long', label: "Le plus longtemps possible", sub: "Archivage, litige ou assurance : tu veux tout garder" },
+      { value: 'moyen', label: "Je ne sais pas trop", sub: "Pas de souci : prends cette option, c'est le choix le plus sûr et le plus utilisé pour la surveillance à la maison" }
+    ]
+  },
+  storage: {
+    question: "Quel type de stockage préfères-tu pour les vidéos ?",
+    options: [
+      { value: 'sd', label: "Carte microSD", sub: "Stockage local, pas d'abonnement, mais coût à l'achat de la carte" },
+      { value: 'cloud', label: "Cloud (abonnement)", sub: "Pas de carte à acheter, coût récurrent chaque mois, mais débloque souvent des détections IA plus poussées (visages, description, fumée...)" },
+      { value: 'nvr_nas', label: "NVR ou NAS existant", sub: "Tu as déjà (ou veux) un enregistreur réseau ou un NAS type Synology/QNAP" },
+      { value: 'peu_importe', label: "Peu importe", sub: "Montre-moi les options" }
+    ]
+  },
+  ecosystem: {
+    question: "As-tu déjà des objets connectés ou une caméra, et veux-tu tout centraliser dans une seule appli ?",
+    options: [
+      { value: 'nouveau', label: "Non, c'est mon premier achat connecté", sub: "Peu importe la marque ou l'appli" },
+      { value: 'une_app', label: "J'ai déjà des objets connectés, je veux tout dans une seule appli", sub: "Je préfère rester dans le même écosystème" },
+      { value: 'peu_importe_app', label: "J'ai déjà des objets connectés, plusieurs applis ne me dérangent pas", sub: "" },
+      { value: 'home_assistant', label: "J'utilise (ou je veux utiliser) Home Assistant ou un hub tiers", sub: "Je veux un flux exploitable en local (RTSP/ONVIF), pas juste l'appli du fabricant" }
+    ]
+  },
+  existing_brand: {
+    question: "Quelle marque utilises-tu déjà principalement ?",
+    options: [
+      { value: 'Reolink', label: "Reolink" },
+      { value: 'TP-Link Tapo', label: "TP-Link / Tapo" },
+      { value: 'EZVIZ', label: "EZVIZ" },
+      { value: 'SwitchBot', label: "SwitchBot" },
+      { value: 'Annke', label: "Annke" },
+      { value: 'Imou', label: "Imou" },
+      { value: 'Google Nest', label: "Google Nest" },
+      { value: 'Somfy', label: "Somfy" },
+      { value: 'Aqara', label: "Aqara" },
+      { value: 'Tuya/SmartLife', label: "Tuya / Smart Life", sub: "Caméra générique compatible Tuya (souvent trouvée sur AliExpress)" },
+      { value: 'autre', label: "Une autre marque", sub: "Xiaomi, Sannce, dis-moi ton modèle et je vérifie s'il correspond" }
+    ]
+  }
+};
+
+// Chaque profil : specs vérifiées, vision nocturne réelle, détection animaux/colis, carte microSD conseillée, compatibilité Home Assistant
+const CAM_PROFILES = {
+  tapo_budget: {
+    brand: "TP-Link Tapo", badge: "Intérieur · WiFi · Petit budget",
+    title: "TP-Link Tapo C200",
+    desc: "Le modèle d'entrée de gamme le plus vendu pour surveiller une pièce : simple, fiable, très abordable.",
+    specs: ["Résolution 1080p, rotation 360°/114°", "Vision nocturne infrarouge (noir et blanc) jusqu'à 9 à 12m", "Détection de mouvement et de personnes", "Stockage carte microSD jusqu'à 512 Go", "Appli Tapo, compatible Alexa/Google Assistant"],
+    asin: 'B07XR2NWZC', nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: '512 Go', category: 'interieur', haCompatible: true, hasSiren: false, hasIntercom: true,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  },
+  tapo_premium: {
+    brand: "TP-Link Tapo", badge: "Intérieur · WiFi",
+    title: "TP-Link Tapo C210",
+    desc: "Caméra WiFi intérieure motorisée à 360°, meilleure image et meilleur suivi que le modèle d'entrée de gamme.",
+    specs: ["Résolution 2304x1296 (3MP), vision nocturne infrarouge jusqu'à 9 à 10m", "Rotation 360° horizontale motorisée, suivi de mouvement", "Détection de personnes et pleurs de bébé", "Stockage carte microSD jusqu'à 512 Go, pas d'abonnement obligatoire", "Appli Tapo, compatible Alexa/Google Assistant"],
+    asin: 'B095CLQ1PT', nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: '512 Go', category: 'interieur', haCompatible: true, hasSiren: false, hasIntercom: true, hasAutoTracking: true,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  },
+  switchbot_budget: {
+    brand: "SwitchBot", badge: "Intérieur · WiFi · Petit budget · Alternative",
+    title: "SwitchBot Caméra Intérieure",
+    desc: "Alternative à la Tapo C200 : caméra WiFi motorisée et abordable, avec détection IA de forme humaine et suivi automatique à 360°.",
+    specs: ["Résolution 1080p, détection de forme humaine par IA, suivi automatique 360°", "Vision nocturne infrarouge jusqu'à 10m", "Audio bidirectionnel", "Stockage carte microSD ou cloud selon abonnement", "Appli SwitchBot, compatible Alexa/Google Home et Tuya"],
+    asin: 'B095RK71N7', nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: null, category: 'interieur', haCompatible: false, hasSiren: false, hasIntercom: true,
+    sdAsin: null
+  },
+  switchbot_premium: {
+    brand: "SwitchBot", badge: "Intérieur · WiFi · Alternative",
+    title: "SwitchBot Pan/Tilt Cam (3MP)",
+    desc: "Alternative à la Tapo C210 : image 2304x1296 (3MP), vision nocturne EN COULEUR, rotation 360°/115° motorisée, mode confidentialité physique (l'objectif se cache).",
+    specs: ["Résolution 2304x1296 (3MP), vision nocturne EN COULEUR", "Rotation 360°/115° motorisée, détection de forme humaine, suivi de mouvement", "Mode confidentialité physique, l'objectif se rétracte", "Audio bidirectionnel intégré", "Stockage carte microSD jusqu'à 256 Go ou cloud", "Appli SwitchBot, compatible Alexa/Google Home et Tuya"],
+    asin: 'B0CR3WTRD4', nightVision: 'color', petDetection: false, packageDetection: false, maxSD: '256 Go', category: 'interieur', haCompatible: false, hasSiren: false, hasIntercom: true, hasAutoTracking: true,
+    sdAsin: 'B084CJJRBW', sdLabel: "SanDisk Max Endurance 256 Go"
+  },
+  switchbot_outdoor: {
+    brand: "SwitchBot", badge: "Sans fil · WiFi + Batterie + Solaire · Alternative · Fixe",
+    title: "SwitchBot Ensemble Caméra Spotlight Extérieure + Panneau Solaire",
+    desc: "Alternative fixe à l'Argus 3 Pro et à l'EZVIZ BC1C : caméra sur batterie avec deux projecteurs LED pour filmer en couleur de nuit, vendue ici directement avec son panneau solaire inclus dans le pack.",
+    specs: ["Résolution 2304x1296 (3MP), deux projecteurs LED pour la vision nocturne EN COULEUR", "Détection IA humain/animal, réduit les fausses alertes", "Batterie rechargeable + panneau solaire INCLUS dans ce pack (autonomie continue)", "Alarme anti-arrachement 100dB si la caméra est retirée sans autorisation", "Étanche IP65, audio bidirectionnel, stockage carte microSD ou cloud", "Appli SwitchBot, compatible Alexa/Google Home"],
+    store: 'switchbot', storePath: 'combo-camera-projecteur-exterieur',
+    nightVision: 'color', petDetection: false, packageDetection: false, maxSD: '256 Go', category: 'exterieur', haCompatible: false, hasSiren: true, hasIntercom: true,
+    sdAsin: 'B084CJJRBW', sdLabel: "SanDisk Max Endurance 256 Go"
+  },
+  tapo_fixed: {
+    brand: "TP-Link Tapo", badge: "Intérieur · WiFi · Fixe",
+    title: "TP-Link Tapo C110",
+    desc: "Caméra fixe, objectif non motorisé, simple et discrète, avec un grand angle de vue de 105° qui couvre déjà une bonne partie de la pièce sans avoir besoin de pivoter.",
+    specs: ["Résolution 2304x1296 (3MP), objectif fixe grand angle 105°", "Vision nocturne infrarouge jusqu'à 9m", "Détection de mouvement et de personnes", "Stockage carte microSD jusqu'à 256 Go, alarme sonore et lumineuse dissuasive", "Appli Tapo, compatible Alexa/Google Assistant, ONVIF/RTSP pris en charge"],
+    asin: 'B094DM9LZQ', nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: '256 Go', category: 'interieur', haCompatible: true, hasSiren: true, hasIntercom: true,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  },
+  doorbell: {
+    brand: "Reolink", badge: "Porte d'entrée · Raccordée au secteur",
+    title: "Reolink Video Doorbell WiFi",
+    desc: "Sonnette connectée avec caméra, raccordée au secteur ou au câblage existant, avec un carillon filaire inclus à brancher sur une prise intérieure. Alimentation continue, pas de recharge à gérer.",
+    specs: ["Détection de personnes/véhicules/colis, audio bidirectionnel", "Vision nocturne infrarouge, étanche pour usage extérieur", "Carillon filaire inclus, à brancher sur une prise intérieure", "Stockage carte microSD jusqu'à 256 Go, pas d'abonnement cloud obligatoire", "Appli Reolink"],
+    asin: 'B0B4KBMDD3', nightVision: 'ir', petDetection: false, packageDetection: true, maxSD: '256 Go', category: 'exterieur', haCompatible: true, hasSiren: false, hasIntercom: true,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  },
+  doorbell_battery: {
+    brand: "Reolink", badge: "Porte d'entrée · Sur batterie",
+    title: "Reolink Video Doorbell (Battery)",
+    desc: "Sonnette connectée entièrement sans fil, batterie rechargeable d'environ 5 à 6 mois d'autonomie. Compatible avec un carillon mécanique/numérique existant si tu en as un, ou avec le Reolink Chime V2 vendu séparément pour une sonnerie sans fil.",
+    specs: ["Détection de personnes/véhicules/colis, audio bidirectionnel", "Vision nocturne infrarouge, étanche pour usage extérieur", "Batterie rechargeable non amovible, environ 5 à 6 mois d'autonomie", "Carillon mécanique/numérique existant compatible par câblage, ou Reolink Chime V2 en option (vendu séparément)", "Stockage carte microSD jusqu'à 256 Go, pas d'abonnement cloud obligatoire", "Appli Reolink"],
+    asin: 'B0CYGVPLLT', nightVision: 'ir', petDetection: false, packageDetection: true, maxSD: '256 Go', category: 'exterieur', haCompatible: true, needsHomeHub: true, hasSiren: false, hasIntercom: true,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  },
+  poe_budget: {
+    brand: "Reolink", badge: "Extérieur filaire · PoE · Petit budget",
+    title: "Reolink RLC-510A (PoE)",
+    desc: "Caméra filaire fixe extérieure simple et fiable en 5MP, un seul câble réseau pour l'alimentation et la vidéo, sans WiFi à configurer.",
+    specs: ["5MP, vision nocturne infrarouge jusqu'à 30m", "Détection IA locale personne/véhicule/animal, ignore les mouvements non pertinents", "Étanche IP67, time-lapse", "Stockage carte microSD jusqu'à 256 Go ou NVR/FTP", "Appli Reolink, flux RTSP/ONVIF exploitable"],
+    asin: 'B08F71V8SH', nightVision: 'ir', petDetection: true, packageDetection: false, maxSD: '256 Go', category: 'exterieur', haCompatible: true, hasSiren: false, hasIntercom: false,
+    sdAsin: 'B084CJJRBW', sdLabel: "SanDisk Max Endurance 256 Go"
+  },
+  poe_premium: {
+    brand: "Reolink", badge: "Extérieur filaire · PoE",
+    title: "Reolink RLC-810A (PoE)",
+    desc: "Caméra filaire fixe extérieure en 4K, meilleure image et meilleure détection que le modèle d'entrée de gamme.",
+    specs: ["4K, détection IA locale personne/véhicule/animal", "Vision nocturne infrarouge jusqu'à 30m, étanche IP67", "Stockage carte microSD jusqu'à 512 Go, ou NVR/FTP", "Alimentation et données par câble Ethernet (PoE)", "Appli Reolink, flux RTSP/ONVIF exploitable"],
+    asin: 'B08F7C37NZ', nightVision: 'ir', petDetection: true, packageDetection: false, maxSD: '512 Go', category: 'exterieur', haCompatible: true, hasSiren: false, hasIntercom: false,
+    sdAsin: 'B084CJJRBW', sdLabel: "SanDisk Max Endurance 256 Go"
+  },
+  poe_premium_color: {
+    brand: "Reolink", badge: "Extérieur filaire · Vision nocturne couleur",
+    title: "Reolink RLC-81PA (PoE, projecteur couleur)",
+    desc: "Même usage que le modèle filaire standard, mais avec un projecteur LED intégré qui bascule la vision nocturne en couleur dès qu'un mouvement est détecté.",
+    specs: ["4K, projecteur LED avec vision nocturne EN COULEUR et mode nuit intelligent", "Détection IA locale personne/véhicule/animal, sirène dissuasive intégrée", "Panoramique manuel 180°, étanche IP67", "Stockage carte microSD jusqu'à 256 Go, non incluse, ou NVR", "Appli Reolink, flux RTSP/ONVIF exploitable"],
+    asin: 'B0C3CV6VZV', nightVision: 'color', petDetection: true, packageDetection: false, maxSD: '256 Go', category: 'exterieur', haCompatible: true, hasSiren: true, hasIntercom: false,
+    sdAsin: 'B084CJJRBW', sdLabel: "SanDisk Max Endurance 256 Go"
+  },
+  imou_premium: {
+    brand: "Imou", badge: "Extérieur · WiFi + secteur · Alternative Home Assistant",
+    title: "Imou Caméra Extérieure WiFi (3MP)",
+    desc: "Alternative à la Reolink RLC-810A, généralement moins chère : fonctionne en WiFi, pas de câble réseau à tirer, mais a quand même besoin d'une prise secteur à proximité. Compatibilité ONVIF/RTSP confirmée par le fabricant.",
+    specs: ["Résolution 2304x1296 (3MP), vision nocturne EN COULEUR jusqu'à 30m", "Détection et suivi intelligent personne/véhicule", "WiFi 2,4/5GHz, alimentation secteur 12V, pas de PoE ni de batterie", "Compatible ONVIF et RTSP confirmé par Imou (NVR/NAS/Home Assistant)", "Étanche IP66, audio bidirectionnel, appli Imou Life"],
+    asin: 'B08BXZY1D2', nightVision: 'color', petDetection: false, packageDetection: false, maxSD: null, category: 'exterieur', haCompatible: true, hasSiren: false, hasIntercom: true,
+    sdAsin: null
+  },
+  zoom: {
+    brand: "Reolink", badge: "Extérieur filaire · Zoom 16X · Motorisée",
+    title: "Reolink RLC-823A 16X (PTZ)",
+    desc: "Caméra motorisée avec zoom optique 16X, parfaite installée en hauteur pour couvrir un grand terrain ou surveiller un portail éloigné avec des détails nets.",
+    specs: ["Zoom optique 16X, panoramique 360° et inclinaison 90°, motorisée avec suivi auto", "Suivi automatique des personnes/véhicules/animaux", "Vision nocturne infrarouge jusqu'à 80m", "Alimentation et données par câble Ethernet (PoE)", "Appli Reolink, flux RTSP/ONVIF exploitable"],
+    asin: 'B0BL3HYR3L', nightVision: 'ir', petDetection: true, packageDetection: false, maxSD: '256 Go', category: 'exterieur', longRange: true, haCompatible: true, hasSiren: false, hasIntercom: false, hasAutoTracking: true,
+    sdAsin: 'B084CJJRBW', sdLabel: "SanDisk Max Endurance 256 Go"
+  },
+  zoom_color: {
+    brand: "Reolink", badge: "Extérieur filaire · Zoom 5X · Motorisée · Vision nocturne couleur",
+    title: "Reolink RLC-811A (PoE, zoom couleur)",
+    desc: "Bon compromis pour voir loin et en couleur la nuit : zoom optique 5X, moins puissant que la version 16X noir et blanc, avec projecteur intégré.",
+    specs: ["Zoom optique 5X, vision nocturne EN COULEUR grâce au projecteur, motorisée", "Détection personne/véhicule, fausses alertes très réduites", "4K, alimentation et données par câble Ethernet (PoE)", "Stockage carte microSD jusqu'à 512 Go ou NVR/FTP", "Appli Reolink, flux RTSP/ONVIF exploitable"],
+    asin: 'B0982WVMVC', nightVision: 'color', petDetection: false, packageDetection: false, maxSD: '512 Go', category: 'exterieur', longRange: true, zoomTradeoff: true, haCompatible: true, hasSiren: false, hasIntercom: false, hasAutoTracking: false,
+    sdAsin: 'B084CJJRBW', sdLabel: "SanDisk Max Endurance 256 Go"
+  },
+  kit: {
+    brand: "Reolink", badge: "Système complet · Kit PoE + NVR · Fixe",
+    title: "Reolink RLK8-800B4",
+    desc: "Kit complet pour sécuriser toute une propriété : 4 caméras fixes filaires PoE 8MP reliées à un enregistreur NVR avec disque dur 2 To pour un enregistrement continu 24 heures sur 24.",
+    specs: ["4 caméras fixes 4K/8MP et NVR 8 canaux", "Disque dur 2 To intégré, extensible jusqu'à 16 To", "Enregistrement continu 24h/24, détection personne/véhicule", "Câblage PoE, installation type vidéosurveillance pro", "Appli Reolink, flux RTSP/ONVIF exploitable"],
+    asin: 'B07LBFJDQW', nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: null, category: 'exterieur', builtInStorage: true, haCompatible: true, hasSiren: false, hasIntercom: false,
+    sdAsin: null
+  },
+  kit_annke: {
+    brand: "Annke", badge: "Système complet · Kit PoE + NVR · Alternative",
+    title: "Annke Kit 4K/8MP (8CH NVR + 4 caméras)",
+    desc: "Alternative au kit Reolink : configuration très proche, 4 caméras fixes 8MP, NVR 8 canaux, disque dur 2 To, généralement positionnée un peu moins cher pour des caractéristiques similaires.",
+    specs: ["4 caméras fixes 4K/8MP et NVR 8 canaux, disque dur 2 To inclus", "Détection IA personne/véhicule", "Étanche IP67, vision nocturne infrarouge jusqu'à 30m", "Câblage PoE, installation type vidéosurveillance pro", "Appli Annke Vision, écosystème séparé de Reolink, RTSP/ONVIF pris en charge sur la gamme"],
+    asin: 'B07NN86X33', nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: null, category: 'exterieur', builtInStorage: true, haCompatible: true, hasSiren: false, hasIntercom: false,
+    sdAsin: null
+  },
+  solar_wifi: {
+    brand: "Reolink", badge: "100% sans fil · WiFi + Solaire · Fixe",
+    title: "Reolink Argus 3 Pro + Panneau solaire",
+    desc: "Caméra fixe entièrement sans fil sur batterie, rechargée en continu par un panneau solaire fourni : aucun câble, installation libre n'importe où avec du WiFi.",
+    specs: ["Connexion WiFi 2,4/5GHz, aucun câblage requis", "Batterie et panneau solaire fournis pour une autonomie continue", "Détection IA locale personne/véhicule/animal, vision nocturne EN COULEUR", "Stockage carte microSD jusqu'à 512 Go ou cloud au choix", "Appli Reolink"],
+    asin: 'B08NDM75ZY', nightVision: 'color', petDetection: true, packageDetection: false, maxSD: '512 Go', category: 'exterieur', haCompatible: true, needsHomeHub: true, hasSiren: false, hasIntercom: true,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  },
+  solar_wifi_pt: {
+    brand: "Reolink", badge: "100% sans fil · WiFi + Solaire · Motorisée",
+    title: "Reolink Argus PT Ultra + Panneau solaire",
+    desc: "Version motorisée de l'Argus 3 Pro : elle pivote à 360° et suit automatiquement les mouvements, en plus de pouvoir basculer entre vision nocturne couleur et infrarouge.",
+    specs: ["Rotation 360° et inclinaison motorisées, suivi automatique des mouvements", "Batterie et panneau solaire fournis, WiFi 2,4/5GHz (WiFi 6)", "Vision nocturne EN COULEUR (projecteur) ou infrarouge au choix", "Détection IA locale personne/véhicule/animal, stockage carte microSD jusqu'à 512 Go ou cloud", "Appli Reolink"],
+    asin: 'B0BZD4P25M', nightVision: 'color', petDetection: true, packageDetection: false, maxSD: '512 Go', category: 'exterieur', haCompatible: true, needsHomeHub: true, hasSiren: false, hasIntercom: true, hasAutoTracking: true,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  },
+  solar_wifi_ezviz: {
+    brand: "EZVIZ", badge: "Sans fil · WiFi + Batterie longue durée · Alternative · Fixe",
+    title: "EZVIZ BC1C (WiFi, batterie 7800mAh)",
+    desc: "Alternative fixe à l'Argus 3 Pro : caméra WiFi sur batterie 7800mAh annoncée pour environ 210 jours d'autonomie. Vendue sans panneau solaire dans cette référence précise, un panneau solaire EZVIZ existe en accessoire séparé.",
+    specs: ["Connexion WiFi 2,4GHz, batterie rechargeable 7800mAh, environ 210 jours annoncés", "Détection de forme humaine (PIR + IA), vision nocturne EN COULEUR", "Étanche IP66, sirène et flash dissuasifs, audio bidirectionnel", "Stockage local eMMC intégré 32 Go et cloud EZVIZ en option", "Appli EZVIZ, écosystème séparé de Reolink"],
+    asin: 'B095HJCQJS', nightVision: 'color', petDetection: false, packageDetection: false, maxSD: null, category: 'exterieur', haCompatible: false, hasSiren: true, hasIntercom: true,
+    sdAsin: null
+  },
+  ezviz_indoor: {
+    brand: "EZVIZ", badge: "Intérieur · WiFi · Alternative",
+    title: "EZVIZ C6N",
+    desc: "Alternative motorisée à la Tapo C210 : rotation 360° horizontale et 55° verticale, vision nocturne intelligente qui ajuste automatiquement l'intensité infrarouge pour éviter la surexposition.",
+    specs: ["1080p, rotation 360° horizontale et 55° verticale, motorisée", "Vision nocturne Smart IR (ajustement automatique), détection de mouvement et suivi", "Audio bidirectionnel intégré", "Stockage carte microSD jusqu'à 256 Go, ou cloud EZVIZ en option", "Appli EZVIZ, compatible Alexa"],
+    asin: 'B07W4FMSD9', nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: '256 Go', category: 'interieur', haCompatible: false, hasSiren: false, hasIntercom: true, hasAutoTracking: true,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  },
+  ezviz_zoom: {
+    brand: "EZVIZ", badge: "Extérieur WiFi · Motorisée · Alternative",
+    title: "EZVIZ C8c (5MP)",
+    desc: "Alternative motorisée à la Reolink RLC-823A : rotation 360° avec suivi automatique et zoom qui se déclenche dès qu'un mouvement humain est détecté, plus rapide qu'un simple mouvement de caméra fixe.",
+    specs: ["5MP, rotation 360° horizontale, suivi automatique et zoom lors d'une détection", "Détection IA personne/véhicule, jusqu'à 12 positions préréglées mémorisables", "Vision nocturne EN COULEUR, sirène et projecteurs clignotants (défense active)", "WiFi 2,4/5GHz, portée étendue jusqu'à 220m, option filaire possible", "Stockage carte microSD jusqu'à 512 Go, ou cloud EZVIZ CloudPlay en option"],
+    asin: 'B0CJTWZTMT', nightVision: 'color', petDetection: false, packageDetection: false, maxSD: '512 Go', category: 'exterieur', haCompatible: false, hasSiren: true, hasIntercom: true, hasAutoTracking: true,
+    sdAsin: 'B084CJJRBW', sdLabel: "SanDisk Max Endurance 256 Go"
+  },
+  solar_4g: {
+    brand: "Reolink", badge: "100% autonome · 4G + Solaire · Fixe",
+    title: "Reolink Go Plus + Panneau solaire",
+    desc: "Caméra cellulaire fixe fonctionnant avec une carte SIM 4G/LTE : ni WiFi, ni électricité nécessaires. Idéale pour un terrain isolé, un chalet, une ferme ou un chantier.",
+    specs: ["Connexion 4G/LTE via carte SIM non incluse, abonnement data requis", "Batterie et panneau solaire fournis pour un fonctionnement continu", "Détection personne/véhicule, vision nocturne infrarouge", "Stockage carte microSD jusqu'à 128 Go", "Appli Reolink"],
+    asin: 'B09DPQBCKS', nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: '128 Go', category: 'exterieur', haCompatible: false, hasSiren: false, hasIntercom: false,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  },
+  solar_4g_pt: {
+    brand: "Reolink", badge: "100% autonome · 4G + Solaire · Motorisée",
+    title: "Reolink TrackMix LTE + Panneau solaire",
+    desc: "Version motorisée et à double objectif du Go Plus : un grand angle et un téléobjectif combinés, avec zoom hybride 6X et suivi automatique, fonctionnant avec une carte SIM 4G/LTE.",
+    specs: ["Double objectif (grand angle + téléobjectif), zoom hybride 6X, motorisée avec suivi automatique", "Connexion 4G/LTE via carte SIM non incluse, abonnement data requis", "Batterie et panneau solaire fournis, vision nocturne EN COULEUR (projecteurs)", "Détection IA personne/véhicule/animal, audio bidirectionnel", "Appli Reolink"],
+    asin: 'B0BWRGYXMK', nightVision: 'color', petDetection: true, packageDetection: false, maxSD: '256 Go', category: 'exterieur', longRange: true, haCompatible: false, hasSiren: false, hasIntercom: true, hasAutoTracking: true,
+    sdAsin: 'B084CJJRBW', sdLabel: "SanDisk Max Endurance 256 Go"
+  },
+  kit_imou: {
+    brand: "Imou", badge: "Système complet · Kit WiFi + NVR · Alternative",
+    title: "Imou Kit WiFi (4CH NVR + 4 caméras)",
+    desc: "Alternative aux kits Reolink/Annke : les caméras communiquent en WiFi avec l'enregistreur, pas de câble PoE à tirer entre chaque caméra et le NVR (juste l'alimentation électrique de chaque caméra).",
+    specs: ["4 caméras extérieures 1080p et NVR 4 canaux, disque dur 1 To inclus", "Communication WiFi entre les caméras et le NVR, pas de câble PoE à tirer", "Étanche IP67, détection de mouvement", "Appli Imou Life, écosystème séparé de Reolink/Annke"],
+    asin: 'B08N4MP12H', nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: null, category: 'exterieur', builtInStorage: true, haCompatible: false, hasSiren: false, hasIntercom: false,
+    sdAsin: null
+  },
+  nest_cam_battery: {
+    brand: "Google Nest", badge: "Intérieur/Extérieur · WiFi + Batterie · Alternative",
+    title: "Google Nest Cam (Batterie)",
+    desc: "Caméra polyvalente utilisable à l'intérieur comme à l'extérieur, sur batterie rechargeable, pensée pour l'écosystème Google Home.",
+    specs: ["1080p, détection IA personne/animal/véhicule", "Résiste aux intempéries, utilisable en intérieur ou en extérieur", "3 heures d'historique gratuit, au-delà nécessite un abonnement Nest Aware, cloud uniquement, pas de carte microSD", "Compatible Google Home, Google Assistant, affichage sur écrans Alexa", "Pas de panneau solaire ni de version motorisée vérifiée"],
+    asin: 'B09DVRMCBL', nightVision: 'ir', petDetection: true, packageDetection: false, maxSD: null, category: 'exterieur', haCompatible: false, hasSiren: false, hasIntercom: true,
+    sdAsin: null
+  },
+  somfy_outdoor: {
+    brand: "Somfy", badge: "Extérieur · WiFi + secteur · Alternative",
+    title: "Somfy Outdoor Camera",
+    desc: "Caméra extérieure grand angle avec sirène intégrée à 110dB, à brancher sur une prise extérieure ou à raccorder à un luminaire existant pour l'allumer automatiquement en cas de détection.",
+    specs: ["1080p, grand angle 130°, vision nocturne infrarouge", "Détection de mouvement avancée (SomfyVision), sirène 110dB déclenchable à distance", "Alimentation secteur, ou raccordement à un luminaire existant", "7 jours d'historique cloud gratuits (Somfy Protect), pas de carte microSD", "Compatible TaHoma, Alexa, Google Home, IFTTT"],
+    asin: 'B07J2WD6KX', nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: null, category: 'exterieur', haCompatible: false, hasSiren: true, hasIntercom: false,
+    sdAsin: null
+  },
+  aqara_indoor_fixed: {
+    brand: "Aqara", badge: "Intérieur · WiFi · Fixe · Alternative",
+    title: "Aqara Camera Hub G2H Pro",
+    desc: "Caméra fixe grand angle 146°, qui fait aussi office de hub Zigbee pour piloter d'autres appareils Aqara. Pensée avant tout pour Apple HomeKit Secure Video.",
+    specs: ["1080p, grand angle fixe 146°, reconnaissance de visages et de colis", "Vision nocturne infrarouge, audio bidirectionnel, sirène intégrée", "Fait aussi office de hub Zigbee pour d'autres appareils Aqara", "Stockage cloud chiffré inclus gratuitement, ou carte microSD selon config", "Compatible HomeKit Secure Video, Alexa, Google Assistant, IFTTT"],
+    asin: 'B09N6KDX5K', nightVision: 'ir', petDetection: false, packageDetection: true, maxSD: null, category: 'interieur', haCompatible: false, hasSiren: true, hasIntercom: true,
+    sdAsin: null
+  },
+  aqara_indoor_motorized: {
+    brand: "Aqara", badge: "Intérieur · WiFi · Alternative",
+    title: "Aqara Camera Hub G3",
+    desc: "Caméra motorisée 2304x1296 (3MP) avec rotation 340°, reconnaissance faciale et de gestes, qui fait aussi office de hub Zigbee. Pensée avant tout pour Apple HomeKit Secure Video.",
+    specs: ["Résolution 2304x1296 (3MP), rotation Pan/Tilt 340°, reconnaissance de visages et de gestes", "Vision nocturne infrarouge, télécommande infrarouge intégrée pour la TV/clim", "Fait aussi office de hub Zigbee pour d'autres appareils Aqara", "Stockage cloud chiffré inclus gratuitement, ou carte microSD selon config", "Compatible HomeKit Secure Video, Alexa, Google Assistant, IFTTT"],
+    asin: 'B09J2HKS79', nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: null, category: 'interieur', haCompatible: false, hasSiren: false, hasIntercom: false, hasAutoTracking: false,
+    sdAsin: null
+  },
+  aqara_outdoor_poe: {
+    brand: "Aqara", badge: "Extérieur filaire · PoE · Alternative",
+    title: "Aqara Camera Hub G5 Pro (PoE)",
+    desc: "Caméra extérieure filaire avec vision nocturne EN COULEUR réelle, détection IA visages/véhicules/animaux, et un vrai flux RTSP local en plus de HomeKit Secure Video : rare chez une caméra orientée Apple.",
+    specs: ["4MP, vision nocturne EN COULEUR réelle avec projecteur, IP65", "Détection IA visages/véhicules/personnes/animaux, hub Zigbee et Thread intégré", "Stockage eMMC chiffré intégré, NAS local, ou cloud Aqara/Apple", "Flux RTSP local disponible en plus de HomeKit Secure Video (NAS, Frigate, Blue Iris...)", "Alimentation et données par câble Ethernet (PoE)"],
+    asin: 'B0DPX69RWZ', nightVision: 'color', petDetection: true, packageDetection: false, maxSD: null, category: 'exterieur', haCompatible: true, hasSiren: false, hasIntercom: false,
+    sdAsin: null
+  },
+  somfy_indoor: {
+    brand: "Somfy", badge: "Intérieur · WiFi · Alternative",
+    title: "Somfy Indoor Camera",
+    desc: "Caméra fixe grand angle avec un volet mécanique motorisé unique qui couvre physiquement l'objectif quand tu es chez toi, pour une confidentialité totale, pas juste logicielle.",
+    specs: ["1080p, grand angle fixe 130°, zoom numérique 8x", "Volet mécanique motorisé qui couvre l'objectif automatiquement en mode présent", "Détection de mouvement compatible avec les animaux, zones à exclure paramétrables", "7 jours d'historique cloud gratuits (Somfy Protect), pas de carte microSD", "Compatible TaHoma, Alexa, Google Home, s'intègre aussi aux systèmes d'alarme Somfy"],
+    asin: 'B07D7JKSMJ', nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: null, category: 'interieur', haCompatible: false, hasSiren: false, hasIntercom: true,
+    sdAsin: null
+  },
+  tuya_generic: {
+    brand: "Tuya/SmartLife", badge: "Extérieur · WiFi + secteur · Alternative générique",
+    title: "Caméra WiFi 5MP Tuya Smart Life (générique)",
+    desc: "Représentative des nombreuses caméras génériques compatibles Tuya/Smart Life qu'on trouve chez plusieurs petites marques (souvent les mêmes caméras rebadgées). L'intérêt : une seule appli Smart Life pour piloter caméra, prises, ampoules et autres objets Tuya, peu importe la marque affichée dessus.",
+    specs: ["5MP, vision nocturne EN COULEUR, détection de mouvement", "Étanche IP66, alimentation secteur (câble assez long fourni)", "Stockage carte microSD (non fournie) ou cloud Tuya en option", "Appli Tuya ou Smart Life, compatible avec de nombreux autres objets connectés Tuya (prises, ampoules, thermostats...)", "Pas de reconnaissance IA avancée (personne/véhicule/animal) comme chez Reolink ou Imou"],
+    asin: 'B09LCN17W3', nightVision: 'color', petDetection: false, packageDetection: false, maxSD: '128 Go', category: 'exterieur', haCompatible: false, hasSiren: false, hasIntercom: true,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  },
+  imou_indoor: {
+    brand: "Imou", badge: "Intérieur · WiFi · Alternative",
+    title: "Imou Ranger 2C",
+    desc: "Caméra intérieure motorisée à un excellent rapport qualité-prix, avec détection de forme humaine qui filtre déjà bien les animaux, sans même avoir besoin de reconnaissance animale dédiée.",
+    specs: ["Résolution 2304x1296 (3MP), rotation 355° horizontale et 80° verticale, motorisée", "Détection de forme humaine par IA (distingue humains des animaux/objets), suivi intelligent", "Sirène intégrée, audio bidirectionnel", "Stockage carte microSD, cloud Imou, ou NVR compatible RTSP/ONVIF", "Appli Imou Life, compatible Alexa"],
+    asin: 'B09RGZ94LG', nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: '256 Go', category: 'interieur', haCompatible: true, hasSiren: true, hasIntercom: true, hasAutoTracking: true,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  },
+  imou_zoom: {
+    brand: "Imou", badge: "Extérieur filaire · PTZ motorisée · Alternative",
+    title: "Imou Cruiser 2 AI (PTZ)",
+    desc: "Alternative motorisée à la Reolink RLC-823A : rotation 360° avec suivi automatique et détection IA personne/véhicule qui réduit fortement les fausses alertes liées à la pluie, aux insectes ou à la lumière.",
+    specs: ["Résolution 2880x1620 (5MP), rotation 340° horizontale et 90° verticale, motorisée avec suivi automatique", "Détection IA personne (jusqu'à 22m) et véhicule (jusqu'à 44m), 95% de fausses alertes en moins annoncées", "Vision nocturne EN COULEUR jusqu'à 30m, zoom numérique 8x, sirène et alarme sonore personnalisable", "WiFi 2,4GHz et Wi-Fi 6, alimentation secteur (pas de PoE)", "Stockage carte microSD (jusqu'à 256 Go), NVR compatible RTSP/ONVIF, ou cloud Imou"],
+    asin: 'B0BP1RJTJ2', nightVision: 'color', petDetection: false, packageDetection: false, maxSD: '256 Go', category: 'exterieur', haCompatible: true, hasSiren: true, hasIntercom: true, hasAutoTracking: true,
+    sdAsin: 'B084CJJRBW', sdLabel: "SanDisk Max Endurance 256 Go"
+  },
+  imou_solar_pt: {
+    brand: "Imou", badge: "100% sans fil · WiFi + Solaire · Motorisée · Alternative",
+    title: "Imou 3K Solaire PTZ (batterie 5000mAh)",
+    desc: "Alternative motorisée à l'Argus PT Ultra : caméra 100% sans fil sur batterie et panneau solaire, avec rotation 360° et détection personne/véhicule.",
+    specs: ["3K/5MP, rotation 350° horizontale et 90° verticale, motorisée", "Batterie 5000mAh + panneau solaire 3W fourni, fonctionne jusqu'à -10°C", "Détection personne/véhicule, vision nocturne EN COULEUR jusqu'à 20m", "Étanche IP65, mode confidentialité (objectif masqué)", "Stockage carte microSD ou cloud Imou (30 jours d'essai gratuit)"],
+    asin: 'B0DPZM1FCX', nightVision: 'color', petDetection: false, packageDetection: false, maxSD: '512 Go', category: 'exterieur', haCompatible: false, hasSiren: false, hasIntercom: true, hasAutoTracking: false,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  },
+  imou_doorbell: {
+    brand: "Imou", badge: "Porte d'entrée · Sur batterie · Alternative",
+    title: "Imou Doorbell Kit 2S (DB2S)",
+    desc: "Alternative à la sonnette Reolink : livrée avec un carillon filaire qui sert aussi de répéteur WiFi pour renforcer le signal jusqu'à la porte. Bon exemple de fonction réservée au cloud payant : la détection gratuite ne reconnaît que les personnes, la reconnaissance voiture/animal/colis nécessite l'abonnement Imou Protect.",
+    specs: ["Résolution 2304x1296 (3MP), caméra orientable à 30°, vision nocturne EN COULEUR jusqu'à 5m", "Détection de personnes gratuite ; détection voiture/animal/colis réservée à l'abonnement Imou Protect (30 jours d'essai)", "Carillon filaire inclus qui fait aussi répéteur WiFi, son personnalisable", "Audio bidirectionnel avec modificateur de voix, réponses vocales préenregistrées", "Stockage carte microSD jusqu'à 512 Go dans le carillon, ou cloud Imou Protect"],
+    asin: 'B0D7HNQQLY', nightVision: 'color', petDetection: false, packageDetection: false, maxSD: '512 Go', category: 'exterieur', haCompatible: false, hasSiren: false, hasIntercom: true,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  },
+  tapo_doorbell: {
+    brand: "TP-Link Tapo", badge: "Porte d'entrée · Batterie ou secteur · Alternative",
+    title: "TP-Link Tapo D235",
+    desc: "Alternative à la sonnette Reolink et à l'Imou DB2S : point fort réel, la détection IA personne/véhicule/animal/colis est gratuite et illimitée, sans avoir besoin d'un abonnement comme chez Imou.",
+    specs: ["Résolution 2560x1920 (5MP), champ de vision ultra-large 180°, vision nocturne EN COULEUR avec projecteur", "Détection IA personne/véhicule/animal/colis GRATUITE et illimitée, sans abonnement obligatoire", "Batterie 10000mAh (jusqu'à 210 jours) ou raccordement filaire, carillon inclus", "Audio bidirectionnel avec changeur de voix, réponses rapides préenregistrées", "Stockage carte microSD jusqu'à 512 Go, ou cloud Tapo Care en option", "Étanche IP66, compatible Alexa et Google Assistant"],
+    asin: 'B0DDL95M8Z', nightVision: 'color', petDetection: true, packageDetection: true, maxSD: '512 Go', category: 'exterieur', haCompatible: false, hasSiren: false, hasIntercom: true,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  },
+  aqara_doorbell: {
+    brand: "Aqara", badge: "Porte d'entrée · Batterie ou secteur · Alternative",
+    title: "Aqara Video Doorbell G4",
+    desc: "Alternative pensée pour Apple HomeKit Secure Video : sa reconnaissance faciale tourne en local sur l'appareil (pas dans le cloud), ce qui réduit les fausses alertes tout en préservant la vie privée, même sans connexion internet.",
+    specs: ["1080p, champ de vision 162°, reconnaissance faciale locale par IA", "Sur piles (6xAA, environ 4 mois) ou raccordement filaire, carillon avec port USB-C qui fait aussi répéteur", "7 jours de stockage cloud HomeKit gratuits, stockage local sur carte microSD jusqu'à 512 Go dans le carillon", "Audio bidirectionnel avec changeur de voix, alarme anti-arrachement", "Étanche IP66, compatible HomeKit Secure Video, Alexa, Google Home"],
+    asin: 'B0BPHTL7MG', nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: '512 Go', category: 'exterieur', haCompatible: false, hasSiren: false, hasIntercom: true,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  },
+  switchbot_doorbell: {
+    brand: "SwitchBot", badge: "Porte d'entrée · Batterie ou solaire · Alternative",
+    title: "SwitchBot Sonnette Vidéo avec Moniteur",
+    desc: "Livrée avec un moniteur intérieur de 4,3 pouces qui sert à la fois d'écran, de relais WiFi et de stockage : reste fonctionnelle même en cas de coupure internet, sans écran de smartphone à sortir. Détection IA qui distingue vraiment personnes, animaux et véhicules.",
+    specs: ["Résolution 2304x1296 (3MP), angle ultra large 165°, vision nocturne EN COULEUR jusqu'à 10m", "Détection IA personne/animal/véhicule/colis, moins de fausses alertes", "Batterie 5000mAh (6 à 19 mois), rechargeable USB-C, panneau solaire disponible en option", "Moniteur intérieur 4,3 pouces inclus, sert aussi de stockage (4 Go inclus, jusqu'à 512 Go en carte microSD), pas d'abonnement obligatoire", "Étanche IP65, audio bidirectionnel, compatible Alexa et Home Assistant"],
+    asin: 'B0F672TCXQ', nightVision: 'color', petDetection: true, packageDetection: true, maxSD: '512 Go', category: 'exterieur', haCompatible: true, hasSiren: false, hasIntercom: true,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  },
+  switchbot_outdoor_ptz: {
+    brand: "SwitchBot", badge: "Extérieur · Motorisée · Alternative",
+    title: "SwitchBot Outdoor Pan/Tilt Cam 3K",
+    desc: "Alternative motorisée à la Reolink RLC-823A ou à l'Imou Cruiser 2 AI : rotation 360° horizontale et 90° verticale, alimentation secteur, et surtout un flux RTSP compatible confirmé, rare chez SwitchBot.",
+    specs: ["3K/5MP, rotation motorisée 360° horizontale et 90° verticale", "Alimentation secteur (12V), pas de batterie ni de PoE", "Compatible RTSP confirmé (Home Assistant, Frigate AI), en plus de l'appli SwitchBot", "Compatible Alexa et Google Home", "Résiste de -20°C à 45°C"],
+    store: 'switchbot', storePath: 'outdoor-ptc-3k5mp',
+    nightVision: 'ir', petDetection: false, packageDetection: false, maxSD: null, category: 'exterieur', longRange: true, haCompatible: true, hasSiren: false, hasIntercom: false, hasAutoTracking: false,
+    sdAsin: null
+  },
+  reolink_indoor: {
+    brand: "Reolink", badge: "Intérieur · WiFi · Motorisée",
+    title: "Reolink E1",
+    desc: "Reolink a bien une caméra intérieure vérifiée : motorisée, avec suivi automatique et surtout un flux RTSP/ONVIF confirmé, ce qui permet de la relier directement à un NVR ou Home Hub Reolink comme les caméras extérieures de la marque.",
+    specs: ["4MP, rotation motorisée 355° horizontale et 50° verticale, suivi automatique", "Détection IA personne/animal/pleurs de bébé, vision nocturne infrarouge jusqu'à 12m", "Stockage carte microSD jusqu'à 512 Go, NVR Reolink (jusqu'à 36 caméras) ou Home Hub, pas d'abonnement obligatoire", "Audio bidirectionnel, mode confidentialité en un geste", "Compatible RTSP/ONVIF confirmé, Alexa et Google Assistant"],
+    asin: 'B0F835G7MS', nightVision: 'ir', petDetection: true, packageDetection: false, maxSD: '512 Go', category: 'interieur', haCompatible: true, hasSiren: false, hasIntercom: true, hasAutoTracking: true,
+    sdAsin: 'B07NY23WBG', sdLabel: "SanDisk High Endurance 128 Go"
+  }
+};
+
+// Si la vision nocturne couleur est demandée, on bascule vers une alternative vérifiée quand elle existe
+const CAM_COLOR_ALT = { poe_premium: 'poe_premium_color', zoom: 'zoom_color' };
+
+// Pour certaines catégories, on a une 2e marque vérifiée à montrer en comparaison
+const CAM_PAIR_OF = {
+  tapo_budget: ['tapo_budget', 'switchbot_budget'],
+  tapo_premium: ['tapo_premium', 'switchbot_premium'],
+  poe_premium: ['poe_premium', 'imou_premium'],
+  kit: ['kit', 'kit_annke'],
+  solar_wifi: ['solar_wifi', 'solar_wifi_ezviz']
+};
+
+// Regroupe les catégories de base en familles plus larges, pour retrouver une marque même
+// si le duo par défaut (CAM_PAIR_OF) ne couvre pas exactement ce budget/motorisation précis
+const CAM_FAMILY_OF_BASECATEGORY = {
+  interieur_motorisee: 'interieur', interieur_fixe: 'interieur',
+  doorbell: 'doorbell', doorbell_battery: 'doorbell', doorbell_screen: 'doorbell',
+  poe_fixe: 'exterieur_filaire', zoom: 'exterieur_filaire',
+  kit: 'kit',
+  solar_wifi_fixe: 'exterieur_sans_fil', solar_wifi_pt: 'exterieur_sans_fil', solar_4g: 'exterieur_sans_fil', solar_4g_pt: 'exterieur_sans_fil'
+};
+
+// Pour chaque famille, la marque alternative vérifiée (si elle existe), le modèle à choisir,
+// et une note honnête sur le compromis si ce modèle ne correspond pas exactement (motorisé/fixe, budget...)
+const CAM_FAMILY_BRAND_ALT = {
+  interieur: {
+    Reolink: {
+      pick: () => 'reolink_indoor',
+      note: (a) => a.motorized === 'fixe' ? "Reolink n'a pas de modèle fixe vérifié en intérieur, voici leur modèle motorisé E1, tu peux simplement ne pas utiliser la rotation." : ''
+    },
+    SwitchBot: {
+      pick: (a) => a.motorized === 'fixe' ? 'switchbot_premium' : (a.budget === 'eco' ? 'switchbot_budget' : 'switchbot_premium'),
+      note: (a) => a.motorized === 'fixe' ? "SwitchBot n'a pas de modèle fixe vérifié, voici leur modèle motorisé le plus proche, tu peux simplement ne pas utiliser la rotation." : ''
+    },
+    'Google Nest': {
+      pick: () => 'nest_cam_battery',
+      note: () => "Ce modèle Nest fonctionne aussi bien à l'intérieur qu'à l'extérieur, pas de version motorisée vérifiée, et pas de carte microSD, uniquement le cloud Nest Aware au-delà de 3h d'historique gratuit."
+    },
+    Aqara: {
+      pick: (a) => a.motorized === 'fixe' ? 'aqara_indoor_fixed' : 'aqara_indoor_motorized',
+      note: () => "Ce modèle Aqara est avant tout pensé pour Apple HomeKit Secure Video, fait aussi office de hub Zigbee pour d'autres appareils Aqara."
+    },
+    Somfy: {
+      pick: () => 'somfy_indoor',
+      note: (a) => a.motorized === 'motorisee' ? "Somfy n'a pas de caméra à rotation motorisée vérifiée, seulement un volet mécanique qui couvre l'objectif pour la confidentialité, pas un suivi de mouvement." : "Le volet mécanique motorisé qui couvre l'objectif est une vraie particularité Somfy pour la confidentialité."
+    },
+    Imou: {
+      pick: () => 'imou_indoor',
+      note: (a) => a.motorized === 'fixe' ? "Imou n'a pas de modèle fixe vérifié en intérieur, voici leur modèle motorisé, tu peux simplement ne pas utiliser la rotation." : ''
+    },
+    EZVIZ: {
+      pick: (a) => a.motorized === 'fixe' ? 'ezviz_indoor' : 'ezviz_indoor',
+      note: (a) => a.motorized === 'fixe' ? "EZVIZ n'a pas de modèle fixe vérifié en intérieur, voici leur modèle motorisé, tu peux simplement ne pas utiliser la rotation." : ''
+    }
+  },
+  exterieur_filaire: {
+    Imou: {
+      pick: (a, bc) => bc === 'zoom' ? 'imou_zoom' : 'imou_premium',
+      note: (a, bc) => bc === 'zoom' ? '' : (a.budget === 'eco' ? "Légèrement au-dessus du petit budget visé, mais c'est le seul modèle Imou vérifié pour ce besoin." : '')
+    },
+    Somfy: {
+      pick: () => 'somfy_outdoor',
+      note: (a, bc) => bc === 'zoom' ? "Somfy n'a pas de zoom motorisé vérifié, voici leur modèle grand angle fixe à la place, avec sirène intégrée en plus." : "Pas de carte microSD sur ce modèle, uniquement le cloud Somfy Protect (7 jours gratuits)."
+    },
+    Aqara: {
+      pick: () => 'aqara_outdoor_poe',
+      note: (a, bc) => bc === 'zoom' ? "Aqara n'a pas de zoom motorisé vérifié, voici leur modèle grand angle fixe à la place, avec vision nocturne couleur réelle et flux RTSP local en plus de HomeKit." : ''
+    },
+    'Tuya/SmartLife': {
+      pick: () => 'tuya_generic',
+      note: (a, bc) => (bc === 'zoom' ? "Pas de version zoom motorisé vérifiée dans l'écosystème Tuya, voici un modèle générique fixe grand angle à la place. " : '') + "Pas de détection IA avancée personne/véhicule/animal comme chez Reolink ou Imou, juste de la détection de mouvement classique."
+    },
+    EZVIZ: {
+      pick: () => 'ezviz_zoom',
+      note: (a, bc) => bc !== 'zoom' ? "EZVIZ n'a qu'un modèle motorisé avec suivi automatique vérifié ici, pas de version fixe, mais tu peux ignorer le suivi." : ''
+    },
+    SwitchBot: {
+      pick: () => 'switchbot_outdoor_ptz',
+      note: (a, bc) => bc !== 'zoom' ? "SwitchBot n'a qu'un modèle motorisé vérifié ici, pas de version fixe, mais tu peux ignorer la rotation. Pas de suivi automatique de personne ni d'audio bidirectionnel confirmés sur ce modèle." : "Pas de suivi automatique de personne ni d'audio bidirectionnel confirmés sur ce modèle."
+    }
+  },
+  kit: {
+    Imou: { pick: () => 'kit_imou', note: () => "Ce kit Imou fonctionne en WiFi entre les caméras et le NVR, pas de câble PoE à tirer, une vraie différence pratique par rapport au kit Reolink/Annke." },
+    Annke: { pick: () => 'kit_annke', note: () => '' }
+  },
+  exterieur_sans_fil: {
+    EZVIZ: {
+      pick: () => 'solar_wifi_ezviz',
+      note: (a, bc) => bc !== 'solar_wifi_fixe' ? "EZVIZ n'a qu'un modèle fixe vérifié ici, pas de version motorisée ni 4G, voici leur modèle le plus proche." : ''
+    },
+    'Google Nest': {
+      pick: () => 'nest_cam_battery',
+      note: (a, bc) => (bc !== 'solar_wifi_fixe' ? "Nest n'a pas de version motorisée ni 4G vérifiée, voici leur modèle WiFi sur batterie. " : '') + "Pas de panneau solaire ni de carte microSD sur ce modèle, uniquement le cloud Nest Aware."
+    },
+    Imou: {
+      pick: () => 'imou_solar_pt',
+      note: (a, bc) => bc !== 'solar_wifi_pt' ? "Imou n'a qu'une version motorisée solaire vérifiée ici, pas de version 100% fixe ni 4G, voici leur modèle le plus proche." : ''
+    },
+    SwitchBot: {
+      pick: () => 'switchbot_outdoor',
+      note: (a, bc) => (bc !== 'solar_wifi_fixe' ? "SwitchBot n'a pas de version motorisée ni 4G vérifiée, voici leur modèle fixe sur batterie. " : '') + "Le panneau solaire est vendu séparément en accessoire, pas inclus dans cette référence."
+    }
+  },
+  doorbell: {
+    Imou: {
+      pick: () => 'imou_doorbell',
+      note: () => "La détection gratuite ne reconnaît que les personnes chez Imou, la reconnaissance voiture/animal/colis nécessite l'abonnement Imou Protect."
+    },
+    'TP-Link Tapo': {
+      pick: () => 'tapo_doorbell',
+      note: () => "Point fort chez Tapo : la détection IA personne/véhicule/animal/colis est gratuite et illimitée, sans abonnement à prévoir."
+    },
+    Aqara: {
+      pick: () => 'aqara_doorbell',
+      note: () => "Ce modèle Aqara est avant tout pensé pour Apple HomeKit Secure Video, avec une reconnaissance faciale qui tourne en local sur l'appareil."
+    },
+    SwitchBot: {
+      pick: () => 'switchbot_doorbell',
+      note: () => "Livrée avec un moniteur intérieur qui sert aussi d'écran, de relais WiFi et de stockage local."
+    }
+  }
+};
+
+// Résout le profil final selon la catégorie de base et le budget choisi (petit budget / budget moyen / pas de budget)
+const BUDGET_RESOLVE = {
+  interieur_motorisee: { eco: 'tapo_budget', moyen: 'tapo_premium', peu_importe: 'tapo_premium' },
+  interieur_fixe: { eco: 'tapo_fixed', moyen: 'tapo_fixed', peu_importe: 'tapo_fixed' },
+  doorbell: { eco: 'doorbell', moyen: 'doorbell', peu_importe: 'doorbell' },
+  doorbell_battery: { eco: 'doorbell_battery', moyen: 'doorbell_battery', peu_importe: 'doorbell_battery' },
+  doorbell_screen: { eco: 'switchbot_doorbell', moyen: 'switchbot_doorbell', peu_importe: 'switchbot_doorbell' },
+  poe_fixe: { eco: 'poe_budget', moyen: 'poe_premium', peu_importe: 'poe_premium' },
+  zoom: { eco: 'zoom', moyen: 'zoom', peu_importe: 'zoom' },
+  kit: { eco: 'kit', moyen: 'kit', peu_importe: 'kit' },
+  solar_wifi_fixe: { eco: 'solar_wifi', moyen: 'solar_wifi', peu_importe: 'solar_wifi' },
+  solar_wifi_pt: { eco: 'solar_wifi_pt', moyen: 'solar_wifi_pt', peu_importe: 'solar_wifi_pt' },
+  solar_4g: { eco: 'solar_4g', moyen: 'solar_4g', peu_importe: 'solar_4g' },
+  solar_4g_pt: { eco: 'solar_4g_pt', moyen: 'solar_4g_pt', peu_importe: 'solar_4g_pt' }
+};
+
+// Calcule, pour chaque marque connue, si elle a une référence vérifiée (native ou de repli) pour chaque
+// catégorie de base donnée. Sert à proposer directement les marques qui couvrent vraiment tout le système,
+// plutôt que de demander au client de deviner une marque au hasard.
+const CAM_ALL_BRANDS = ['Reolink', 'Imou', 'TP-Link Tapo', 'Aqara', 'EZVIZ', 'SwitchBot', 'Annke', 'Google Nest', 'Somfy', 'Tuya/SmartLife'];
+
+function camBrandCoversCategory(brand, baseCategory) {
+  const nativeProfile = (BUDGET_RESOLVE[baseCategory] || {}).peu_importe;
+  if (nativeProfile && CAM_PROFILES[nativeProfile] && CAM_PROFILES[nativeProfile].brand === brand) return true;
+  const family = CAM_FAMILY_OF_BASECATEGORY[baseCategory];
+  if ((CAM_FAMILY_BRAND_ALT[family] || {})[brand]) return true;
+  return false;
+}
+
+function camGetAllZoneBaseCategories(a) {
+  const past = (a.zones || []).map(z => z.baseCategory);
+  const currentCat = camCategoryStep(a);
+  const current = (typeof currentCat === 'object') ? currentCat.baseCategory : null;
+  return current ? [...past, current] : past;
+}
+
+// Retourne la liste des marques triées par nombre de zones couvertes (les 100% en premier)
+function camRankBrandsByCoverage(baseCategories) {
+  return CAM_ALL_BRANDS.map(brand => {
+    const covered = baseCategories.map(bc => camBrandCoversCategory(brand, bc));
+    const count = covered.filter(Boolean).length;
+    return { brand, count, total: baseCategories.length, full: count === baseCategories.length };
+  }).filter(b => b.count > 0).sort((a, b) => b.count - a.count);
+}
+
+const CAM_NO_BUDGET_ALT = new Set(['doorbell', 'doorbell_battery', 'doorbell_screen', 'zoom', 'solar_wifi_pt', 'solar_4g', 'solar_4g_pt']);
+
+// Petits conseils selon l'usage prioritaire choisi
+const CAM_USAGE_TIPS = {
+  piscine: `⚠️ Autour d'une piscine avec des enfants, une caméra ne remplace jamais une surveillance directe ni une barrière ou alarme conforme aux normes en vigueur. Elle est un complément, pas une solution de sécurité à elle seule.`,
+  jardin: '',
+  voiture: `🚗 Astuce : pour lire une plaque d'immatriculation la nuit, la vision infrarouge suffit à distinguer les contours mais pas les couleurs. Si la voiture est garée loin, privilégie une caméra motorisée avec zoom optique. ⚖️ Si le champ de vision déborde sur la rue ou le trottoir, pense à masquer cette zone dans l'appli, filmer la voie publique n'est en principe pas autorisé.`,
+  colis: `📦 Astuce : place la caméra avec une vue dégagée sur le point de dépose des colis, la détection de personne suffit à te prévenir dès qu'un livreur arrive.`,
+  facade: `⚖️ Si la façade donne sur la rue, pense à masquer la partie de l'image qui dépasse ta propriété (trottoir, voie publique), ce n'est en principe pas autorisé de filmer au-delà de chez toi.`,
+  salon: `🏠 Astuce : installe la caméra en hauteur, dans un angle de la pièce, pour couvrir un maximum de surface.`,
+  animaux: `🐾 Astuce : la rotation à 360° et l'audio bidirectionnel permettent de suivre tes animaux dans la pièce et de leur parler à distance.`
+};
+
+const CAM_INSTALL_TIP = `📏 Installation : une hauteur de 2,5 à 3 m est en général le meilleur compromis, hors de portée pour limiter le vandalisme tout en gardant un bon niveau de détail sur les visages ou les plaques. 📐 Oriente si possible la caméra pour capter les sujets de profil ou en angle plutôt que de face, la détection est plus précoce et plus fiable qu'avec quelqu'un qui marche droit vers l'objectif.`;
+const CAM_AI_LONGDIST_TIP = `🤖 Sur les longues distances, la détection intelligente par IA fait une vraie différence, elle distingue mieux une vraie personne ou un vrai véhicule d'un mouvement parasite comme des arbres, des ombres ou des oiseaux, contrairement à un simple capteur de mouvement classique.`;
+const CAM_ZOOM_TRADEOFF_TIP = `ℹ️ Compromis à connaître : ce modèle zoome moins loin (5X) que la version noir et blanc (16X), c'est le prix à payer pour avoir la vision nocturne en couleur.`;
+const CAM_NO_ALT_TIP = `ℹ️ Je n'ai pas trouvé d'alternative moins chère vérifiée pour ce besoin précis, ce modèle reste le meilleur choix que j'ai pu confirmer.`;
+const CAM_STREET_LEGAL_TIP = `⚖️ Rappel important : il n'est en principe pas autorisé de filmer la voie publique (rue, trottoir) ou l'espace où passent librement des tiers, seulement ta propriété. Utilise les zones de confidentialité ou le masquage dans l'appli pour cacher la partie de l'image qui dépasse chez toi, et renseigne-toi sur la réglementation locale, RGPD et CNIL en France, APD en Belgique, avant l'installation. Ça évite aussi une avalanche de fausses alertes à chaque passant.`;
+const CAM_CHIME_WIRED_TIP = `🔔 Un carillon filaire est inclus, à brancher sur une prise intérieure.`;
+const CAM_CHIME_SCREEN_TIP = `🔔 Le moniteur intérieur 4,3 pouces inclus sert à la fois d'écran pour voir qui sonne et de carillon.`;
+
+const CAM_ECOSYSTEM_TIPS = {
+  une_app: `💡 Comme tu veux tout centraliser dans une seule appli, choisis de préférence la même marque que tes autres appareils connectés pour éviter de jongler entre plusieurs applis.`,
+  home_assistant: `🏠 Reolink a un partenariat officiel Home Assistant qui couvre ses caméras PoE, WiFi, et même certains modèles sur batterie/solaire via un accessoire Reolink Home Hub. TP-Link Tapo, Annke et Imou fonctionnent via le flux RTSP/ONVIF générique. EZVIZ et SwitchBot n'ont pas d'intégration caméra confirmée à ce jour, et les caméras 4G/LTE ne sont compatibles chez aucune marque vérifiée.`
+};
+
+let camAnswers = {};
+let camHistory = [];
+
+// Détermine soit la prochaine étape de catégorie (string), soit la catégorie de base ({baseCategory:'x'})
+function camZoneCategoryStep(a, place) {
+  if (place === 'interieur') {
+    if (!a.usage) return 'usage_interieur';
+    if (!a.motorized) return 'motorized_indoor';
+    return { baseCategory: a.motorized === 'fixe' ? 'interieur_fixe' : 'interieur_motorisee' };
+  }
+  // exterieur
+  if (!a.usage) return 'usage_exterieur';
+  if (a.usage === 'porte') {
+    if (!a.doorbell_power) return 'doorbell_power';
+    if (!a.doorbell_chime) return 'doorbell_chime';
+    if (!a.doorbell_street) return 'doorbell_street';
+    if (a.doorbell_chime === 'ecran') return { baseCategory: 'doorbell_screen' };
+    return { baseCategory: a.doorbell_power === 'batterie' ? 'doorbell_battery' : 'doorbell' };
+  }
+  if (!a.power) return 'power';
+  if (a.power === 'non') {
+    if (!a.wifi) return 'wifi';
+    if (!a.motorized) return 'motorized_solar';
+    if (a.wifi === 'non') return { baseCategory: a.motorized === 'motorisee' ? 'solar_4g_pt' : 'solar_4g' };
+    return { baseCategory: a.motorized === 'motorisee' ? 'solar_wifi_pt' : 'solar_wifi_fixe' };
+  }
+  if (!a.multi) return 'multi';
+  if (a.multi === 'plusieurs') return { baseCategory: 'kit' };
+  if (!a.motorized) return 'motorized_poe';
+  if (a.motorized === 'motorisee') return { baseCategory: 'zoom' };
+  return { baseCategory: 'poe_fixe' };
+}
+
+function camCategoryStep(a) {
+  if (!a.scope) return 'scope';
+  if (a.scope === 'les_deux') {
+    if (!a.system_scale) return 'system_scale';
+    if (a.system_scale === 'grand') return { baseCategory: 'kit' };
+    // petit système : on configure une zone à la fois
+    if (!a.zone_scope) return 'zone_scope';
+    return camZoneCategoryStep(a, a.zone_scope);
+  }
+  return camZoneCategoryStep(a, a.scope);
+}
+
+// Champs propres à une zone/caméra précise, à remettre à zéro quand on passe à la zone suivante
+const CAM_ZONE_KEYS = ['zone_scope', 'usage', 'power', 'wifi', 'motorized', 'multi',
+  'doorbell_power', 'doorbell_chime', 'doorbell_street', 'budget', 'nv', 'tracking',
+  'animal', 'package', 'siren', 'intercom', 'color', 'add_zone'];
+
+// Résout uniquement le profil d'une zone (sans toucher aux questions transverses partagées)
+function camResolveZoneProfile(a) {
+  const place = a.scope === 'les_deux' ? a.zone_scope : a.scope;
+  const cat = camZoneCategoryStep(a, place);
+  if (typeof cat === 'string') return null;
+  if (!a.budget) return null;
+  const baseProfile = BUDGET_RESOLVE[cat.baseCategory][a.budget];
+  let profile = baseProfile;
+  if (a.nv === 'couleur' && CAM_COLOR_ALT[baseProfile]) profile = CAM_COLOR_ALT[baseProfile];
+  return { profile, baseCategory: cat.baseCategory, place, answersSnapshot: Object.assign({}, a) };
+}
+
+// Ajoute les questions transverses une fois la catégorie de base déterminée
+function camResolve(a) {
+  const cat = camCategoryStep(a);
+  if (typeof cat === 'string') return cat;
+  if (!a.budget) return 'budget';
+  const baseProfile = BUDGET_RESOLVE[cat.baseCategory][a.budget];
+  if (!a.nv) return 'nightvision';
+  let profile = baseProfile;
+  if (a.nv === 'couleur' && CAM_COLOR_ALT[baseProfile]) profile = CAM_COLOR_ALT[baseProfile];
+  if (a.motorized === 'motorisee' && !a.tracking) return 'tracking_detect';
+  if (!a.animal) return 'animal_detect';
+  const needsPackageQ = (a.usage === 'porte' || a.usage === 'colis');
+  if (needsPackageQ && !a.package) return 'package_detect';
+  if (cat.baseCategory === 'kit' && !a.kit_special) return 'kit_special_zone';
+  if (!a.siren) return 'siren_detect';
+  if (!a.intercom) return 'intercom_detect';
+  if (!a.color) return 'color_pref';
+  const isMultiZone = a.scope === 'les_deux' && a.system_scale === 'petit';
+  if (isMultiZone && !a.add_zone) return 'add_zone';
+  if (!a.retention) return 'retention';
+  const builtIn = (CAM_PROFILES[profile] || {}).builtInStorage;
+  if (!builtIn && !a.storage) return 'storage';
+  if (!a.ecosystem) return 'ecosystem';
+  if ((a.ecosystem === 'une_app' || a.ecosystem === 'peu_importe_app') && !a.existing_brand) return 'existing_brand';
+  return { profile, baseCategory: cat.baseCategory };
+}
+
+const CAM_STEP_KEY_MAP = {
+  scope: 'scope', system_scale: 'system_scale', zone_scope: 'zone_scope', add_zone: 'add_zone',
+  usage_interieur: 'usage', usage_exterieur: 'usage',
+  power: 'power', multi: 'multi', motorized_indoor: 'motorized', motorized_poe: 'motorized', motorized_solar: 'motorized',
+  wifi: 'wifi', budget: 'budget', nightvision: 'nv', tracking_detect: 'tracking', animal_detect: 'animal', package_detect: 'package', color_pref: 'color',
+  siren_detect: 'siren', intercom_detect: 'intercom', kit_special_zone: 'kit_special',
+  doorbell_power: 'doorbell_power', doorbell_chime: 'doorbell_chime', doorbell_street: 'doorbell_street',
+  retention: 'retention', storage: 'storage', ecosystem: 'ecosystem', existing_brand: 'existing_brand'
+};
+
+function camAnswerStep(key, value) {
+  camHistory.push(JSON.parse(JSON.stringify(camAnswers)));
+  if (key === 'add_zone' && value === 'oui') {
+    // On enregistre la zone actuelle avant de passer à la suivante
+    const zoneResult = camResolveZoneProfile(camAnswers);
+    if (zoneResult) {
+      camAnswers.zones = camAnswers.zones || [];
+      camAnswers.zones.push(zoneResult);
+    }
+    CAM_ZONE_KEYS.forEach(k => delete camAnswers[k]);
+    camRenderWizard();
+    return;
+  }
+  if (key === 'ecosystem' && (value === 'une_app' || value === 'nouveau' || value === 'home_assistant')) {
+    camAnswers.ecosystem = value;
+    const baseCategories = camGetAllZoneBaseCategories(camAnswers);
+    if (baseCategories.length > 1) {
+      // Système à plusieurs zones : on choisit nous-mêmes la meilleure marque, pas la peine de demander au client
+      let ranked = camRankBrandsByCoverage(baseCategories);
+      if (value === 'home_assistant') {
+        // Ne garde que les marques réellement compatibles Home Assistant pour toutes les zones concernées
+        const haRanked = ranked.filter(b => baseCategories.every(bc => {
+          const nativeProfile = (BUDGET_RESOLVE[bc] || {}).peu_importe;
+          const isNative = nativeProfile && CAM_PROFILES[nativeProfile] && CAM_PROFILES[nativeProfile].brand === b.brand;
+          if (isNative) return CAM_PROFILES[nativeProfile].haCompatible;
+          const family = CAM_FAMILY_OF_BASECATEGORY[bc];
+          const alt = (CAM_FAMILY_BRAND_ALT[family] || {})[b.brand];
+          if (!alt) return false;
+          const altKey = alt.pick(camAnswers, bc);
+          return CAM_PROFILES[altKey] && CAM_PROFILES[altKey].haCompatible;
+        }));
+        if (haRanked.length > 0) ranked = haRanked;
+      }
+      if (ranked.length > 0) {
+        camAnswers.existing_brand = ranked[0].brand;
+        camAnswers._autoBrandChoice = true;
+      }
+    }
+    camRenderWizard();
+    return;
+  }
+  camAnswers[key] = value;
+  camRenderWizard();
+}
+
+function camPickDifferentBrand() {
+  // Force le passage par la question de marque manuelle, quelle que soit la réponse écosystème initiale
+  camAnswers.ecosystem = 'une_app';
+  delete camAnswers.existing_brand;
+  delete camAnswers._autoBrandChoice;
+  camRenderWizard();
+}
+
+function camRestart() {
+  camAnswers = {};
+  camHistory = [];
+  camRenderWizard();
+}
+
+function camGoBack() {
+  if (camHistory.length === 0) return;
+  camAnswers = camHistory.pop();
+  camRenderWizard();
+}
+
+function camEditBrandChoice() {
+  camAnswerStep('ecosystem', 'une_app');
+}
+
+// Applique la préférence de marque et le filtre Home Assistant sur la liste de profils à afficher
+function camApplyEcosystemFilter(profileKeys, a) {
+  let keys = [...profileKeys];
+  if (a.existing_brand && a.existing_brand !== 'autre') {
+    const matchKey = keys.find(k => CAM_PROFILES[k].brand === a.existing_brand);
+    if (matchKey) {
+      keys = (a.ecosystem === 'une_app') ? [matchKey] : [matchKey, ...keys.filter(k => k !== matchKey)];
+    }
+  }
+  if (a.ecosystem === 'home_assistant') {
+    const compatible = keys.filter(k => CAM_PROFILES[k].haCompatible);
+    if (compatible.length > 0) keys = compatible;
+  }
+  return keys;
+}
+
+function camStorageBlock(p, storageAnswer, retentionAnswer) {
+  if (p.builtInStorage) {
+    return `
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)">
+      Ce kit inclut déjà un disque dur 2 To dans l'enregistreur. Avec 4 caméras, ça représente généralement plusieurs semaines à quelques mois d'enregistrement continu selon la résolution, extensible pour archiver encore plus longtemps.
+    </div>`;
+  }
+  if (!storageAnswer) return '';
+  const longNote = retentionAnswer === 'long'
+    ? `<div style="font-size:11px;color:var(--muted);margin-top:6px">Pour un archivage long, la carte s'écrase en boucle une fois pleine. Pense à choisir la plus grande capacité proposée sur la page${p.maxSD ? ` (jusqu'à ${p.maxSD})` : ''} si tu veux garder plusieurs mois sans y retoucher.</div>`
+    : '';
+  const sdBlock = p.sdAsin ? `
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">📦 Carte microSD conseillée pour ce modèle${p.maxSD ? ` (max ${p.maxSD})` : ''} :</div>
+      <div style="font-size:13px;color:var(--text);font-weight:600;margin-bottom:8px">${p.sdLabel}</div>
+      <div class="cam-buy-row">
+        <a class="cam-buy-btn" href="${camLinkFR(p.sdAsin)}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Amazon.fr</a>
+        <a class="cam-buy-btn" href="${camLinkBE(p.sdAsin)}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Amazon.be</a>
+      </div>
+      ${longNote}
+    </div>` : `
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)">
+      Ce modèle intègre son propre stockage, voir la fiche produit pour la capacité, ou fonctionne via le cloud du fabricant. Pas de carte microSD spécifique à recommander ici.
+    </div>`;
+  const cloudCapNote = (retentionAnswer === 'moyen' || retentionAnswer === 'long')
+    ? ` Attention, les abonnements cloud standards ne conservent généralement que 7 à 30 jours glissants. Au-delà, les plus anciens enregistrements sont automatiquement supprimés, sauf à prendre un abonnement premium plus cher.`
+    : '';
+  const cloudNote = `
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);line-height:1.6">
+      ☁️ Le cloud évite d'acheter une carte, mais implique un abonnement mensuel qui varie selon le fabricant (Reolink Cloud, Tapo Care, EZVIZ CloudPlay).${cloudCapNote} Important : chez la majorité des fabricants, l'abonnement cloud ne sert pas qu'au stockage, il débloque aussi des fonctions IA supplémentaires (reconnaissance de visages familiers, recherche vidéo par description, zones intelligentes, et parfois même détection de fumée/incendie). Certaines marques proposent un palier cloud "stockage seul" moins cher sans ces fonctions IA, d'autres imposent l'abonnement complet pour en profiter. Vérifie précisément ce qui est inclus dans chaque palier sur le site du fabricant avant de choisir. Autre avantage à ne pas négliger : si la caméra est volée, cassée ou détruite dans un incendie, les enregistrements restent récupérables puisqu'ils sont hébergés ailleurs, ce qu'une carte microSD ne permet pas puisqu'elle est physiquement dans la caméra. Les cartes microSD ont aussi pas mal augmenté ces derniers temps à cause des tensions sur les composants mémoire, donc ça vaut le coup de comparer.
+    </div>`;
+  if (storageAnswer === 'sd') return sdBlock;
+  if (storageAnswer === 'cloud') return p.sdAsin ? cloudNote : sdBlock;
+  if (storageAnswer === 'nvr_nas') return camNvrNasBlock(p);
+  return sdBlock + cloudNote; // peu_importe : toutes les options
+}
+
+function camNvrNasBlock(p) {
+  if (p.needsHomeHub) {
+    return `
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);line-height:1.6">
+      🖥️ Pour une caméra Reolink sur batterie/WiFi comme celle-ci, ce n'est pas un NVR classique qu'il te faut (elle n'a pas de flux RTSP/ONVIF direct), mais un <strong>Reolink Home Hub</strong> ou <strong>Home Hub Mini</strong> : jusqu'à 8 caméras centralisées, stockage local chiffré sans frais mensuels, et c'est aussi l'accessoire qui permet la compatibilité Home Assistant.
+      <div style="margin-top:8px;font-size:12px;color:var(--text)"><strong>Home Hub Mini</strong> (plus compact, microSD jusqu'à 1 To) :</div>
+      <div class="cam-buy-row" style="margin-top:4px">
+        <a class="cam-buy-btn" href="${camLinkFR('B0G2L49TDM')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Amazon.fr</a>
+        <a class="cam-buy-btn" href="${camLinkBE('B0G2L49TDM')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Amazon.be</a>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--text)"><strong>Home Hub</strong> (2 emplacements microSD jusqu'à 1 To chacun, soit 2 To) :</div>
+      <div class="cam-buy-row" style="margin-top:4px">
+        <a class="cam-buy-btn" href="${camLinkFR('B0CZRGVJZF')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Amazon.fr</a>
+        <a class="cam-buy-btn" href="${camLinkBE('B0CZRGVJZF')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Amazon.be</a>
+      </div>
+    </div>`;
+  }
+  return p.haCompatible ? `
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);line-height:1.6">
+      🖥️ Ce modèle expose un flux RTSP/ONVIF exploitable. Tu peux l'enregistrer directement sur un NVR compatible (Reolink RLN/RLK, ou tout NVR ONVIF générique) ou sur un NAS (Synology Surveillance Station, QNAP QVR Pro) sans carte microSD ni abonnement cloud. C'est la solution la plus adaptée pour un archivage long terme et plusieurs caméras centralisées.
+    </div>` : `
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:#ff8a65;line-height:1.6">
+      ⚠️ Je n'ai pas de confirmation qu'un flux RTSP/ONVIF exploitable par un NVR ou un NAS tiers soit disponible sur ce modèle précis, il fonctionne surtout via son appli ou son cloud propriétaire. Si le NVR/NAS est important pour toi, oriente-toi plutôt vers un modèle Reolink, TP-Link Tapo, Annke ou Imou de ce guide, dont le flux RTSP/ONVIF est confirmé.
+    </div>`;
+}
+
+function camRenderCard(p, extraBadge, baseCategory, extraNote, ansOverride) {
+  const ans = ansOverride || camAnswers;
+  const nvNote = p.nightVision === 'color'
+    ? `<li style="color:var(--accent2)">✓ Vision nocturne EN COULEUR</li>`
+    : `<li style="color:var(--muted)">ℹ️ Vision nocturne infrarouge classique, noir et blanc</li>`;
+  let animalNote = '';
+  if (ans.animal === 'oui') {
+    animalNote = p.petDetection
+      ? `<li style="color:var(--accent2)">✓ Détection IA locale des animaux confirmée : tu reçois une notification étiquetée "animal", pas besoin d'abonnement cloud pour cette fonction. À noter : ça ne réduit pas les alertes en soi, ça les identifie. Pour limiter les notifications, active plutôt l'option "personne uniquement".</li>`
+      : `<li style="color:var(--muted)">ℹ️ Pas de détection animaux confirmée en local pour ce modèle. Certaines marques (comme TP-Link Tapo) proposent cette fonction seulement via un abonnement cloud payant, vérifie sur la fiche produit.</li>`;
+  }
+  let packageNote = '';
+  if (ans.package === 'oui') {
+    packageNote = p.packageDetection
+      ? `<li style="color:var(--accent2)">✓ Détection de colis confirmée</li>`
+      : `<li style="color:var(--muted)">ℹ️ Pas de détection de colis confirmée pour ce modèle, mais la détection de personne suffit généralement à te prévenir qu'un livreur approche.</li>`;
+  }
+  let sirenNote = '';
+  if (ans.siren === 'oui') {
+    sirenNote = p.hasSiren
+      ? `<li style="color:var(--accent2)">✓ Alarme sonore/sirène intégrée confirmée</li>`
+      : `<li style="color:var(--muted)">ℹ️ Pas de sirène intégrée confirmée pour ce modèle.</li>`;
+  }
+  let intercomNote = '';
+  if (ans.intercom === 'oui') {
+    intercomNote = p.hasIntercom
+      ? `<li style="color:var(--accent2)">✓ Audio bidirectionnel confirmé, micro et haut-parleur intégrés</li>`
+      : `<li style="color:var(--muted)">ℹ️ Pas d'audio bidirectionnel confirmé pour ce modèle, tu pourras probablement voir mais pas parler à travers la caméra.</li>`;
+  }
+  const colorNote = (ans.color && ans.color !== 'peu_importe')
+    ? `<li style="color:var(--muted)">🎨 Je n'ai pas vérifié individuellement la couleur exacte de cette référence précise, certains modèles existent en blanc et noir sous des références différentes. Vérifie le coloris sur la fiche produit avant d'acheter.</li>`
+    : '';
+  let trackingNote = '';
+  if (ans.tracking === 'oui') {
+    trackingNote = p.hasAutoTracking
+      ? `<li style="color:var(--accent2)">✓ Suivi automatique de personne confirmé, la caméra pivote toute seule pour garder le sujet dans le cadre</li>`
+      : `<li style="color:var(--muted)">ℹ️ Pas de suivi automatique confirmé pour ce modèle, elle pivote mais ne suit pas la personne toute seule.</li>`;
+  }
+  let haNote = '';
+  let haHubBlock = '';
+  if (ans.ecosystem === 'home_assistant') {
+    if (p.haCompatible && p.needsHomeHub) {
+      haNote = `<li style="color:var(--accent2)">✓ Compatible Home Assistant, confirmé par le partenariat officiel Reolink, mais nécessite un Reolink Home Hub (accessoire vendu séparément) comme passerelle pour cette caméra sur batterie</li>`;
+      haHubBlock = `
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);line-height:1.6">
+      🏠 Le compromis à connaître : pour intégrer cette caméra à Home Assistant, il faut ajouter un <strong>Reolink Home Hub</strong> ou <strong>Home Hub Mini</strong> (vendu séparément), qui sert de passerelle. Sans ce hub, la caméra reste utilisable normalement via l'appli Reolink, mais pas via Home Assistant.
+      <div style="margin-top:8px;font-size:12px;color:var(--text)"><strong>Home Hub Mini</strong> (plus compact et moins cher, microSD jusqu'à 1 To) :</div>
+      <div class="cam-buy-row" style="margin-top:4px">
+        <a class="cam-buy-btn" href="${camLinkFR('B0G2L49TDM')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Amazon.fr</a>
+        <a class="cam-buy-btn" href="${camLinkBE('B0G2L49TDM')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Amazon.be</a>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--text)"><strong>Home Hub</strong> (2 emplacements microSD jusqu'à 1 To chacun, soit 2 To) :</div>
+      <div class="cam-buy-row" style="margin-top:4px">
+        <a class="cam-buy-btn" href="${camLinkFR('B0CZRGVJZF')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Amazon.fr</a>
+        <a class="cam-buy-btn" href="${camLinkBE('B0CZRGVJZF')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Amazon.be</a>
+      </div>
+    </div>`;
+    } else if (p.haCompatible) {
+      haNote = `<li style="color:var(--accent2)">✓ Compatible Home Assistant directement, sans accessoire supplémentaire, confirmé par le partenariat officiel Reolink ou le flux RTSP/ONVIF du modèle</li>`;
+    } else {
+      haNote = `<li style="color:#ff8a65">⚠️ Pas de compatibilité Home Assistant confirmée pour ce modèle, même avec un accessoire</li>`;
+    }
+  }
+  const brandMatchNote = (ans.existing_brand && ans.existing_brand === p.brand)
+    ? `<li style="color:var(--accent2)">✓ Compatible avec ton écosystème ${p.brand} existant, même appli</li>`
+    : '';
+  const usageTip = CAM_USAGE_TIPS[ans.usage] || '';
+  const installTip = p.category === 'exterieur' ? CAM_INSTALL_TIP : '';
+  const aiTip = p.longRange ? CAM_AI_LONGDIST_TIP : '';
+  const zoomTip = p.zoomTradeoff ? CAM_ZOOM_TRADEOFF_TIP : '';
+  const ecoTip = CAM_ECOSYSTEM_TIPS[ans.ecosystem] || '';
+  const noAltTip = (baseCategory && CAM_NO_BUDGET_ALT.has(baseCategory) && ans.budget !== 'peu_importe') ? CAM_NO_ALT_TIP : '';
+  const brandCompromiseTip = extraNote ? `⚖️ ${extraNote}` : '';
+  const streetTip = ans.doorbell_street === 'rue' ? CAM_STREET_LEGAL_TIP : '';
+  let chimeTip = '';
+  let chimeAccessoryBlock = '';
+  if (ans.doorbell_chime === 'son') {
+    if (baseCategory === 'doorbell_battery') {
+      chimeTip = `🔔 Ce modèle sur batterie n'inclut pas de carillon. Il peut se raccorder à un carillon mécanique/numérique existant, ou tu peux ajouter le Reolink Chime V2 ci-dessous pour une sonnerie sans fil.`;
+      chimeAccessoryBlock = `
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);line-height:1.6">
+      🔔 Reolink Chime V2 (carillon sans fil, vendu séparément, à vérifier qu'il est bien listé compatible avec ce modèle précis avant achat) :
+      <div class="cam-buy-row" style="margin-top:8px">
+        <a class="cam-buy-btn" href="${camLinkFR('B0CYGP6P1P')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Amazon.fr</a>
+        <a class="cam-buy-btn" href="${camLinkBE('B0CYGP6P1P')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Amazon.be</a>
+      </div>
+    </div>`;
+    } else if (baseCategory === 'doorbell') {
+      chimeTip = CAM_CHIME_WIRED_TIP;
+    }
+  } else if (ans.doorbell_chime === 'ecran') {
+    chimeTip = baseCategory === 'doorbell_screen' ? CAM_CHIME_SCREEN_TIP : '';
+  }
+  const tipsBlock = [usageTip, installTip, aiTip, zoomTip, ecoTip, noAltTip, streetTip, chimeTip, brandCompromiseTip].filter(Boolean).map(t => `<div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px">${t}</div>`).join('');
+  return `
+    <div class="cam-result-card" style="margin-bottom:14px">
+      <div class="cam-result-badge">${extraBadge ? extraBadge + ' · ' : ''}${p.badge}</div>
+      <div class="cam-result-title">${p.title}</div>
+      <div class="cam-result-desc">${p.desc}</div>
+      <ul class="cam-result-specs">${p.specs.map(s => `<li>${s}</li>`).join('')}${nvNote}${trackingNote}${animalNote}${packageNote}${sirenNote}${intercomNote}${colorNote}${haNote}${brandMatchNote}</ul>
+      <div style="margin-bottom:4px">${tipsBlock}</div>
+      <div class="cam-buy-row">
+        ${p.store === 'switchbot'
+          ? `<a class="cam-buy-btn" href="${camLinkSwitchBot(p.storePath)}" target="_blank" rel="noopener" style="flex:1 1 100%">🛒 Voir sur SwitchBot.com (-10% avec ce lien)</a>`
+          : `<a class="cam-buy-btn" href="${camLinkFR(p.asin)}" target="_blank" rel="noopener">🇫🇷 Voir sur Amazon.fr</a>
+        <a class="cam-buy-btn" href="${camLinkBE(p.asin)}" target="_blank" rel="noopener">🇧🇪 Voir sur Amazon.be</a>`}
+      </div>
+      ${camStorageBlock(p, ans.storage, ans.retention)}
+      ${chimeAccessoryBlock}
+      ${haHubBlock}
+    </div>`;
+}
+
+// Calcule la liste de profils à afficher pour un profil/catégorie donnés, en tenant compte
+// de la préférence de marque et du filtre Home Assistant. Réutilisé pour la zone en cours
+// et pour chaque zone déjà accumulée dans un système multi-caméras.
+function camResolveDisplayKeys(profile, baseCategory, ans) {
+  const defaultPair = CAM_PAIR_OF[profile] || [profile];
+  let profileKeys = defaultPair;
+  let brandNote = '';
+  let brandNoMatch = false;
+  const wantsSingleApp = ans.ecosystem === 'une_app';
+  const hasBrandPref = ans.existing_brand && ans.existing_brand !== 'autre';
+
+  if (hasBrandPref) {
+    const exactMatch = defaultPair.find(k => CAM_PROFILES[k].brand === ans.existing_brand);
+    if (exactMatch) {
+      profileKeys = wantsSingleApp ? [exactMatch] : [exactMatch, ...defaultPair.filter(k => k !== exactMatch)];
+    } else {
+      const family = CAM_FAMILY_OF_BASECATEGORY[baseCategory];
+      const familyAlt = (CAM_FAMILY_BRAND_ALT[family] || {})[ans.existing_brand];
+      if (familyAlt) {
+        const altKey = familyAlt.pick(ans, baseCategory);
+        brandNote = familyAlt.note(ans, baseCategory);
+        profileKeys = wantsSingleApp ? [altKey] : [altKey, profile];
+      } else {
+        profileKeys = [profile];
+        brandNoMatch = true;
+      }
+    }
+  }
+  profileKeys = camApplyEcosystemFilter(profileKeys, ans);
+  return { profileKeys, brandNote, brandNoMatch, hasBrandPref };
+}
+
+// Construit le HTML d'une zone (ses cartes + ses éventuels avertissements), pour la zone en cours
+// comme pour les zones déjà accumulées dans le système
+function camRenderZoneBlock(profile, baseCategory, ans, zoneLabel) {
+  const { profileKeys, brandNote, brandNoMatch, hasBrandPref } = camResolveDisplayKeys(profile, baseCategory, ans);
+  const noHaCompatible = ans.ecosystem === 'home_assistant' && profileKeys.every(k => !CAM_PROFILES[k].haCompatible);
+  const cardsHtml = profileKeys.map((key, i) => {
+    const isAlt = hasBrandPref && CAM_PROFILES[key].brand === ans.existing_brand;
+    const badge = profileKeys.length > 1 ? (i === 0 ? '🅰️ Option 1' : '🅱️ Option 2, autre marque') : null;
+    const extraNote = isAlt ? brandNote : '';
+    return camRenderCard(CAM_PROFILES[key], badge, baseCategory, extraNote, ans);
+  }).join('');
+  const compareNote = profileKeys.length > 1
+    ? `<div class="cam-note" style="margin-bottom:14px">Deux marques différentes pour le même besoin, à toi de choisir selon ton budget et l'appli ou l'écosystème que tu préfères.</div>`
+    : '';
+  const brandMismatchWarning = brandNoMatch
+    ? `<div class="cam-note" style="margin-bottom:14px;color:#ff8a65">⚠️ Je n'ai pas de modèle ${ans.existing_brand} vérifié pour ce besoin précis. Le vrai compromis : soit tu utilises le modèle ci-dessous, avec une appli en plus à gérer pour cette caméra, soit tu envisages Home Assistant pour centraliser plusieurs marques dans un seul tableau de bord, ça demande un peu plus de mise en place technique, soit tu me dis le modèle ${ans.existing_brand} précis que tu as en tête et je vérifie s'il correspond.</div>`
+    : '';
+  const haWarning = noHaCompatible
+    ? (profile === 'solar_4g'
+        ? `<div class="cam-note" style="margin-bottom:14px;color:#ff8a65">⚠️ Les caméras 4G/LTE ne sont compatibles avec Home Assistant chez aucun fabricant que j'ai vérifié, même avec un hub. Le vrai compromis : soit tu apportes du WiFi à cet endroit (répéteur ou point d'accès) pour pouvoir utiliser une caméra WiFi Reolink compatible à la place, soit tu gardes cette caméra 4G mais tu la pilotes uniquement via l'appli Reolink, sans intégration Home Assistant pour celle-ci.</div>`
+        : `<div class="cam-note" style="margin-bottom:14px;color:#ff8a65">⚠️ Aucune caméra de cette catégorie n'a de compatibilité Home Assistant confirmée, même avec un accessoire. Le vrai compromis : si Home Assistant est indispensable, oriente-toi plutôt vers une caméra filaire PoE (comme les Reolink RLC-xxx) ou une caméra WiFi/batterie Reolink avec Home Hub, qui elles sont confirmées compatibles. Sinon, cette caméra reste utilisable normalement via son appli propre, juste pas dans Home Assistant.</div>`)
+    : '';
+  const label = zoneLabel ? `<div class="cam-note" style="margin-bottom:10px;font-weight:600">${zoneLabel}</div>` : '';
+  return `${label}${compareNote}${brandMismatchWarning}${haWarning}${cardsHtml}`;
+}
+
+const CAM_ZONE_PLACE_LABEL = { interieur: '🏠 Zone intérieure', exterieur: '🌳 Zone extérieure' };
+
+function camRenderWizard() {
+  const container = document.getElementById('cam-wizard');
+  if (!container) return;
+  const result = camResolve(camAnswers);
+
+  if (typeof result === 'object') {
+    const isMultiZone = camAnswers.scope === 'les_deux' && camAnswers.system_scale === 'petit';
+    const zones = camAnswers.zones || [];
+
+    // Rendu des zones déjà accumulées (chacune avec ses propres réponses pour les notes)
+    const pastZonesHtml = zones.map((z, i) => {
+      const sharedAns = Object.assign({}, z.answersSnapshot, {
+        ecosystem: camAnswers.ecosystem, existing_brand: camAnswers.existing_brand,
+        storage: camAnswers.storage, retention: camAnswers.retention
+      });
+      const label = `${CAM_ZONE_PLACE_LABEL[z.place] || ''} n°${i + 1}`;
+      return camRenderZoneBlock(z.profile, z.baseCategory, sharedAns, label);
+    }).join('<hr style="border:none;border-top:1px solid var(--border);margin:18px 0">');
+
+    // Rendu de la zone en cours (celle qu'on vient de terminer)
+    const currentLabel = isMultiZone ? `${CAM_ZONE_PLACE_LABEL[camAnswers.scope === 'les_deux' ? camAnswers.zone_scope : camAnswers.scope] || ''} n°${zones.length + 1}` : '';
+    const currentZoneHtml = camRenderZoneBlock(result.profile, result.baseCategory, camAnswers, currentLabel);
+
+    // Vérifie si le système final utilise une seule marque ou plusieurs (plusieurs = plusieurs applis)
+    let multiBrandWarning = '';
+    if (isMultiZone || (camAnswers.scope === 'les_deux' && camAnswers.system_scale === 'grand')) {
+      const brandsUsed = new Set();
+      zones.forEach(z => {
+        const sharedAns = Object.assign({}, z.answersSnapshot, { ecosystem: camAnswers.ecosystem, existing_brand: camAnswers.existing_brand });
+        const dk = camResolveDisplayKeys(z.profile, z.baseCategory, sharedAns);
+        brandsUsed.add(CAM_PROFILES[dk.profileKeys[0]].brand);
+      });
+      const dkCurrent = camResolveDisplayKeys(result.profile, result.baseCategory, camAnswers);
+      brandsUsed.add(CAM_PROFILES[dkCurrent.profileKeys[0]].brand);
+      const wasAutoChosen = !!camAnswers._autoBrandChoice;
+      const hasBrandSet = !!camAnswers.existing_brand;
+      const overrideBtn = `<button class="cam-restart-btn" onclick="camPickDifferentBrand()" style="margin-top:10px;padding:9px">🔄 Choisir moi-même une autre marque</button>`;
+      if (brandsUsed.size > 1) {
+        if (wasAutoChosen) {
+          multiBrandWarning = `<div class="cam-note" style="margin-bottom:14px;color:#ff8a65">
+              🎯 On a choisi <strong>${camAnswers.existing_brand}</strong> pour toi, c'est la marque qui couvre le plus de zones de ton système (${[...brandsUsed].join(', ')} au total). Aucune marque ne couvre 100% de tes besoins avec les références vérifiées de ce guide, il faudra une appli en plus pour la ou les zones non couvertes (regarde les avertissements par zone ci-dessus).
+              ${overrideBtn}
+            </div>`;
+        } else if (hasBrandSet) {
+          multiBrandWarning = `<div class="cam-note" style="margin-bottom:14px;color:#ff8a65">
+              ⚠️ Malgré ta préférence pour ${camAnswers.existing_brand}, ce système utilise finalement plusieurs marques (${[...brandsUsed].join(', ')}) car ${camAnswers.existing_brand} n'a pas de référence vérifiée pour toutes les zones, regarde les avertissements par zone ci-dessus pour savoir laquelle. Ça veut dire une appli en plus à gérer pour cette zone précise.
+            </div>`;
+        } else {
+          multiBrandWarning = `<div class="cam-note" style="margin-bottom:14px;color:#ff8a65">
+              ⚠️ Ton système utilise plusieurs marques différentes (${[...brandsUsed].join(', ')}), ce qui veut dire une appli en plus à ouvrir. ${overrideBtn}
+            </div>`;
+        }
+      } else if (brandsUsed.size === 1 && (zones.length > 0)) {
+        multiBrandWarning = wasAutoChosen
+          ? `<div class="cam-note" style="margin-bottom:14px;color:var(--accent2)">🎯 On a choisi <strong>${[...brandsUsed][0]}</strong> pour toi, c'est la seule marque qui couvre 100% de ton système : une seule appli à gérer.${overrideBtn}</div>`
+          : `<div class="cam-note" style="margin-bottom:14px;color:var(--accent2)">✓ Toutes les caméras de ton système sont de la même marque (${[...brandsUsed][0]}), une seule appli à gérer.</div>`;
+      }
+    }
+
+    // Caméra spéciale additionnelle pour un kit NVR (zone avec besoin particulier : zoom, couleur, ou les deux)
+    let kitAddonHtml = '';
+    const kitNeed = camAnswers.kit_special;
+    if (kitNeed && kitNeed !== 'non' && result.baseCategory === 'kit') {
+      const CAM_KIT_ADDON = {
+        kit: { zoom: 'zoom', couleur: 'poe_premium_color', zoom_couleur: 'zoom_color' },
+        kit_annke: { zoom: null, couleur: null, zoom_couleur: null },
+        kit_imou: { zoom: 'imou_zoom', couleur: 'imou_zoom', zoom_couleur: 'imou_zoom' }
+      };
+      // Retrouve quel kit a réellement été retenu après le filtre marque
+      const { profileKeys } = camResolveDisplayKeys(result.profile, result.baseCategory, camAnswers);
+      const actualKit = profileKeys[0];
+      const addonKey = (CAM_KIT_ADDON[actualKit] || {})[kitNeed];
+      const needLabel = { zoom: 'zoom motorisé', couleur: 'vision nocturne couleur', zoom_couleur: 'zoom motorisé et vision nocturne couleur' }[kitNeed];
+      if (addonKey) {
+        kitAddonHtml = `
+      <hr style="border:none;border-top:1px solid var(--border);margin:18px 0">
+      <div class="cam-note" style="margin-bottom:10px;font-weight:600">➕ Caméra additionnelle pour la zone qui a besoin de ${needLabel}</div>
+      <div class="cam-note" style="margin-bottom:14px">Cette caméra se raccorde en plus des caméras fixes fournies dans le kit, sur le même enregistreur NVR (dans la limite de ses canaux disponibles, généralement 8).</div>
+      ${camRenderCard(CAM_PROFILES[addonKey], null, null, '', camAnswers)}
+    `;
+      } else {
+        kitAddonHtml = `
+      <div class="cam-note" style="margin-bottom:14px;color:#ff8a65">⚠️ Je n'ai pas de caméra ${needLabel} vérifiée compatible avec ce kit précis (${CAM_PROFILES[actualKit].brand}). Le NVR Reolink accepte en général d'autres caméras Reolink individuelles en plus du kit, dans la limite de ses canaux, mais je n'ai pas de référence équivalente pour cette marque.</div>
+    `;
+      }
+    }
+
+    const systemIntro = (isMultiZone && (zones.length > 0)) || (camAnswers.scope === 'les_deux' && camAnswers.system_scale === 'grand')
+      ? `<div class="cam-note" style="margin-bottom:14px">📋 Voici ton système complet, zone par zone :</div>`
+      : '';
+    const kitSystemNote = (camAnswers.scope === 'les_deux' && camAnswers.system_scale === 'grand')
+      ? `<div class="cam-note" style="margin-bottom:14px">🏠🌳 Pour 4 caméras ou plus entre intérieur et extérieur, un système avec enregistreur (NVR) est la solution la plus simple à gérer : tu répartis les caméras du kit entre les pièces et l'extérieur, tout arrive dans une seule appli et un seul disque dur.</div>`
+      : '';
+
+    container.innerHTML = `
+      ${systemIntro}
+      ${kitSystemNote}
+      ${multiBrandWarning}
+      ${pastZonesHtml}
+      ${zones.length > 0 ? '<hr style="border:none;border-top:1px solid var(--border);margin:18px 0">' : ''}
+      ${currentZoneHtml}
+      ${kitAddonHtml}
+      <div style="display:flex;gap:8px">
+        ${camHistory.length > 0 ? `<button class="cam-restart-btn" onclick="camGoBack()" style="flex:1">← Modifier la dernière réponse</button>` : ''}
+        <button class="cam-restart-btn" onclick="camRestart()" style="flex:1">↺ Recommencer le guide</button>
+      </div>
+      <div class="cam-note">Liens affiliés Amazon, le prix reste le même pour toi, ça soutient le blog 🙏</div>
+    `;
+    return;
+  }
+
+  const step = CAM_STEPS[result];
+  let questionText = step.question;
+  let questionOptions = step.options;
+  let preQuestionNote = '';
+  if (result === 'zone_scope') {
+    const zoneCount = (camAnswers.zones || []).length;
+    questionText = zoneCount === 0
+      ? "Cette première caméra, c'est pour l'intérieur ou l'extérieur ?"
+      : "Cette prochaine caméra, c'est pour l'intérieur ou l'extérieur ?";
+  }
+  if (result === 'existing_brand') {
+    const baseCategories = camGetAllZoneBaseCategories(camAnswers);
+    const ranked = camRankBrandsByCoverage(baseCategories);
+    const hasFullCoverage = ranked.some(b => b.full);
+    questionText = baseCategories.length > 1
+      ? "Quelle marque veux-tu utiliser pour centraliser tout ton système ?"
+      : "Quelle marque utilises-tu déjà principalement ?";
+    questionOptions = ranked.map(b => ({
+      value: b.brand,
+      label: b.brand,
+      sub: baseCategories.length > 1
+        ? (b.full ? "✓ Couvre toutes tes zones, une seule appli possible" : `Couvre ${b.count} zone(s) sur ${b.total}, ${b.total - b.count} appli(s) en plus à prévoir`)
+        : ''
+    }));
+    questionOptions.push({ value: 'autre', label: "Une autre marque", sub: "Xiaomi, Sannce, dis-moi ton modèle et je vérifie s'il correspond" });
+    if (baseCategories.length > 1 && !hasFullCoverage) {
+      preQuestionNote = `<div class="cam-note" style="margin-bottom:14px;color:#ff8a65">⚠️ Aucune marque ne couvre 100% de tes zones avec les références que j'ai vérifiées, il te faudra au moins 2 applis quel que soit ton choix. Voici les marques classées par nombre de zones couvertes.</div>`;
+    }
+  }
+  const answeredCount = Object.keys(camAnswers).length;
+  const totalSteps = 12; // approx depth for progress bar
+  let dots = '';
+  for (let i = 0; i < totalSteps; i++) {
+    dots += `<span class="${i < answeredCount ? 'done' : ''}"></span>`;
+  }
+
+  container.innerHTML = `
+    <div class="cam-progress">${dots}</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      ${camHistory.length > 0 ? `<button class="cam-back" onclick="camGoBack()">← Question précédente</button>` : ''}
+      ${answeredCount > 0 ? `<button class="cam-back" onclick="camRestart()">↺ Recommencer</button>` : ''}
+    </div>
+    ${preQuestionNote}
+    <div class="cam-question">${questionText}</div>
+    <div class="cam-options">
+      ${questionOptions.map(o => `
+        <button class="cam-option" onclick="camAnswerStep('${CAM_STEP_KEY_MAP[result]}', '${o.value}')">
+          ${o.label}${o.sub ? `<span class="cam-option-sub">${o.sub}</span>` : ''}
+        </button>
+      `).join('')}
+    </div>
+  `;
+}
+
+camRenderWizard();
+
+// === SEARCH ===
+function openSearch() {
+  document.getElementById('searchOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('searchInput').focus(), 100);
+  filterSearch('');
+}
+function closeSearch() {
+  document.getElementById('searchOverlay').classList.remove('open');
+}
+function filterSearch(q) {
+  if (articles.length === 0) {
+    document.getElementById('searchResults').innerHTML = '<p style="color:var(--muted);font-size:13px;padding-top:20px;text-align:center">Articles en cours de chargement...</p>';
+    return;
+  }
+  const results = q.length < 2 ? articles : articles.filter(a =>
+    a.title.toLowerCase().includes(q.toLowerCase()) ||
+    a.excerpt.toLowerCase().includes(q.toLowerCase())
+  );
+  document.getElementById('searchResults').innerHTML = results.length
+    ? results.map(a => `<a class="search-result-item" href="${a.url}" target="_blank" style="display:block;text-decoration:none">
+        <div class="search-result-title">${a.title}</div>
+        <div class="search-result-date">${a.tag} · ${a.date}</div>
+      </a>`).join('')
+    : `<p style="color:var(--muted);font-size:13px;padding-top:20px;text-align:center">Aucun résultat pour "${q}"</p>`;
+}
+
+// === PROMO COPY ===
+function copyCode(code, e) {
+  e.preventDefault();
+  e.stopPropagation();
+  navigator.clipboard.writeText(code).catch(() => {});
+  showToast('Code "' + code + '" copié !');
+}
+
+// === PROMO FILTER ===
+function filterPromos(brand, el) {
+  document.querySelectorAll('#promo-filters .tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const filtered = brand === 'tous' ? promos : promos.filter(p => p.brand.includes(brand));
+  document.getElementById('promos-list').innerHTML = filtered.length
+    ? filtered.map(promoCard).join('')
+    : '<div style="color:var(--muted);font-size:13px;padding:20px 0;text-align:center">Aucun code pour cette marque.</div>';
+}
+
+// === TOAST ===
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+</script>
+
+<script>
+// === PWA INSTALL ===
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Show banner after 3 seconds
+  setTimeout(() => {
+    if (!localStorage.getItem('installDismissed')) {
+      document.getElementById('installBanner').classList.add('visible');
+    }
+  }, 3000);
+});
+
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    document.getElementById('installBanner').classList.remove('visible');
+    if (outcome === 'accepted') showToast('App installée ! 🎉');
+  } else {
+    // iOS fallback
+    showToast('Safari → Partager ⬆️ → Sur l\'écran d\'accueil');
+  }
+});
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installBanner').classList.remove('visible');
+  showToast('App installée avec succès ! 🎉');
+});
+
+function dismissInstall() {
+  document.getElementById('installBanner').classList.remove('visible');
+  localStorage.setItem('installDismissed', '1');
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('./sw.js');
+      
+      // Vérifier les mises à jour toutes les 60 secondes
+      setInterval(() => reg.update(), 60000);
+
+      // Quand une nouvelle version est trouvée
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            // Nouvelle version disponible - mise à jour silencieuse
+            newWorker.postMessage('skipWaiting');
+          }
+        });
+      });
+
+      // Recharger la page quand le nouveau service worker prend le contrôle
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
+    } catch(e) {}
+  });
+}
+</script>
+
+
+
+
+<script src="../webpushr.js"></script>
+</body>
+</html>
