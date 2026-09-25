@@ -233,6 +233,12 @@ function enhanceArticleMedia(container) {
       wrapper.className = 'article-video';
       frame.parentNode.insertBefore(wrapper, frame);
       wrapper.append(frame);
+      const fallback = document.createElement('a');
+      fallback.href = frame.src;
+      fallback.target = '_blank';
+      fallback.rel = 'noopener';
+      fallback.textContent = 'Ouvrir la vidéo sur YouTube';
+      wrapper.append(fallback);
     }
   });
   container.querySelectorAll('.wp-block-embed__wrapper').forEach(wrapper => {
