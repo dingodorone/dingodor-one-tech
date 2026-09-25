@@ -807,11 +807,19 @@
   .nav-item svg { width:21px; height:21px; }
   .search-overlay { background:rgba(5,13,23,.97); }
   .search-input { background:#10263a; border-color:rgba(255,255,255,.12); }
-  .install-banner { left:14px; right:14px; bottom:92px; border-radius:18px; background:#10283d; border:1px solid rgba(22,199,216,.25); box-shadow:0 18px 40px rgba(0,0,0,.4); }
+  .install-banner { left:50%; right:auto; transform:translateX(-50%); width:min(394px, calc(100% - 28px)); bottom:calc(92px + env(safe-area-inset-bottom)); border-radius:18px; background:#10283d; border:1px solid rgba(22,199,216,.25); box-shadow:0 18px 40px rgba(0,0,0,.4); }
   .app-shortcuts { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 0 24px; }
   .app-shortcut { min-height:92px; padding:15px; border:1px solid rgba(255,255,255,.09); border-radius:18px; background:linear-gradient(145deg,rgba(20,45,65,.96),rgba(10,25,40,.96)); color:var(--text); text-align:left; font:600 13px/1.25 'DM Sans',sans-serif; cursor:pointer; box-shadow:0 12px 28px rgba(0,0,0,.16); }
   .app-shortcut span { display:grid; place-items:center; width:34px; height:34px; margin-bottom:10px; border-radius:11px; background:rgba(22,199,216,.11); font-size:18px; }
   .app-shortcut small { display:block; margin-top:4px; color:var(--muted); font-size:10px; font-weight:400; }
+  .twitch-challenge { display:flex; align-items:center; justify-content:space-between; gap:14px; margin:0 0 27px; padding:17px 18px; border:1px solid rgba(178,119,255,.42); border-radius:20px; background:linear-gradient(125deg,#31184e,#142338); color:var(--text); text-decoration:none; box-shadow:0 14px 30px rgba(0,0,0,.2); }
+  .twitch-challenge-copy { display:grid; gap:4px; min-width:0; }
+  .twitch-challenge-copy small { color:#c9a3ff; font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
+  .twitch-challenge-copy strong { font:700 16px/1.25 'Syne',sans-serif; }
+  .twitch-challenge-copy span { color:#d3c6df; font-size:12px; line-height:1.4; }
+  .twitch-challenge-action { flex:none; padding:9px 12px; border-radius:10px; background:#9146ff; color:#fff; font-size:12px; font-weight:700; }
+  @media(max-width:360px) { .install-banner { gap:8px; padding:12px; } .install-banner-btn { padding:9px 11px; } .twitch-challenge { flex-direction:column; align-items:flex-start; } }
+
   @media(min-width:700px) {
     body { max-width:1040px; }
     .section { padding-left:32px; padding-right:32px; }
@@ -866,6 +874,11 @@
     <button class="app-shortcut" onclick="switchSection('camera')"><span>📹</span>Guide caméra<small>Trouver le bon modèle</small></button>
     <button class="app-shortcut" onclick="switchSection('about')"><span>♥</span>Soutenir<small>Aider le projet</small></button>
   </div>
+
+  <a class="twitch-challenge" href="https://dingodoronetech.eu.org/twitch.html">
+    <span class="twitch-challenge-copy"><small>Défi Twitch</small><strong>Objectif 1 000 abonnés</strong><span>À ce cap, je commence les lives domotique et tech.</span></span>
+    <span class="twitch-challenge-action">Participer ↗</span>
+  </a>
 
   <div class="section-title">Derniers articles</div>
   <div class="articles" id="home-articles"></div>
