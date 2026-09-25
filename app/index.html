@@ -448,6 +448,10 @@
   .promo-offer .promo-link-app { display:inline-flex; align-items:center; justify-content:center; min-height:40px; border-radius:10px; background:linear-gradient(135deg,#16c7d8,#0c78ff); color:#fff; text-decoration:none; padding:9px 13px; font-weight:700; font-size:12px; }
   .promo-store-links { display:flex; flex-wrap:wrap; gap:8px; margin-top:13px; }
   .promo-offer [hidden] { display:none!important; }
+  .promo-special { margin-top:13px; padding:14px; border:1px solid rgba(22,199,216,.48); border-radius:12px; background:rgba(22,199,216,.09); }
+  .promo-special strong { color:#8df3f6; font-size:13px; }
+  .promo-special p { color:#c8d8e0; font-size:11px; margin:6px 0 10px; line-height:1.5; }
+
 
   /* RÉSEAUX */
   .socials-grid {
@@ -1260,6 +1264,7 @@ function promoCard(p) {
     <div class="promo-desc">${promoEsc(p.desc || '')}</div>
     <div class="promo-region">${promoEsc(countries || 'Europe')}${expiry ? ` · Valable jusqu’au ${promoEsc(expiry)}` : ''}</div>
     ${p.note ? `<div class="promo-note">${promoEsc(p.note)}</div>` : ''}
+    ${p.highlightUrl ? `<div class="promo-special"><strong>${promoEsc(p.highlightTitle)}</strong><p>${promoEsc(p.highlightNote || '')}</p><a class="promo-link-app" href="${promoEsc(p.highlightUrl)}" target="_blank" rel="noopener sponsored">Découvrir la sélection →</a></div>` : ''}
     ${code ? `<div class="promo-actions"><button class="promo-copy" type="button" data-copy-code="${promoEsc(p.code)}">${promoEsc(p.code)} · Copier</button>${links}</div>` : `<div class="promo-region">Code promo via mon lien</div><div class="promo-store-links">${links}</div>`}
   </article>`;
 }
