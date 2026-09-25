@@ -181,6 +181,73 @@ async function showPartners(container) {
   container.innerHTML = `<section class="promo-intro"><p class="promo-kicker">Boutiques partenaires</p><h2>Soutenir Dingodor One Tech sans payer plus cher</h2><p>Choisissez votre boutique parmi nos partenaires.</p></section><div class="promo-grid">${partners.map(partner => `<article class="promo-card store-card"><div class="promo-card-top"><span class="promo-shop">${esc(partner.icon || '🛒')} ${esc(partner.name)}</span></div><h2>${esc(partner.description || '')}</h2><a class="promo-link" href="${esc(partner.url)}" target="_blank" rel="noopener sponsored">Accéder à la boutique <span aria-hidden="true">→</span></a></article>`).join('')}</div><p class="promo-disclosure">Liens affiliés : une commission peut soutenir Dingodor One Tech sans augmentation du prix pour vous.</p>`;
 }
 
+function enhanceArticleMedia(container) {
+  const base = 'https://dingodoronetech.wordpress.com/';
+  container.querySelectorAll('img').forEach((img, index) => {
+    const lazySrc = img.getAttribute('data-lazy-src') || img.getAttribute('data-src') || img.getAttribute('data-original');
+    const src = img.getAttribute('src') || '';
+    if (lazySrc && (!src || src.startsWith('data:') || /placeholder|blank\.gif/i.test(src))) img.src = new URL(lazySrc, base).href;
+    else if (src && !/^(?:https?:|data:|blob:)/i.test(src)) img.src = new URL(src, base).href;
+    const lazySet = img.getAttribute('data-lazy-srcset') || img.getAttribute('data-srcset');
+    if (lazySet && !img.getAttribute('srcset')) img.setAttribute('srcset', lazySet);
+    img.loading = index === 0 ? 'eager' : 'lazy';
+    img.decoding = 'async';
+  });
+  const videoId = value => {
+    try {
+      const url = new URL(value, base);
+      if (['youtu.be', 'www.youtu.be'].includes(url.hostname)) return url.pathname.split('/')[1];
+      if (['youtube.com', 'www.youtube.com', 'm.youtube.com', 'www.youtube-nocookie.com'].includes(url.hostname)) {
+        if (url.pathname === '/watch') return url.searchParams.get('v');
+        return url.pathname.match(/^\/(?:shorts|embed|live)\/([^/]+)/)?.[1];
+      }
+    } catch (_) {}
+    return null;
+  };
+  const addVideo = (element, value) => {
+    const id = videoId(value);
+    if (!id || !/^[\w-]{11}$/.test(id)) return false;
+    const frame = document.createElement('iframe');
+    frame.src = 'https://www.youtube-nocookie.com/embed/' + id;
+    frame.title = 'Vidéo YouTube';
+    frame.loading = 'lazy';
+    frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    frame.allowFullscreen = true;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'article-video';
+    wrapper.append(frame);
+    const fallback = document.createElement('a');
+    fallback.href = value;
+    fallback.target = '_blank';
+    fallback.rel = 'noopener';
+    fallback.textContent = 'Voir la vidéo sur YouTube si elle ne s’affiche pas';
+    wrapper.append(fallback);
+    element.replaceWith(wrapper);
+    return true;
+  };
+  container.querySelectorAll('iframe').forEach(frame => {
+    const lazySrc = frame.getAttribute('data-src') || frame.getAttribute('data-lazy-src');
+    if (lazySrc && !frame.getAttribute('src')) frame.src = lazySrc;
+    if (videoId(frame.src || '')) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'article-video';
+      frame.parentNode.insertBefore(wrapper, frame);
+      wrapper.append(frame);
+    }
+  });
+  container.querySelectorAll('.wp-block-embed__wrapper').forEach(wrapper => {
+    if (wrapper.querySelector('iframe')) return;
+    const value = wrapper.textContent.trim();
+    if (/^https?:\/\//i.test(value)) addVideo(wrapper, value);
+  });
+  container.querySelectorAll('p').forEach(paragraph => {
+    if (paragraph.children.length && !(paragraph.children.length === 1 && paragraph.firstElementChild.tagName === 'A')) return;
+    const link = paragraph.querySelector('a');
+    const value = link?.href || paragraph.textContent.trim();
+    if (/^https?:\/\//i.test(value) && paragraph.textContent.trim() === (link?.textContent.trim() || value)) addVideo(paragraph, value);
+  });
+}
+
 async function showComments(post) {
   const section = document.querySelector('#comments');
   if (!section || !post?.ID) return;
@@ -273,6 +340,7 @@ async function showSingle(kind) {
     else meta.remove();
     const content = document.querySelector('#wp-content');
     content.innerHTML = post.content || '<p>Cette page ne contient pas encore de texte.</p>';
+    if (kind === 'post') enhanceArticleMedia(content);
     localizeWordPressLinks(content);
     if (slug === 'code-promo-2') await enhancePromoPage(content);
     if (slug === 'site-partenaires') await showPartners(content);
