@@ -361,6 +361,9 @@ async function showSingle(kind) {
 let offset = 0;
 const batch = 12;
 const POSTS_CACHE_KEY = 'dingodor-posts-cache-v1';
+let currentSearch = '';
+let postsRequest = 0;
+let postsController = null;
 
 function appendPostCards(posts, {replace = false} = {}) {
   const grid = document.querySelector('#post-grid');
@@ -370,7 +373,7 @@ function appendPostCards(posts, {replace = false} = {}) {
     const excerpt = textOnly(post.excerpt || '').slice(0, 150);
     const card = document.createElement('a');
     card.className = 'post-card';
-    card.href = `article.html?slug=${encodeURIComponent(post.slug)}`;
+    card.href = post.slug === 'pg107' ? 'alarme-pg107.html' : `article.html?slug=${encodeURIComponent(post.slug)}`;
     card.innerHTML = `${image ? `<img src="${esc(image)}" alt="" loading="lazy" decoding="async">` : ''}<div class="post-card-body"><time>${new Intl.DateTimeFormat('fr-FR',{dateStyle:'long'}).format(new Date(post.date))}</time><h2>${esc(textOnly(post.title))}</h2><p>${esc(excerpt)}${excerpt.length >= 150 ? '…' : ''}</p></div>`;
     grid.appendChild(card);
   });
@@ -388,37 +391,88 @@ function showCachedPosts() {
   }
 }
 
-async function loadPosts() {
+async function loadPosts({reset = false} = {}) {
   const status = document.querySelector('#status');
   const more = document.querySelector('#more');
+  const count = document.querySelector('#post-count');
+  const empty = document.querySelector('#post-empty');
+  if (reset) {
+    offset = 0;
+    postsController?.abort();
+    document.querySelector('#post-grid').innerHTML = '';
+    count.textContent = '';
+    more.hidden = false;
+  } else if (more.disabled) return;
+  const request = ++postsRequest;
+  postsController = new AbortController();
   more.disabled = true;
   more.textContent = 'Chargement…';
+  empty.hidden = true;
   try {
     const fields = 'ID,title,slug,date,excerpt,featured_image';
-    const data = await getJson(`${API}/posts/?number=${batch}&offset=${offset}&fields=${fields}`);
+    const params = new URLSearchParams({number: String(batch), offset: String(offset), fields});
+    if (currentSearch) params.set('search', currentSearch);
+    const response = await fetch(`${API}/posts/?${params}`, {signal: postsController.signal});
+    if (!response.ok) throw new Error(`Erreur ${response.status}`);
+    const data = await response.json();
+    if (request !== postsRequest) return;
     const firstPage = offset === 0;
     appendPostCards(data.posts, {replace: firstPage});
-    if (firstPage) {
+    if (firstPage && !currentSearch) {
       try { localStorage.setItem(POSTS_CACHE_KEY, JSON.stringify({posts: data.posts, savedAt: Date.now()})); } catch (_) {}
     }
     offset += data.posts.length;
+    const found = Number(data.found);
+    const hasTotal = Number.isFinite(found);
+    const hasMore = data.posts.length > 0 && (hasTotal ? offset < found : data.posts.length === batch);
     status?.remove();
-    more.disabled = !data.meta?.next_page;
-    more.textContent = more.disabled ? 'Tous les articles sont affichés' : 'Afficher plus d’articles';
+    empty.hidden = offset !== 0;
+    count.textContent = hasTotal
+      ? `${offset} article${offset > 1 ? 's' : ''} affiché${offset > 1 ? 's' : ''} sur ${found}${currentSearch ? ' résultats' : ''}`
+      : `${offset} article${offset > 1 ? 's' : ''} affiché${offset > 1 ? 's' : ''}`;
+    more.disabled = !hasMore;
+    more.hidden = !hasMore;
+    more.textContent = 'Afficher plus d’articles';
   } catch (error) {
+    if (error.name === 'AbortError' || request !== postsRequest) return;
     if (status) status.innerHTML = `<strong>Impossible de charger les articles.</strong><br>${esc(error.message)}`;
+    else count.textContent = 'Le chargement a échoué. Réessayez.';
+    more.hidden = false;
     more.textContent = 'Réessayer';
     more.disabled = false;
   }
 }
-
 document.addEventListener('DOMContentLoaded', () => {
   menu();
   const type = document.body.dataset.view;
   if (type === 'articles') {
-    document.querySelector('#more').addEventListener('click', loadPosts);
-    showCachedPosts();
-    loadPosts();
+    const search = document.querySelector('#article-query');
+    const fromUrl = new URLSearchParams(location.search).get('q') || '';
+    if (fromUrl) search.value = fromUrl;
+    currentSearch = fromUrl.trim();
+    document.querySelector('#more').addEventListener('click', () => loadPosts());
+    document.querySelector('#article-search').addEventListener('submit', event => {
+      event.preventDefault();
+      clearTimeout(searchTimer);
+      applySearch();
+    });
+    const applySearch = () => {
+      const next = search.value.trim();
+      if (next === currentSearch) return;
+      currentSearch = next;
+      const url = new URL(location.href);
+      if (next) url.searchParams.set('q', next);
+      else url.searchParams.delete('q');
+      history.replaceState(null, '', url);
+      loadPosts({reset: true});
+    };
+    let searchTimer;
+    search.addEventListener('input', () => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(applySearch, 350);
+    });
+    if (!currentSearch) showCachedPosts();
+    loadPosts({reset: Boolean(currentSearch)});
   }
   if (type === 'post' || type === 'page') showSingle(type);
 });
