@@ -46,3 +46,16 @@ body.custom-landing{background:radial-gradient(circle at 80% 5%,#0d3451 0,transp
 @media(max-width:820px){.partners-page .partners-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:580px){.partners-page .article-wrap{width:calc(100% - 28px)}.partners-page .partners-grid{grid-template-columns:1fr;gap:13px}.partners-page .partner-card{min-height:0;padding:19px}.partners-page .partner-icon{width:43px;height:43px}.partners-page .partner-card h2{font-size:1.25rem}.partners-page .partner-description{margin:13px 0 16px}}
 @media(prefers-reduced-motion:reduce){.partners-page .partner-card{transition:none}.partners-page .partner-card:hover{transform:none}}
+
+/* Recherche dans tous les articles du blog. */
+.article-search{display:grid;gap:10px;margin:0 0 20px;padding:22px;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 8px 30px #07111f0d}
+.article-search label{font-weight:800;font-size:1.05rem}
+.article-search-row{display:flex;gap:10px}
+.article-search input{flex:1;min-width:0;padding:13px 16px;border:1px solid #bccddd;border-radius:10px;font:inherit}
+.article-search input:focus{outline:3px solid #0c78ff26;border-color:#0c78ff}
+.article-search button{border:0;border-radius:10px;background:#0c78ff;color:#fff;padding:13px 20px;font:800 1rem Manrope,system-ui,sans-serif;cursor:pointer}
+.article-search button:hover{background:#0757bd}
+.article-count{min-height:24px;margin:0 0 14px;color:var(--muted);font-size:.91rem}
+.article-empty{padding:24px;border:1px dashed var(--line);border-radius:14px;background:white;text-align:center}
+.article-empty[hidden]{display:none}
+@media(max-width:580px){.article-search{padding:16px}.article-search-row{flex-direction:column}.article-search button{width:100%}}
