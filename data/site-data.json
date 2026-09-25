@@ -8,21 +8,97 @@
   "promosUrl": "https://raw.githubusercontent.com/dingodorone/dingodor-data/main/promos.json",
   "guideUrl": "https://dingodoronetech.eu.org/guide-camera.html",
   "partners": [
-    {"name":"Amazon France","icon":"🇫🇷","description":"High-tech, domotique et accessoires","url":"https://amzn.to/415XsVU"},
-    {"name":"Amazon Belgique","icon":"🇧🇪","description":"Amazon pour les acheteurs en Belgique","url":"https://www.amazon.com.be?&linkCode=ll2&tag=dingodor00e-21&linkId=5d23506a995a88a4e8e75fddee00ece9&ref_=as_li_ss_tl"},
-    {"name":"AliExpress Belgique","icon":"🛒","description":"Domotique, accessoires et codes promo Belgique","url":"https://s.click.aliexpress.com/e/_c30SBTPL"},
-    {"name":"SwitchBot Europe","icon":"🏠","description":"Boutique officielle SwitchBot Europe","url":"https://eu.switch-bot.com?sca_ref=2274537.x1K7OdVgTO&utm_source=uppromote&utm_medium=affiliate&utm_campaign=2274537"},
-    {"name":"GeekBuying","icon":"🛵","description":"Domotique, mini-PC et mobilité électrique","url":"https://affiliate.geekbuying.com/gkbaffiliate.php?id=1151&url=469316"},
-    {"name":"Banggood","icon":"🧰","description":"Gadgets, domotique, outillage et produits tech","url":"https://www.banggood.com/custlink/DKGypeS838"},
-    {"name":"Temu","icon":"🎁","description":"Accessoires et offres du moment","url":"https://temu.to/m/ulbndn53etv"},
-    {"name":"Instant Gaming","icon":"🎮","description":"Jeux PC, PlayStation, Xbox et Nintendo","url":"https://www.instant-gaming.com/?igr=dingodor"}
+    {
+      "name": "Amazon France",
+      "icon": "🇫🇷",
+      "description": "High-tech, domotique et accessoires",
+      "url": "https://amzn.to/415XsVU"
+    },
+    {
+      "name": "Amazon Belgique",
+      "icon": "🇧🇪",
+      "description": "Amazon pour les acheteurs en Belgique",
+      "url": "https://www.amazon.com.be?&linkCode=ll2&tag=dingodor00e-21&linkId=5d23506a995a88a4e8e75fddee00ece9&ref_=as_li_ss_tl"
+    },
+    {
+      "name": "AliExpress",
+      "icon": "🛒",
+      "description": "Domotique, accessoires et codes promo",
+      "url": "https://s.click.aliexpress.com/e/_c30SBTPL"
+    },
+    {
+      "name": "SwitchBot Europe",
+      "icon": "🏠",
+      "description": "Boutique officielle SwitchBot Europe",
+      "url": "https://eu.switch-bot.com?sca_ref=2274537.x1K7OdVgTO&utm_source=uppromote&utm_medium=affiliate&utm_campaign=2274537"
+    },
+    {
+      "name": "GeekBuying",
+      "icon": "🛵",
+      "description": "Domotique, mini-PC et mobilité électrique",
+      "url": "https://affiliate.geekbuying.com/gkbaffiliate.php?id=1151&url=469316"
+    },
+    {
+      "name": "Banggood",
+      "icon": "🧰",
+      "description": "Gadgets, domotique, outillage et produits tech",
+      "url": "https://www.banggood.com/custlink/DKGypeS838"
+    },
+    {
+      "name": "Temu",
+      "icon": "🎁",
+      "description": "Accessoires et offres du moment",
+      "url": "https://temu.to/m/ulbndn53etv"
+    },
+    {
+      "name": "Instant Gaming",
+      "icon": "🎮",
+      "description": "Jeux PC, PlayStation, Xbox et Nintendo",
+      "url": "https://www.instant-gaming.com/?igr=dingodor"
+    }
   ],
   "socials": [
-    {"name":"YouTube","icon":"▶️","description":"Vidéos et tests domotique","url":"https://www.youtube.com/user/dingodor1","color":"#ff0000"},
-    {"name":"Facebook","icon":"📘","description":"Actualités et discussions","url":"https://www.facebook.com/DingodorOne","color":"#1877f2"},
-    {"name":"Discord","icon":"💬","description":"Communauté domotique","url":"https://discord.gg/jKkUg4B","color":"#5865f2"},
-    {"name":"TikTok","icon":"🎵","description":"Shorts et bons plans","url":"https://www.tiktok.com/@dingodorone","color":"#111111"},
-    {"name":"Instagram","icon":"📸","description":"Photos et coulisses","url":"https://www.instagram.com/dingodor_one_tech/","color":"#e1306c"},
-    {"name":"Twitch","icon":"🎮","description":"Lives et démonstrations","url":"https://www.twitch.tv/dingodorone","color":"#9146ff"}
+    {
+      "name": "YouTube",
+      "icon": "▶️",
+      "description": "Vidéos et tests domotique",
+      "url": "https://www.youtube.com/user/dingodor1",
+      "color": "#ff0000"
+    },
+    {
+      "name": "Facebook",
+      "icon": "📘",
+      "description": "Actualités et discussions",
+      "url": "https://www.facebook.com/DingodorOne",
+      "color": "#1877f2"
+    },
+    {
+      "name": "Discord",
+      "icon": "💬",
+      "description": "Communauté domotique",
+      "url": "https://discord.gg/jKkUg4B",
+      "color": "#5865f2"
+    },
+    {
+      "name": "TikTok",
+      "icon": "🎵",
+      "description": "Shorts et bons plans",
+      "url": "https://www.tiktok.com/@dingodorone",
+      "color": "#111111"
+    },
+    {
+      "name": "Instagram",
+      "icon": "📸",
+      "description": "Photos et coulisses",
+      "url": "https://www.instagram.com/dingodor_one_tech/",
+      "color": "#e1306c"
+    },
+    {
+      "name": "Twitch",
+      "icon": "🎮",
+      "description": "Lives et démonstrations",
+      "url": "https://www.twitch.tv/dingodorone",
+      "color": "#9146ff"
+    }
   ]
 }
