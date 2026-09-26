@@ -1,8 +1,9 @@
-const CACHE = 'dingodor-v28-site';
+const CACHE = 'dingodor-v29-logo-maison';
 const ASSETS = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  '../logo-maison.svg'
 ];
 
 self.addEventListener('install', e => {
