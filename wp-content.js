@@ -19,7 +19,7 @@ function localizeWordPressLinks(container) {
     try {
       const url = new URL(link.href);
       if (url.hostname === 'dingodorone.github.io' && url.pathname.startsWith('/dingodor-app')) {
-        link.href = 'guide-camera.html';
+        link.href = '/guide-camera.html';
         link.removeAttribute('target');
         link.removeAttribute('rel');
         return;
@@ -28,9 +28,9 @@ function localizeWordPressLinks(container) {
       if (url.pathname.startsWith('/wp-content/')) return;
       const parts = url.pathname.split('/').filter(Boolean);
       const slug = parts.at(-1);
-      if (!slug) { link.href = 'index.html'; return; }
+      if (!slug) { link.href = '/'; return; }
       const isArticle = /^\d{4}$/.test(parts[0] || '') && /^\d{2}$/.test(parts[1] || '');
-      link.href = `${isArticle ? 'article' : 'page'}.html?slug=${encodeURIComponent(slug)}`;
+      link.href = `/${isArticle ? 'article' : 'page'}.html?slug=${encodeURIComponent(slug)}`;
       link.removeAttribute('target');
       link.removeAttribute('rel');
     } catch (_) {}
@@ -477,4 +477,10 @@ document.addEventListener('DOMContentLoaded', () => {
     loadPosts({reset: Boolean(currentSearch)});
   }
   if (type === 'post' || type === 'page') showSingle(type);
+  if (type === 'static-post') {
+    const content = document.querySelector('#wp-content');
+    enhanceArticleMedia(content);
+    localizeWordPressLinks(content);
+    showComments({ID: Number(document.body.dataset.postId)});
+  }
 });
