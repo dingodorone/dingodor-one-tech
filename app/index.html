@@ -451,6 +451,55 @@
   .promo-special { margin-top:13px; padding:14px; border:1px solid rgba(22,199,216,.48); border-radius:12px; background:rgba(22,199,216,.09); }
   .promo-special strong { color:#8df3f6; font-size:13px; }
   .promo-special p { color:#c8d8e0; font-size:11px; margin:6px 0 10px; line-height:1.5; }
+  #promo-highlights .promo-featured {
+    display:block;
+    min-width:0;
+    margin:0 0 22px;
+    padding:20px;
+    border:1px solid rgba(22,199,216,.4);
+    border-radius:20px;
+    background:linear-gradient(145deg,#103247,#0c2135);
+    cursor:default;
+  }
+  .promo-featured-shop {
+    display:inline-block;
+    margin-bottom:10px;
+    color:#83edf4;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.04em;
+  }
+  #promo-highlights .promo-featured h3 {
+    margin:0 0 10px;
+    color:#fff;
+    font:700 20px/1.3 'DM Sans',sans-serif;
+    letter-spacing:-.02em;
+    white-space:normal;
+    overflow-wrap:break-word;
+  }
+  #promo-highlights .promo-featured p {
+    margin:0 0 17px;
+    color:#c5d7e2;
+    font-size:14px;
+    line-height:1.55;
+    white-space:normal;
+  }
+  #promo-highlights .promo-featured .promo-link-app {
+    display:flex;
+    width:100%;
+    min-height:46px;
+    align-items:center;
+    justify-content:center;
+    padding:11px 14px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#16c7d8,#0c78ff);
+    color:#fff;
+    font-size:14px;
+    font-weight:700;
+    line-height:1.3;
+    text-align:center;
+    text-decoration:none;
+  }
 
 
   /* RÉSEAUX */
@@ -1196,7 +1245,7 @@ async function loadPromos() {
     now.setHours(0, 0, 0, 0);
     promos = all.filter(p => p.type !== 'store' && p.code && (!p.expires || new Date(`${p.expires}T23:59:59`) >= now));
     document.getElementById('promo-highlights').innerHTML = all.filter(p => p.type === 'store' && p.highlightUrl).map(p =>
-      `<article class="promo-card promo-offer" style="margin-bottom:16px"><div class="promo-brand">${promoEsc(p.shop)} · ${promoEsc(p.highlightTitle)}</div><div class="promo-desc">${promoEsc(p.highlightNote || '')}</div><div class="promo-actions"><a class="promo-link-app" href="${promoEsc(p.highlightUrl)}" target="_blank" rel="noopener sponsored">Découvrir la sélection →</a></div></article>`
+      `<article class="promo-card promo-featured"><span class="promo-featured-shop">${promoEsc(p.shop)}</span><h3>${promoEsc(p.highlightTitle)}</h3><p>${promoEsc(p.highlightNote || '')}</p><a class="promo-link-app" href="${promoEsc(p.highlightUrl)}" target="_blank" rel="noopener sponsored">Voir la sélection sur ${promoEsc(p.shop)} →</a></article>`
     ).join('');
     const shops = [...new Set(promos.map(p => p.shop || p.brand))];
     const countries = [...new Set(promos.flatMap(p => p.countries || []))];
