@@ -642,6 +642,9 @@
   }
   .search-result-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
   .search-result-date { font-size: 11px; color: var(--muted); }
+  .article-search-open { display:block; width:100%; margin:0 0 15px; padding:13px 16px; border:1px solid rgba(22,199,216,.35); border-radius:13px; background:#10283d; color:#e8faff; text-align:left; font:600 14px 'DM Sans',sans-serif; cursor:pointer; }
+  .search-summary { margin:0 0 10px; color:#a9c2d1; font-size:13px; }
+  .search-more { display:block; width:100%; margin:16px 0 24px; padding:12px; border:1px solid rgba(22,199,216,.45); border-radius:12px; background:#10283d; color:#a5f5fa; font:700 14px 'DM Sans',sans-serif; cursor:pointer; }
 
   /* BOTTOM NAV */
   .bottom-nav {
@@ -959,9 +962,11 @@
 <!-- SECTION ARTICLES -->
 <div class="section" id="sec-articles">
   <div class="section-title">Tous les articles</div>
+  <button class="article-search-open" type="button" onclick="openSearch()">⌕ Rechercher dans tous les articles</button>
+  <p id="articles-count" class="app-promo-count" aria-live="polite"></p>
   <div class="articles" id="all-articles"></div>
   <div id="load-more-container" style="text-align:center;margin:10px 0 20px;display:none">
-    <button onclick="loadMoreArticles()" style="background:var(--bg2);border:1px solid var(--accent);color:var(--accent);border-radius:20px;padding:10px 28px;font-size:13px;font-weight:600;cursor:pointer">
+    <button id="load-more-articles" onclick="loadMoreArticles()" style="background:var(--bg2);border:1px solid var(--accent);color:var(--accent);border-radius:20px;padding:10px 28px;font-size:13px;font-weight:600;cursor:pointer">
       Charger plus d'articles ↓
     </button>
   </div>
@@ -1121,6 +1126,11 @@
 // === DATA ===
 // Articles chargés directement depuis l'API officielle WordPress
 let articles = [];
+let articlesFound = 0;
+let articlesLoading = false;
+const ARTICLES_PAGE_SIZE = 20;
+const POSTS_API = 'https://public-api.wordpress.com/rest/v1.1/sites/dingodoronetech.wordpress.com/posts/';
+const POSTS_FIELDS = 'ID,title,slug,date,excerpt,featured_image';
 
 function articleText(value) {
   const node = document.createElement('div');
@@ -1128,26 +1138,37 @@ function articleText(value) {
   return (node.textContent || '').replace(/\s+/g, ' ').trim();
 }
 
+function articleEsc(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+}
+
+function articleFromPost(post) {
+  const excerpt = articleText(post.excerpt).slice(0, 150);
+  return {
+    title: articleText(post.title) || 'Sans titre',
+    date: new Date(post.date).toLocaleDateString('fr-FR', {day:'numeric', month:'short', year:'numeric'}),
+    tag: 'Article',
+    excerpt: excerpt + (excerpt.length === 150 ? '…' : ''),
+    url: `https://dingodoronetech.eu.org/article.html?slug=${encodeURIComponent(post.slug)}`,
+    img: post.featured_image || null
+  };
+}
+
+async function fetchPosts(offset, search = '', signal) {
+  const params = new URLSearchParams({number:String(ARTICLES_PAGE_SIZE), offset:String(offset), fields:POSTS_FIELDS});
+  if (search) params.set('search', search);
+  const res = await fetch(`${POSTS_API}?${params}`, {signal, cache:'no-store'});
+  if (!res.ok) throw new Error(`Erreur ${res.status}`);
+  return res.json();
+}
+
 async function loadArticlesFromAPI() {
   showLoadingArticles();
-  const API = 'https://public-api.wordpress.com/rest/v1.1/sites/dingodoronetech.wordpress.com/posts/?number=50&fields=ID,title,slug,date,excerpt,featured_image';
-
   try {
-    const res = await fetch(API, {cache: 'no-store'});
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
+    const data = await fetchPosts(0);
     if (data.posts && data.posts.length > 0) {
-      articles = data.posts.map(post => {
-        const excerpt = articleText(post.excerpt).slice(0, 150);
-        return {
-          title: articleText(post.title) || 'Sans titre',
-          date: new Date(post.date).toLocaleDateString('fr-FR', {day:'numeric', month:'short', year:'numeric'}),
-          tag: 'Article',
-          excerpt: excerpt + (excerpt.length === 150 ? '…' : ''),
-          url: `https://dingodoronetech.eu.org/article.html?slug=${encodeURIComponent(post.slug)}`,
-          img: post.featured_image || null
-        };
-      });
+      articles = data.posts.map(articleFromPost);
+      articlesFound = Number(data.found) || articles.length;
       renderArticles();
       return;
     }
@@ -1167,20 +1188,32 @@ function showArticleError() {
   document.getElementById('all-articles').innerHTML = err;
 }
 
-let articlesShown = 10;
-
 function renderArticles() {
   document.getElementById('home-articles').innerHTML = articles.slice(0, 3).map(articleCard).join('');
-  document.getElementById('all-articles').innerHTML = articles.slice(0, articlesShown).map(articleCard).join('');
+  document.getElementById('all-articles').innerHTML = articles.map(articleCard).join('');
+  document.getElementById('articles-count').textContent = `${articles.length} article${articles.length > 1 ? 's' : ''} affiché${articles.length > 1 ? 's' : ''} sur ${articlesFound}`;
   const btn = document.getElementById('load-more-container');
-  btn.style.display = articles.length > articlesShown ? 'block' : 'none';
+  btn.style.display = articles.length < articlesFound ? 'block' : 'none';
 }
 
-function loadMoreArticles() {
-  articlesShown += 10;
-  document.getElementById('all-articles').innerHTML = articles.slice(0, articlesShown).map(articleCard).join('');
-  const btn = document.getElementById('load-more-container');
-  btn.style.display = articles.length > articlesShown ? 'block' : 'none';
+async function loadMoreArticles() {
+  if (articlesLoading || articles.length >= articlesFound) return;
+  articlesLoading = true;
+  const button = document.getElementById('load-more-articles');
+  button.disabled = true;
+  button.textContent = 'Chargement…';
+  try {
+    const data = await fetchPosts(articles.length);
+    articles.push(...(data.posts || []).map(articleFromPost));
+    articlesFound = data.posts?.length ? (Number(data.found) || articles.length) : articles.length;
+    renderArticles();
+  } catch (_) {
+    button.textContent = 'Réessayer de charger les articles';
+  } finally {
+    articlesLoading = false;
+    button.disabled = false;
+    if (button.textContent === 'Chargement…') button.textContent = "Charger plus d'articles ↓";
+  }
 }
 
 const SHARED_DATA_URL = 'https://dingodoronetech.eu.org/data/site-data.json';
@@ -2743,29 +2776,71 @@ function camRenderWizard() {
 camRenderWizard();
 
 // === SEARCH ===
+let searchTimer;
+let searchController;
+let searchRequest = 0;
+let searchQuery = '';
+let searchMatches = [];
+let searchFound = 0;
+let searchLoading = false;
+
 function openSearch() {
   document.getElementById('searchOverlay').classList.add('open');
   setTimeout(() => document.getElementById('searchInput').focus(), 100);
-  filterSearch('');
+  filterSearch(document.getElementById('searchInput').value);
 }
 function closeSearch() {
   document.getElementById('searchOverlay').classList.remove('open');
 }
 function filterSearch(q) {
-  if (articles.length === 0) {
-    document.getElementById('searchResults').innerHTML = '<p style="color:var(--muted);font-size:13px;padding-top:20px;text-align:center">Articles en cours de chargement...</p>';
+  clearTimeout(searchTimer);
+  searchController?.abort();
+  const request = ++searchRequest;
+  searchQuery = q.trim();
+  searchMatches = [];
+  searchFound = 0;
+  const list = document.getElementById('searchResults');
+  if (searchQuery.length < 2) {
+    list.innerHTML = '<p class="search-summary">Saisissez au moins deux caractères pour rechercher dans tous les articles.</p>';
     return;
   }
-  const results = q.length < 2 ? articles : articles.filter(a =>
-    a.title.toLowerCase().includes(q.toLowerCase()) ||
-    a.excerpt.toLowerCase().includes(q.toLowerCase())
-  );
-  document.getElementById('searchResults').innerHTML = results.length
-    ? results.map(a => `<a class="search-result-item" href="${a.url}" target="_blank" style="display:block;text-decoration:none">
-        <div class="search-result-title">${a.title}</div>
-        <div class="search-result-date">${a.tag} · ${a.date}</div>
-      </a>`).join('')
-    : `<p style="color:var(--muted);font-size:13px;padding-top:20px;text-align:center">Aucun résultat pour "${q}"</p>`;
+  list.innerHTML = '<p class="search-summary">Recherche dans les articles…</p>';
+  searchTimer = setTimeout(() => searchArticles(0, request), 300);
+}
+
+async function searchArticles(offset, request = searchRequest) {
+  if (searchLoading && offset > 0) return;
+  searchLoading = true;
+  searchController = new AbortController();
+  const query = searchQuery;
+  try {
+    const data = await fetchPosts(offset, query, searchController.signal);
+    if (request !== searchRequest || query !== searchQuery) return;
+    const matches = (data.posts || []).map(articleFromPost);
+    searchMatches = offset ? [...searchMatches, ...matches] : matches;
+    searchFound = matches.length ? (Number(data.found) || searchMatches.length) : searchMatches.length;
+    renderSearchResults();
+  } catch (error) {
+    if (error.name !== 'AbortError' && request === searchRequest) {
+      document.getElementById('searchResults').innerHTML = '<p class="search-summary">La recherche a échoué. Réessayez en saisissant votre recherche.</p>';
+    }
+  } finally {
+    if (request === searchRequest) searchLoading = false;
+  }
+}
+
+function renderSearchResults() {
+  const list = document.getElementById('searchResults');
+  if (!searchMatches.length) {
+    list.innerHTML = `<p class="search-summary">Aucun article trouvé pour « ${articleEsc(searchQuery)} ».</p>`;
+    return;
+  }
+  list.innerHTML = `<p class="search-summary">${searchMatches.length} résultat${searchMatches.length > 1 ? 's' : ''} affiché${searchMatches.length > 1 ? 's' : ''} sur ${searchFound}</p>` +
+    searchMatches.map(a => `<a class="search-result-item" href="${articleEsc(a.url)}" target="_blank" rel="noopener" style="display:block;text-decoration:none">
+      <div class="search-result-title">${articleEsc(a.title)}</div>
+      <div class="search-result-date">${articleEsc(a.date)}</div>
+    </a>`).join('') +
+    (searchMatches.length < searchFound ? '<button class="search-more" type="button" onclick="searchArticles(searchMatches.length)">Afficher plus de résultats</button>' : '');
 }
 
 // === PROMO COPY ===
