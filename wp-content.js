@@ -367,6 +367,16 @@ let currentSearch = '';
 let postsRequest = 0;
 let postsController = null;
 
+function postPermalink(post) {
+  if (post.slug === 'pg107') return '/alarme-pg107.html';
+  let slug = post.slug || '';
+  try { slug = decodeURIComponent(slug); } catch (_) {}
+  const readable = slug.normalize('NFKD').replace(/[^\x00-\x7F]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+    .slice(0, 85).replace(/-+$/g, '') || 'article';
+  return `/posts/${Number(post.ID)}-${readable}.html`;
+}
+
 function appendPostCards(posts, {replace = false} = {}) {
   const grid = document.querySelector('#post-grid');
   if (replace) grid.innerHTML = '';
@@ -375,7 +385,7 @@ function appendPostCards(posts, {replace = false} = {}) {
     const excerpt = textOnly(post.excerpt || '').slice(0, 150);
     const card = document.createElement('a');
     card.className = 'post-card';
-    card.href = post.slug === 'pg107' ? 'alarme-pg107.html' : `article.html?slug=${encodeURIComponent(post.slug)}`;
+    card.href = postPermalink(post);
     card.innerHTML = `${image ? `<img src="${esc(image)}" alt="" loading="lazy" decoding="async">` : ''}<div class="post-card-body"><time>${new Intl.DateTimeFormat('fr-FR',{dateStyle:'long'}).format(new Date(post.date))}</time><h2>${esc(textOnly(post.title))}</h2><p>${esc(excerpt)}${excerpt.length >= 150 ? '…' : ''}</p></div>`;
     grid.appendChild(card);
   });
