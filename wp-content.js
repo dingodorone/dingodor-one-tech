@@ -73,11 +73,22 @@ async function enhancePromoPage(container) {
     const response = await fetch(`https://raw.githubusercontent.com/dingodorone/dingodor-data/main/promos.json?v=${Date.now()}`, {cache: 'no-store'});
     if (!response.ok) throw new Error(`Erreur ${response.status}`);
     const promos = await response.json();
+    let partnerShops = [];
+    try {
+      const partnerResponse = await fetch(`${SHARED_DATA_URL}?v=${Date.now()}`, {cache: 'no-store'});
+      if (partnerResponse.ok) partnerShops = (await partnerResponse.json()).partners || [];
+    } catch (_) {}
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const activeCodes = promos.filter(p => p.type !== 'store' && (!p.expires || new Date(`${p.expires}T23:59:59`) >= today));
-    const storesWithCodes = new Set(activeCodes.map(p => p.shop));
-    const activeStores = promos.filter(p => p.type === 'store' && (!storesWithCodes.has(p.shop) || p.shop === 'AliExpress'));
+    const activeCodes = promos.filter(p => p.type !== 'store' && p.code && (!p.expires || new Date(`${p.expires}T23:59:59`) >= today));
+    const activeStores = promos.filter(p => p.type === 'store' && p.url);
+    const knownShops = new Set(activeStores.map(p => p.shop));
+    partnerShops.forEach(partner => {
+      const shop = partner.name === 'SwitchBot Europe' ? 'SwitchBot' : partner.name;
+      if (!partner.url || knownShops.has(shop)) return;
+      activeStores.push({type:'store', shop, brand:partner.name, desc:partner.description || '', url:partner.url});
+      knownShops.add(shop);
+    });
     const activePromos = [...activeCodes, ...activeStores];
     const brands = [...new Set(activePromos.map(p => p.shop || p.brand.replace(/\s[🇫🇷🇧🇪].*$/, '')))];
     const countries = [...new Set(activePromos.flatMap(p => p.countries || []))];
@@ -93,8 +104,8 @@ async function enhancePromoPage(container) {
         <p class="promo-meta"><span>${esc(countriesText || 'Europe')}</span><span>${esc(expiry)}</span></p>
         ${p.note ? `<p class="promo-note">${esc(p.note)}</p>` : ''}
         ${p.highlightUrl ? `<div class="promo-highlight"><strong>${esc(p.highlightTitle)}</strong><p>${esc(p.highlightNote || '')}</p><a href="${esc(p.highlightUrl)}" target="_blank" rel="noopener sponsored">Découvrir la sélection →</a></div>` : ''}
-        ${hasCode ? `<button class="promo-code" type="button" data-code="${esc(p.code)}" aria-label="Copier le code ${esc(p.code)}"><span>${esc(p.code)}</span><small>Copier</small></button>` : '<div class="promo-direct"><strong>Code promo via mon lien</strong><span>Les codes et promotions sont disponibles directement sur la boutique.</span></div>'}
-        ${p.links?.length ? `<div class="promo-country-links">${p.links.map(link => `<a class="promo-link" data-link-country="${esc(link.country)}" href="${esc(link.url)}" target="_blank" rel="noopener sponsored">Voir les offres ${esc(link.label)} <span aria-hidden="true">→</span></a>`).join('')}</div>` : `<a class="promo-link" href="${esc(p.url)}" target="_blank" rel="noopener sponsored">${hasCode ? 'Voir l’offre' : 'Voir les codes et promotions'} <span aria-hidden="true">→</span></a>`}
+        ${hasCode ? `<button class="promo-code" type="button" data-code="${esc(p.code)}" aria-label="Copier le code ${esc(p.code)}"><span>${esc(p.code)}</span><small>Copier</small></button>` : '<div class="promo-direct"><strong>Codes promo sur la boutique</strong><span>Consultez les codes et offres directement sur la boutique via mon lien.</span></div>'}
+        ${p.links?.length ? `<div class="promo-country-links">${p.links.map(link => `<a class="promo-link" data-link-country="${esc(link.country)}" href="${esc(link.url)}" target="_blank" rel="noopener sponsored">Voir les offres ${esc(link.label)} <span aria-hidden="true">→</span></a>`).join('')}</div>` : `<a class="promo-link" href="${esc(p.url)}" target="_blank" rel="noopener sponsored">${hasCode ? 'Voir l’offre' : 'Voir les codes et offres via mon lien'} <span aria-hidden="true">→</span></a>`}
       </article>`;
     };
     container.innerHTML = `<section class="promo-intro"><p class="promo-kicker">Codes promo et boutiques</p><h2>Trouvez votre code en quelques secondes</h2><p>Recherchez une boutique ou filtrez par pays. Les codes arrivés à expiration sont automatiquement retirés de la liste.</p></section>
