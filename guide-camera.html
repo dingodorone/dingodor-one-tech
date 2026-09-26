@@ -1208,8 +1208,8 @@ function switchTab(id, el) {
 const CAM_TAG_FR = 'dingodor-21';
 const CAM_TAG_BE = 'dingodor00e-21';
 
-function camLinkFR(asin) { return `https://www.amazon.fr/dp/${asin}?tag=${CAM_TAG_FR}`; }
-function camLinkBE(asin) { return `https://www.amazon.com.be/dp/${asin}?tag=${CAM_TAG_BE}`; }
+function camLinkFR(model) { return `https://www.amazon.fr/s?k=${encodeURIComponent(model)}&tag=${CAM_TAG_FR}`; }
+function camLinkBE(model) { return `https://www.amazon.com.be/s?k=${encodeURIComponent(model)}&tag=${CAM_TAG_BE}`; }
 function camLinkSwitchBot(productPath) { return `https://eu.switch-bot.com/fr/products/${productPath}?sca_ref=2274537.x1K7OdVgTO&utm_source=uppromote&utm_medium=affiliate&utm_campaign=2274537`; }
 function camProductImages(p) {
   const images = [];
@@ -2203,8 +2203,8 @@ function camStorageBlock(p, storageAnswer, retentionAnswer) {
       <div style="font-size:12px;color:var(--muted);margin-bottom:8px">📦 Carte microSD conseillée pour ce modèle${p.maxSD ? ` (max ${p.maxSD})` : ''} :</div>
       <div style="font-size:13px;color:var(--text);font-weight:600;margin-bottom:8px">${p.sdLabel}</div>
       <div class="cam-buy-row">
-        <a class="cam-buy-btn" href="${camLinkFR(p.sdAsin)}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Amazon.fr</a>
-        <a class="cam-buy-btn" href="${camLinkBE(p.sdAsin)}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Amazon.be</a>
+        <a class="cam-buy-btn" href="${camLinkFR(p.sdLabel)}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Rechercher sur Amazon France</a>
+        <a class="cam-buy-btn" href="${camLinkBE(p.sdLabel)}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Rechercher sur Amazon Belgique</a>
       </div>
       ${longNote}
     </div>` : `
@@ -2231,13 +2231,13 @@ function camNvrNasBlock(p) {
       🖥️ Pour une caméra Reolink sur batterie/WiFi comme celle-ci, ce n'est pas un NVR classique qu'il te faut (elle n'a pas de flux RTSP/ONVIF direct), mais un <strong>Reolink Home Hub</strong> ou <strong>Home Hub Mini</strong> : jusqu'à 8 caméras centralisées, stockage local chiffré sans frais mensuels, et c'est aussi l'accessoire qui permet la compatibilité Home Assistant.
       <div style="margin-top:8px;font-size:12px;color:var(--text)"><strong>Home Hub Mini</strong> (plus compact, microSD jusqu'à 1 To) :</div>
       <div class="cam-buy-row" style="margin-top:4px">
-        <a class="cam-buy-btn" href="${camLinkFR('B0G2L49TDM')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Amazon.fr</a>
-        <a class="cam-buy-btn" href="${camLinkBE('B0G2L49TDM')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Amazon.be</a>
+        <a class="cam-buy-btn" href="${camLinkFR('Reolink Home Hub Mini')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Rechercher sur Amazon France</a>
+        <a class="cam-buy-btn" href="${camLinkBE('Reolink Home Hub Mini')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Rechercher sur Amazon Belgique</a>
       </div>
       <div style="margin-top:10px;font-size:12px;color:var(--text)"><strong>Home Hub</strong> (2 emplacements microSD jusqu'à 1 To chacun, soit 2 To) :</div>
       <div class="cam-buy-row" style="margin-top:4px">
-        <a class="cam-buy-btn" href="${camLinkFR('B0CZRGVJZF')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Amazon.fr</a>
-        <a class="cam-buy-btn" href="${camLinkBE('B0CZRGVJZF')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Amazon.be</a>
+        <a class="cam-buy-btn" href="${camLinkFR('Reolink Home Hub')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Rechercher sur Amazon France</a>
+        <a class="cam-buy-btn" href="${camLinkBE('Reolink Home Hub')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Rechercher sur Amazon Belgique</a>
       </div>
     </div>`;
   }
@@ -2299,13 +2299,13 @@ function camRenderCard(p, extraBadge, baseCategory, extraNote, ansOverride) {
       🏠 Le compromis à connaître : pour intégrer cette caméra à Home Assistant, il faut ajouter un <strong>Reolink Home Hub</strong> ou <strong>Home Hub Mini</strong> (vendu séparément), qui sert de passerelle. Sans ce hub, la caméra reste utilisable normalement via l'appli Reolink, mais pas via Home Assistant.
       <div style="margin-top:8px;font-size:12px;color:var(--text)"><strong>Home Hub Mini</strong> (plus compact et moins cher, microSD jusqu'à 1 To) :</div>
       <div class="cam-buy-row" style="margin-top:4px">
-        <a class="cam-buy-btn" href="${camLinkFR('B0G2L49TDM')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Amazon.fr</a>
-        <a class="cam-buy-btn" href="${camLinkBE('B0G2L49TDM')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Amazon.be</a>
+        <a class="cam-buy-btn" href="${camLinkFR('Reolink Home Hub Mini')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Rechercher sur Amazon France</a>
+        <a class="cam-buy-btn" href="${camLinkBE('Reolink Home Hub Mini')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Rechercher sur Amazon Belgique</a>
       </div>
       <div style="margin-top:10px;font-size:12px;color:var(--text)"><strong>Home Hub</strong> (2 emplacements microSD jusqu'à 1 To chacun, soit 2 To) :</div>
       <div class="cam-buy-row" style="margin-top:4px">
-        <a class="cam-buy-btn" href="${camLinkFR('B0CZRGVJZF')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Amazon.fr</a>
-        <a class="cam-buy-btn" href="${camLinkBE('B0CZRGVJZF')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Amazon.be</a>
+        <a class="cam-buy-btn" href="${camLinkFR('Reolink Home Hub')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Rechercher sur Amazon France</a>
+        <a class="cam-buy-btn" href="${camLinkBE('Reolink Home Hub')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Rechercher sur Amazon Belgique</a>
       </div>
     </div>`;
     } else if (p.haCompatible) {
@@ -2334,8 +2334,8 @@ function camRenderCard(p, extraBadge, baseCategory, extraNote, ansOverride) {
     <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);line-height:1.6">
       🔔 Reolink Chime V2 (carillon sans fil, vendu séparément, à vérifier qu'il est bien listé compatible avec ce modèle précis avant achat) :
       <div class="cam-buy-row" style="margin-top:8px">
-        <a class="cam-buy-btn" href="${camLinkFR('B0CYGP6P1P')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Amazon.fr</a>
-        <a class="cam-buy-btn" href="${camLinkBE('B0CYGP6P1P')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Amazon.be</a>
+        <a class="cam-buy-btn" href="${camLinkFR('Reolink Chime V2')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇫🇷 Rechercher sur Amazon France</a>
+        <a class="cam-buy-btn" href="${camLinkBE('Reolink Chime V2')}" target="_blank" rel="noopener" style="background:var(--bg3);color:var(--text)">🇧🇪 Rechercher sur Amazon Belgique</a>
       </div>
     </div>`;
     } else if (baseCategory === 'doorbell') {
@@ -2361,8 +2361,8 @@ function camRenderCard(p, extraBadge, baseCategory, extraNote, ansOverride) {
       <div class="cam-buy-row">
         ${p.store === 'switchbot'
           ? `<a class="cam-buy-btn" href="${camLinkSwitchBot(p.storePath)}" target="_blank" rel="noopener" style="flex:1 1 100%">🛒 Voir sur SwitchBot.com (-10% avec ce lien)</a>`
-          : `<a class="cam-buy-btn" href="${camLinkFR(p.asin)}" target="_blank" rel="noopener">🇫🇷 Voir sur Amazon.fr</a>
-        <a class="cam-buy-btn" href="${camLinkBE(p.asin)}" target="_blank" rel="noopener">🇧🇪 Voir sur Amazon.be</a>`}
+          : `<a class="cam-buy-btn" href="${camLinkFR(p.title)}" target="_blank" rel="noopener">🇫🇷 Rechercher le modèle sur Amazon France</a>
+        <a class="cam-buy-btn" href="${camLinkBE(p.title)}" target="_blank" rel="noopener">🇧🇪 Rechercher le modèle sur Amazon Belgique</a>`}
       </div>
       ${camStorageBlock(p, ans.storage, ans.retention)}
       ${chimeAccessoryBlock}
