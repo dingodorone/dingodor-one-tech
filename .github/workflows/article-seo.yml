@@ -1,0 +1,37 @@
+name: Pages et sitemap des articles
+
+on:
+  schedule:
+    - cron: '12 * * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/build_articles.py
+      - wp-content.js
+      - .github/workflows/article-seo.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dingodor-article-seo
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Générer les pages et le sitemap depuis WordPress
+        run: python3 scripts/build_articles.py
+      - name: Publier les nouvelles pages
+        run: |
+          git add posts sitemap.xml
+          if ! git diff --cached --quiet; then
+            git config user.name "dingodor-articles[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Actualiser les articles indexables et le sitemap"
+            git push
+          fi
