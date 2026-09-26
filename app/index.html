@@ -602,7 +602,7 @@
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.9);
-    z-index: 200;
+    z-index: 260;
     display: none;
     flex-direction: column;
     padding: 20px 18px;
@@ -965,7 +965,7 @@
   <button class="article-search-open" type="button" onclick="openSearch()">⌕ Rechercher dans tous les articles</button>
   <p id="articles-count" class="app-promo-count" aria-live="polite"></p>
   <div class="articles" id="all-articles"></div>
-  <div id="load-more-container" style="text-align:center;margin:10px 0 20px;display:none">
+  <div id="load-more-container" style="text-align:center;margin:10px 0 130px;display:none">
     <button id="load-more-articles" onclick="loadMoreArticles()" style="background:var(--bg2);border:1px solid var(--accent);color:var(--accent);border-radius:20px;padding:10px 28px;font-size:13px;font-weight:600;cursor:pointer">
       Charger plus d'articles ↓
     </button>
@@ -1144,12 +1144,16 @@ function articleEsc(value) {
 
 function articleFromPost(post) {
   const excerpt = articleText(post.excerpt).slice(0, 150);
+  let slug = post.slug;
+  try { slug = decodeURIComponent(slug); } catch (_) {}
   return {
     title: articleText(post.title) || 'Sans titre',
     date: new Date(post.date).toLocaleDateString('fr-FR', {day:'numeric', month:'short', year:'numeric'}),
     tag: 'Article',
     excerpt: excerpt + (excerpt.length === 150 ? '…' : ''),
-    url: `https://dingodoronetech.eu.org/article.html?slug=${encodeURIComponent(post.slug)}`,
+    url: post.slug === 'pg107'
+      ? 'https://dingodoronetech.eu.org/alarme-pg107.html'
+      : `https://dingodoronetech.eu.org/article.html?slug=${encodeURIComponent(slug)}`,
     img: post.featured_image || null
   };
 }
