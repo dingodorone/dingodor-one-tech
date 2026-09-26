@@ -897,6 +897,13 @@
     .articles { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
     .bottom-nav { max-width:520px; }
   }
+/* Navigation du guide : deux actions visibles, aussi sur petit écran. */
+.cam-nav-actions,.cam-result-actions{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0 20px}
+.cam-nav-actions .cam-back,.cam-result-actions .cam-restart-btn{display:inline-flex;align-items:center;justify-content:center;flex:1 1 0;min-width:0;min-height:50px;margin:0;padding:10px;border-radius:13px;color:#fff;font:700 12px/1.25 'Syne',sans-serif;text-align:center;box-shadow:0 10px 20px rgba(0,0,0,.22)}
+.cam-nav-actions .is-back,.cam-result-actions .is-back{background:#116ab9;border:2px solid #75d9f8}
+.cam-nav-actions .is-restart,.cam-result-actions .is-restart{background:#3a2915;border:2px solid #ffc36c;color:#fff0d5}
+.cam-nav-actions button:focus-visible,.cam-result-actions button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+@media(max-width:350px){.cam-nav-actions,.cam-result-actions{gap:7px}.cam-nav-actions .cam-back,.cam-result-actions .cam-restart-btn{padding:8px 6px;font-size:11px}}
 </style>
 </head>
 <body>
@@ -2726,9 +2733,9 @@ function camRenderWizard() {
       ${zones.length > 0 ? '<hr style="border:none;border-top:1px solid var(--border);margin:18px 0">' : ''}
       ${currentZoneHtml}
       ${kitAddonHtml}
-      <div style="display:flex;gap:8px">
-        ${camHistory.length > 0 ? `<button class="cam-restart-btn" onclick="camGoBack()" style="flex:1">← Modifier la dernière réponse</button>` : ''}
-        <button class="cam-restart-btn" onclick="camRestart()" style="flex:1">↺ Recommencer le guide</button>
+      <div class="cam-result-actions">
+        ${camHistory.length > 0 ? `<button type="button" class="cam-restart-btn is-back" onclick="camGoBack()">← Modifier la dernière réponse</button>` : ''}
+        <button type="button" class="cam-restart-btn is-restart" onclick="camRestart()">↺ Recommencer le guide</button>
       </div>
       <div class="cam-note">Liens affiliés Amazon, le prix reste le même pour toi, ça soutient le blog 🙏</div>
     `;
@@ -2773,9 +2780,9 @@ function camRenderWizard() {
 
   container.innerHTML = `
     <div class="cam-progress">${dots}</div>
-    <div style="display:flex;gap:8px;margin-bottom:14px">
-      ${camHistory.length > 0 ? `<button class="cam-back" onclick="camGoBack()">← Question précédente</button>` : ''}
-      ${answeredCount > 0 ? `<button class="cam-back" onclick="camRestart()">↺ Recommencer</button>` : ''}
+    <div class="cam-nav-actions">
+      ${camHistory.length > 0 ? `<button type="button" class="cam-back is-back" onclick="camGoBack()">← Question précédente</button>` : ''}
+      ${answeredCount > 0 ? `<button type="button" class="cam-back is-restart" onclick="camRestart()">↺ Recommencer</button>` : ''}
     </div>
     ${preQuestionNote}
     <div class="cam-question">${questionText}</div>
