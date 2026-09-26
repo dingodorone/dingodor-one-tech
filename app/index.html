@@ -1144,8 +1144,11 @@ function articleEsc(value) {
 
 function articleFromPost(post) {
   const excerpt = articleText(post.excerpt).slice(0, 150);
-  let slug = post.slug;
+  let slug = post.slug || '';
   try { slug = decodeURIComponent(slug); } catch (_) {}
+  const readable = slug.normalize('NFKD').replace(/[^\x00-\x7F]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+    .slice(0, 85).replace(/-+$/g, '') || 'article';
   return {
     title: articleText(post.title) || 'Sans titre',
     date: new Date(post.date).toLocaleDateString('fr-FR', {day:'numeric', month:'short', year:'numeric'}),
@@ -1153,7 +1156,7 @@ function articleFromPost(post) {
     excerpt: excerpt + (excerpt.length === 150 ? '…' : ''),
     url: post.slug === 'pg107'
       ? 'https://dingodoronetech.eu.org/alarme-pg107.html'
-      : `https://dingodoronetech.eu.org/article.html?slug=${encodeURIComponent(slug)}`,
+      : `https://dingodoronetech.eu.org/posts/${Number(post.ID)}-${readable}.html`,
     img: post.featured_image || null
   };
 }
