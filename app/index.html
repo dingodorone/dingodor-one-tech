@@ -976,11 +976,11 @@
 <div class="section" id="sec-promos">
   <div class="hero" style="margin-bottom:20px">
     <div class="hero-label">🏷️ Codes promo</div>
-    <h2>Codes promo du moment</h2>
-    <p>Choisissez une boutique et votre pays pour trouver les codes disponibles.</p>
+    <h2>Codes promo et boutiques</h2>
+    <p>Choisissez une boutique et votre pays. Même sans code à saisir, son lien affilié reste accessible ici.</p>
   </div>
   <div id="promo-highlights"></div>
-  <div class="section-title">Codes actifs</div>
+  <div class="section-title">Codes et boutiques</div>
   <div class="tabs" id="promo-filters" aria-label="Filtrer par boutique"></div>
   <div class="tabs" id="promo-countries" aria-label="Filtrer par pays"></div>
   <p id="app-promo-count" class="app-promo-count" aria-live="polite"></p>
@@ -1269,9 +1269,9 @@ function renderPromoList() {
   });
   document.getElementById('promos-list').innerHTML = filtered.length
     ? filtered.map(promoCard).join('')
-    : '<p class="app-promo-count">Aucun code pour ces filtres.</p>';
+    : '<p class="app-promo-count">Aucune offre pour ces filtres.</p>';
   document.getElementById('app-promo-count').textContent =
-    `${filtered.length} code${filtered.length > 1 ? 's' : ''} disponible${filtered.length > 1 ? 's' : ''}`;
+    `${filtered.length} offre${filtered.length > 1 ? 's' : ''} et boutique${filtered.length > 1 ? 's' : ''} affichée${filtered.length > 1 ? 's' : ''}`;
 }
 
 async function loadPromos() {
@@ -1283,14 +1283,23 @@ async function loadPromos() {
     const all = await response.json();
     const now = new Date();
     now.setHours(0, 0, 0, 0);
-    promos = all.filter(p => p.type !== 'store' && p.code && (!p.expires || new Date(`${p.expires}T23:59:59`) >= now));
+    const activeCodes = all.filter(p => p.type !== 'store' && p.code && (!p.expires || new Date(`${p.expires}T23:59:59`) >= now));
+    const stores = all.filter(p => p.type === 'store' && p.url);
+    const knownShops = new Set(stores.map(p => p.shop));
+    (sharedData?.partners || []).forEach(partner => {
+      const shop = partner.name === 'SwitchBot Europe' ? 'SwitchBot' : partner.name;
+      if (!partner.url || knownShops.has(shop)) return;
+      stores.push({type:'store', shop, brand:partner.name, desc:partner.description || '', url:partner.url});
+      knownShops.add(shop);
+    });
+    promos = [...activeCodes, ...stores];
     document.getElementById('promo-highlights').innerHTML = all.filter(p => p.type === 'store' && p.highlightUrl).map(p =>
       `<article class="promo-card promo-featured"><span class="promo-featured-shop">${promoEsc(p.shop)}</span><h3>${promoEsc(p.highlightTitle)}</h3><p>${promoEsc(p.highlightNote || '')}</p><a class="promo-link-app" href="${promoEsc(p.highlightUrl)}" target="_blank" rel="noopener sponsored">Voir la sélection sur ${promoEsc(p.shop)} →</a></article>`
     ).join('');
     const shops = [...new Set(promos.map(p => p.shop || p.brand))];
     const countries = [...new Set(promos.flatMap(p => p.countries || []))];
     document.getElementById('promo-filters').innerHTML =
-      '<button class="tab active" type="button" data-brand="tous">Tous les codes</button>' +
+      '<button class="tab active" type="button" data-brand="tous">Toutes les boutiques</button>' +
       shops.map(shop => `<button class="tab" type="button" data-brand="${promoEsc(shop)}">${promoEsc(shop)}</button>`).join('');
     document.getElementById('promo-countries').innerHTML =
       '<button class="tab active" type="button" data-country="tous">Tous les pays</button>' +
@@ -1358,14 +1367,14 @@ function promoCard(p) {
   const expiry = p.expires ? new Intl.DateTimeFormat('fr-FR', {day:'numeric', month:'long', year:'numeric'}).format(new Date(`${p.expires}T12:00:00`)) : '';
   const links = p.links?.length
     ? p.links.map(link => `<a class="promo-link-app" href="${promoEsc(link.url)}" target="_blank" rel="noopener sponsored" ${selectedPromoCountry !== 'tous' && selectedPromoCountry !== link.country ? 'hidden' : ''}>Voir les offres ${promoEsc(link.label)} →</a>`).join('')
-    : `<a class="promo-link-app" href="${promoEsc(p.url)}" target="_blank" rel="noopener sponsored">${code ? 'Voir l’offre' : 'Voir les codes et promotions'} →</a>`;
+    : `<a class="promo-link-app" href="${promoEsc(p.url)}" target="_blank" rel="noopener sponsored">${code ? 'Voir l’offre' : 'Voir les codes et offres via mon lien'} →</a>`;
   return `<article class="promo-card promo-offer">
     <div class="promo-brand">${promoEsc(p.brand)}</div>
     <div class="promo-desc">${promoEsc(p.desc || '')}</div>
     <div class="promo-region">${promoEsc(countries || 'Europe')}${expiry ? ` · Valable jusqu’au ${promoEsc(expiry)}` : ''}</div>
     ${p.note ? `<div class="promo-note">${promoEsc(p.note)}</div>` : ''}
     ${p.highlightUrl ? `<div class="promo-special"><strong>${promoEsc(p.highlightTitle)}</strong><p>${promoEsc(p.highlightNote || '')}</p><a class="promo-link-app" href="${promoEsc(p.highlightUrl)}" target="_blank" rel="noopener sponsored">Découvrir la sélection →</a></div>` : ''}
-    ${code ? `<div class="promo-actions"><button class="promo-copy" type="button" data-copy-code="${promoEsc(p.code)}">${promoEsc(p.code)} · Copier</button>${links}</div>` : `<div class="promo-region">Code promo via mon lien</div><div class="promo-store-links">${links}</div>`}
+    ${code ? `<div class="promo-actions"><button class="promo-copy" type="button" data-copy-code="${promoEsc(p.code)}">${promoEsc(p.code)} · Copier</button>${links}</div>` : `<div class="promo-region">Codes promo directement sur la boutique via mon lien</div><div class="promo-store-links">${links}</div>`}
   </article>`;
 }
 
