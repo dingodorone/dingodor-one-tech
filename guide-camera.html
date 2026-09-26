@@ -758,6 +758,14 @@ body.camera-standalone{max-width:none;padding-bottom:0;background:radial-gradien
 @media(min-width:800px){.camera-standalone .cam-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.camera-standalone .cam-option{margin:0}.camera-standalone .cam-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}}
 @media(max-width:780px){.camera-standalone>#sec-camera>.hero{grid-template-columns:1fr;padding:34px 24px}.guide-visual{min-height:245px}.guide-camera-body{width:230px}.guide-visual-note{right:4px}.camera-standalone>#sec-camera>.hero h2{font-size:clamp(34px,10vw,50px)}}
 @media(max-width:640px){body.camera-standalone{padding-bottom:0}.camera-standalone>header{height:68px;padding:0 16px}.camera-standalone .logo-text span{display:none}.site-return{font-size:12px;padding:8px 10px}.camera-standalone>#sec-camera{padding:22px 14px 55px}.camera-standalone>#sec-camera>.hero{padding:30px 20px;border-radius:24px}.guide-visual{min-height:205px}.guide-camera-body{width:185px}.guide-visual-note{font-size:10px;top:6px}.guide-disclosure{font-size:10px}.cam-wizard-panel{padding:22px 16px;border-radius:22px}.camera-standalone .cam-option{min-height:76px;padding:15px 44px 15px 52px}.camera-standalone .cam-question{font-size:25px}.camera-standalone .cam-back{font-size:11px;padding:7px 9px}}
+/* Navigation du questionnaire : visible et utilisable au toucher. */
+.cam-nav-actions,.cam-result-actions{display:flex;flex-wrap:wrap;gap:12px;margin:14px 0 24px}
+.camera-standalone .cam-nav-actions .cam-back,.camera-standalone .cam-result-actions .cam-restart-btn{display:inline-flex;align-items:center;justify-content:center;flex:1 1 180px;min-height:50px;margin:0;padding:12px 17px;border-radius:14px;color:#fff;font:800 14px/1.25 'Syne',sans-serif;text-align:center;box-shadow:0 10px 24px rgba(0,0,0,.24);transition:transform .18s,filter .18s}
+.camera-standalone .cam-nav-actions .is-back,.camera-standalone .cam-result-actions .is-back{background:linear-gradient(135deg,#1174cc,#0964b0);border:2px solid #7bdcff}
+.camera-standalone .cam-nav-actions .is-restart,.camera-standalone .cam-result-actions .is-restart{background:#3a2915;border:2px solid #ffc36c;color:#fff0d5}
+.camera-standalone .cam-nav-actions button:hover,.camera-standalone .cam-result-actions button:hover{filter:brightness(1.18);transform:translateY(-2px)}
+.camera-standalone .cam-nav-actions button:focus-visible,.camera-standalone .cam-result-actions button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@media(max-width:640px){.cam-nav-actions,.cam-result-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.camera-standalone .cam-nav-actions .cam-back,.camera-standalone .cam-result-actions .cam-restart-btn{min-height:52px;padding:10px;font-size:12px}.cam-nav-actions button:only-child,.cam-result-actions button:only-child{grid-column:1/-1}}
 </style>
 </head>
 <body class="camera-standalone">
@@ -2540,9 +2548,9 @@ function camRenderWizard() {
       ${zones.length > 0 ? '<hr style="border:none;border-top:1px solid var(--border);margin:18px 0">' : ''}
       ${currentZoneHtml}
       ${kitAddonHtml}
-      <div style="display:flex;gap:8px">
-        ${camHistory.length > 0 ? `<button class="cam-restart-btn" onclick="camGoBack()" style="flex:1">← Modifier la dernière réponse</button>` : ''}
-        <button class="cam-restart-btn" onclick="camRestart()" style="flex:1">↺ Recommencer le guide</button>
+      <div class="cam-result-actions">
+        ${camHistory.length > 0 ? `<button type="button" class="cam-restart-btn is-back" onclick="camGoBack()">← Modifier la dernière réponse</button>` : ''}
+        <button type="button" class="cam-restart-btn is-restart" onclick="camRestart()">↺ Recommencer le guide</button>
       </div>
       <div class="cam-note">Liens affiliés Amazon, le prix reste le même pour toi, ça soutient le blog 🙏</div>
     `;
@@ -2590,9 +2598,9 @@ function camRenderWizard() {
     <div class="cam-wizard-panel">
       <div class="cam-step-label">Votre sélection personnalisée</div>
       <div class="cam-progress">${dots}</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px">
-        ${camHistory.length > 0 ? `<button class="cam-back" onclick="camGoBack()">← Question précédente</button>` : ''}
-        ${answeredCount > 0 ? `<button class="cam-back" onclick="camRestart()">↺ Recommencer</button>` : ''}
+      <div class="cam-nav-actions">
+        ${camHistory.length > 0 ? `<button type="button" class="cam-back is-back" onclick="camGoBack()">← Question précédente</button>` : ''}
+        ${answeredCount > 0 ? `<button type="button" class="cam-back is-restart" onclick="camRestart()">↺ Recommencer</button>` : ''}
       </div>
       ${preQuestionNote}
       <div class="cam-question">${questionText}</div>
