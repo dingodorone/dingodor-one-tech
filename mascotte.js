@@ -51,9 +51,3 @@
   setTimeout(hide, 9500);
 })();
 
-
-if (!document.querySelector('script[src="webpushr.js"]')) {
-  const webpushrScript = document.createElement('script');
-  webpushrScript.src = 'webpushr.js';
-  document.head.appendChild(webpushrScript);
-}
