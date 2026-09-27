@@ -18,12 +18,6 @@ function localizeWordPressLinks(container) {
   container.querySelectorAll('a[href]').forEach(link => {
     try {
       const url = new URL(link.href);
-      if (url.hostname === 'dingodorone.github.io' && url.pathname.startsWith('/dingodor-app')) {
-        link.href = '/guide-camera.html';
-        link.removeAttribute('target');
-        link.removeAttribute('rel');
-        return;
-      }
       if (url.hostname !== 'dingodoronetech.wordpress.com') return;
       if (url.pathname.startsWith('/wp-content/')) return;
       const parts = url.pathname.split('/').filter(Boolean);
