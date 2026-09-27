@@ -77,11 +77,11 @@ def article_html(post, url):
     safe_title = html.escape(title)
     content = post.get("content") or "<p>Contenu indisponible pour le moment.</p>"
     return f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="canonical" href="{url}"><meta name="description" content="{description}">
+<link rel="icon" href="/favicon.svg?v=maison-1" type="image/svg+xml"><link rel="canonical" href="{url}"><meta name="description" content="{description}">
 <meta property="og:type" content="article"><meta property="og:title" content="{html.escape(title, quote=True)}"><meta property="og:description" content="{description}"><meta property="og:url" content="{url}">{social_image}
-<title>{safe_title} — Dingodor One Tech</title><link rel="stylesheet" href="/content.css?v=12"><script type="application/ld+json">{schema}</script></head>
+<title>{safe_title} — Dingodor One Tech</title><link rel="stylesheet" href="/content.css?v=13-logo-maison"><script type="application/ld+json">{schema}</script></head>
 <body data-view="static-post" data-post-id="{int(post['ID'])}"><a class="skip" href="#contenu">Aller au contenu</a>
-<header class="site-header"><a class="brand" href="/"><span class="brand-mark">D1</span><span>Dingodor <strong>One Tech</strong></span></a><button class="menu-button" type="button" aria-expanded="false" aria-controls="navigation">Menu</button><nav id="navigation"><a href="/">Accueil</a><a href="/articles.html">Articles</a><a href="/guide-camera.html">Guide caméra</a><a href="/page.html?slug=code-promo-2">Codes promo</a><a href="/partenaires.html">Partenaires</a><a class="nav-contact" href="/page.html?slug=contact">✉ Contact</a></nav></header>
+<header class="site-header"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><span>Dingodor <strong>One Tech</strong></span></a><button class="menu-button" type="button" aria-expanded="false" aria-controls="navigation">Menu</button><nav id="navigation"><a href="/">Accueil</a><a href="/articles.html">Articles</a><a href="/guide-camera.html">Guide caméra</a><a href="/page.html?slug=code-promo-2">Codes promo</a><a href="/partenaires.html">Partenaires</a><a class="nav-contact" href="/page.html?slug=contact">✉ Contact</a></nav></header>
 <main id="contenu" class="article-wrap"><header class="article-head"><a class="back" href="/articles.html">← Tous les articles</a><h1>{safe_title}</h1><p class="meta"><time datetime="{published}">{published}</time></p></header><article id="wp-content" class="wp-content">{content}</article><section id="comments" class="comments-section" hidden></section></main>
 <footer>© Dingodor One Tech · <a href="/page.html?slug=contact">Contact</a></footer><script src="/wp-content.js?v=13" defer></script><script src="/webpushr.js" defer></script></body></html>'''
 
