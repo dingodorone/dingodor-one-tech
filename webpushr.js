@@ -5,7 +5,7 @@
   // The Webpushr prompt can be quiet or suppressed after a browser refusal.
   // Keep an explicit subscription path visible on small screens.
   const main = document.querySelector('main');
-  if (main) {
+  if (main && (!('Notification' in window) || Notification.permission !== 'granted')) {
     const panel = document.createElement('section');
     panel.className = 'mobile-push';
     panel.setAttribute('aria-label', 'Notifications des nouveaux articles');
