@@ -77,7 +77,16 @@ def main():
             if not 200 <= response.status < 300:
                 raise RuntimeError("Webpushr a refusé l’envoi.")
     except HTTPError as error:
-        print(f"Échec de l’envoi Webpushr (HTTP {error.code}).", file=sys.stderr)
+        detail = ""
+        try:
+            problem = json.loads(error.read(2048).decode("utf-8", errors="replace"))
+            if isinstance(problem, dict):
+                detail = str(problem.get("description") or problem.get("message") or problem.get("error") or "")
+        except (ValueError, OSError):
+            pass
+        for secret in (key, token):
+            detail = detail.replace(secret, "[masqué]")
+        print(f"Échec de l’envoi Webpushr (HTTP {error.code})" + (f" : {detail[:300]}" if detail else "."), file=sys.stderr)
         return 1
     save(post)
     print(f"Notification envoyée pour l’article {post['ID']}.")
