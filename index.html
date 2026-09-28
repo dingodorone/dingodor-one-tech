@@ -158,6 +158,8 @@
   (function(){
     var p=document.getElementById("promoOctoberPopup"),k="dingodor-aliexpress-octobre-2026";
     if(!p)return;
+    var expiry=new Date("2026-10-08T00:00:00+02:00");
+    if(new Date()>=expiry){p.remove();return;}
     try{if(sessionStorage.getItem(k)==="closed"){p.remove();return;}}catch(e){}
     p.querySelector(".promo-october-close").onclick=function(){
       try{sessionStorage.setItem(k,"closed");}catch(e){}
