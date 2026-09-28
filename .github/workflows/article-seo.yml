@@ -5,8 +5,10 @@ on:
     - cron: '12 * * * *'
   workflow_dispatch:
   push:
+    branches: [main]
     paths:
       - scripts/build_articles.py
+      - scripts/github_articles.py
       - wp-content.js
       - .github/workflows/article-seo.yml
 
@@ -19,6 +21,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

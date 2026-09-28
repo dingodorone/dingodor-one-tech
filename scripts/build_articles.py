@@ -93,6 +93,7 @@ def write_if_changed(path, contents):
 
 
 def main():
+    from github_articles import sitemap_entries
     entries = []
     current = set()
     for post in api_posts():
@@ -112,6 +113,7 @@ def main():
     for old in OUTPUT.glob("*.html"):
         if old not in current:
             old.unlink()
+    entries.extend(sitemap_entries(ROOT))
     urls = [f"  <url><loc>{html.escape(ORIGIN + path, quote=True)}</loc></url>" for path in STATIC_URLS]
     urls += [f"  <url><loc>{ORIGIN + path}</loc><lastmod>{modified}</lastmod></url>" for path, modified in entries]
     write_if_changed(ROOT / "sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + '\n'.join(urls) + '\n</urlset>\n')

@@ -1,0 +1,47 @@
+name: Préparer la publication d'un article GitHub
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: Nom du brouillon sans .html (ex. mon-test)
+        required: true
+        type: string
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: github-article-publication
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - name: Lire uniquement le brouillon choisi
+        env:
+          SLUG: ${{ inputs.slug }}
+        run: |
+          [[ "$SLUG" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]] && [[ "$SLUG" != modele ]] || exit 1
+          git fetch origin brouillons --depth=1
+          git show "FETCH_HEAD:brouillons/$SLUG.html" > "$RUNNER_TEMP/article.html"
+          python3 scripts/github_articles.py "$RUNNER_TEMP/article.html" "$SLUG"
+      - name: Proposer la publication pour validation
+        env:
+          SLUG: ${{ inputs.slug }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          branch="publication/$SLUG-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          git checkout -b "$branch"
+          git config user.name "dingodor-articles[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add publications data/github-articles.json articles.html sitemap.xml
+          git commit -m "Proposer la publication de $SLUG"
+          git push origin "$branch"
+          if ! gh pr create --base main --head "$branch" --title "Publier : $SLUG" --body "Vérifier le contenu puis fusionner cette proposition pour publier. Aucun autre brouillon n'est inclus."; then
+            echo "Branche prête. Ouvrir la proposition manuellement : https://github.com/${GITHUB_REPOSITORY}/compare/main...$branch?expand=1" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
