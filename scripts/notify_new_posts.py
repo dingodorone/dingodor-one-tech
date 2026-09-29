@@ -9,8 +9,9 @@ from pathlib import Path
 from urllib.error import HTTPError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
+from verify_publication import ORIGIN, verify_post
 
-API = "https://public-api.wordpress.com/rest/v1.1/sites/dingodoronetech.wordpress.com/posts/?number=100&fields=ID,slug,title,date,status,excerpt"
+API = ORIGIN + '/data/published-posts.json'
 ENDPOINT = "https://api.webpushr.com/v1/notification/send/all"
 STATE = Path("data/last-notified-post.json")
 
@@ -22,7 +23,7 @@ def text(value):
 def fetch_posts():
     with urlopen(Request(API, headers={"User-Agent": "Dingodor-article-notifier/1.0"}), timeout=20) as response:
         posts = json.load(response).get("posts", [])
-    return [post for post in posts if post.get("status") == "publish" and post.get("ID") and post.get("slug")]
+    return [post for post in posts if post.get('url') and post.get('sha256') and post.get('ID')]
 
 
 def save(post):
@@ -58,9 +59,10 @@ def main():
         print("Aucun nouvel article.")
         return 0
     post = new[0]
+    verify_post(post)  # Failure leaves the notification cursor unchanged.
     title = text(post.get("title"))[:80] or "Nouvel article"
     excerpt = text(post.get("excerpt"))[:240] or "Découvrez le nouvel article sur Dingodor One Tech."
-    target = "https://dingodoronetech.eu.org/article.html?slug=" + quote(post["slug"], safe="")
+    target = ORIGIN + post['url']
     payload = json.dumps({
         "title": ("Nouvel article : " + title)[:100],
         "message": excerpt,

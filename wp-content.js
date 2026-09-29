@@ -367,12 +367,13 @@ async function showSingle(kind) {
 
 let offset = 0;
 const batch = 12;
-const POSTS_CACHE_KEY = 'dingodor-posts-cache-v1';
+const POSTS_CACHE_KEY = 'dingodor-posts-cache-v2-verified';
 let currentSearch = '';
 let postsRequest = 0;
 let postsController = null;
 
 function postPermalink(post) {
+  if (post.url) return post.url;
   if (post.slug === 'pg107') return '/alarme-pg107.html';
   let slug = post.slug || '';
   try { slug = decodeURIComponent(slug); } catch (_) {}
@@ -426,12 +427,12 @@ async function loadPosts({reset = false} = {}) {
   more.textContent = 'Chargement…';
   empty.hidden = true;
   try {
-    const fields = 'ID,title,slug,date,excerpt,featured_image';
-    const params = new URLSearchParams({number: String(batch), offset: String(offset), fields});
-    if (currentSearch) params.set('search', currentSearch);
-    const response = await fetch(`${API}/posts/?${params}`, {signal: postsController.signal});
+    const response = await fetch('/data/published-posts.json', {signal: postsController.signal, cache: 'no-store'});
     if (!response.ok) throw new Error(`Erreur ${response.status}`);
-    const data = await response.json();
+    const manifest = await response.json();
+    const query = currentSearch.toLocaleLowerCase('fr');
+    const matches = manifest.posts.filter(post => !query || textOnly(`${post.title} ${post.excerpt}`).toLocaleLowerCase('fr').includes(query));
+    const data = {posts: matches.slice(offset, offset + batch), found: matches.length};
     if (request !== postsRequest) return;
     const firstPage = offset === 0;
     appendPostCards(data.posts, {replace: firstPage});

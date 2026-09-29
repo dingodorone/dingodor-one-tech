@@ -1136,7 +1136,7 @@ let articles = [];
 let articlesFound = 0;
 let articlesLoading = false;
 const ARTICLES_PAGE_SIZE = 20;
-const POSTS_API = 'https://public-api.wordpress.com/rest/v1.1/sites/dingodoronetech.wordpress.com/posts/';
+const POSTS_API = '/data/published-posts.json';
 const POSTS_FIELDS = 'ID,title,slug,date,excerpt,featured_image';
 
 function articleText(value) {
@@ -1161,7 +1161,7 @@ function articleFromPost(post) {
     date: new Date(post.date).toLocaleDateString('fr-FR', {day:'numeric', month:'short', year:'numeric'}),
     tag: 'Article',
     excerpt: excerpt + (excerpt.length === 150 ? '…' : ''),
-    url: post.slug === 'pg107'
+    url: post.url ? new URL(post.url, location.origin).href : post.slug === 'pg107'
       ? 'https://dingodoronetech.eu.org/alarme-pg107.html'
       : `https://dingodoronetech.eu.org/posts/${Number(post.ID)}-${readable}.html`,
     img: post.featured_image || null
@@ -1169,11 +1169,12 @@ function articleFromPost(post) {
 }
 
 async function fetchPosts(offset, search = '', signal) {
-  const params = new URLSearchParams({number:String(ARTICLES_PAGE_SIZE), offset:String(offset), fields:POSTS_FIELDS});
-  if (search) params.set('search', search);
-  const res = await fetch(`${POSTS_API}?${params}`, {signal, cache:'no-store'});
+  const res = await fetch(POSTS_API, {signal, cache:'no-store'});
   if (!res.ok) throw new Error(`Erreur ${res.status}`);
-  return res.json();
+  const manifest = await res.json();
+  const query = search.toLocaleLowerCase('fr');
+  const matches = manifest.posts.filter(post => !query || articleText(`${post.title} ${post.excerpt}`).toLocaleLowerCase('fr').includes(query));
+  return {posts: matches.slice(offset, offset + ARTICLES_PAGE_SIZE), found: matches.length};
 }
 
 async function loadArticlesFromAPI() {

@@ -31,3 +31,11 @@ Les modèles et autres brouillons ne sont jamais copiés. L’original reste sur
 `python3 -m unittest discover -s tests -v` vérifie le refus des brouillons, les noms de fichier, la publication explicite et la conservation des articles GitHub dans le sitemap lors des mises à jour WordPress. Le contrôle GitHub refuse les dossiers de brouillons dans les propositions vers `main` ; pour imposer ce contrôle avant toute fusion, sélectionner « Vérifier la séparation des brouillons / check » dans les règles de protection de `main`.
 
 Aucun brouillon SwitchBot n’est publié par la mise en place de cette infrastructure.
+
+## Publications programmées WordPress
+
+Le workflow « Pages et sitemap des articles » vérifie WordPress toutes les quinze minutes environ (GitHub peut retarder les tâches planifiées). Il prépare les pages, les enregistre seules, demande explicitement leur déploiement GitHub Pages puis vérifie le contenu public des pages nouvelles ou modifiées. Il publie ensuite seulement `data/published-posts.json` et le sitemap, dans un second déploiement. En cas d’échec, les anciens index restent en place ; le prochain passage reprend la vérification.
+
+Le site et l’application utilisent cet index validé, y compris pour la recherche et la pagination. Les anciennes pages sont conservées pour que les liens déjà partagés et les listes en cache restent utilisables. Les notifications lisent l’index public et revérifient la page avant chaque envoi ; un échec ne fait pas avancer leur repère. Les brouillons GitHub restent soumis au processus de validation séparé décrit ci-dessus.
+
+Le 29 septembre 2026, l’article WordPress 21254, programmé à 06:30 Europe/Paris, était annoncé avant la création de sa page. Son URL `/posts/21254-21254.html` a été conservée. Le champ titre WordPress étant vide, les listes reprennent le titre déjà présent dans le premier H1 du contenu.

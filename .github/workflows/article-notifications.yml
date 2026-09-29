@@ -3,18 +3,22 @@ on:
   schedule:
     - cron: '17,47 * * * *'
   workflow_dispatch:
+  workflow_run:
+    workflows: [Pages et sitemap des articles]
+    types: [completed]
 permissions:
   contents: write
 concurrency:
-  group: dingodor-article-notifications
+  group: dingodor-publication
   cancel-in-progress: false
 jobs:
   notify:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           persist-credentials: true
       - name: Vérifier les nouveaux articles et notifier les abonnés
         env:

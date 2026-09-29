@@ -1,40 +1,55 @@
 name: Pages et sitemap des articles
-
 on:
   schedule:
-    - cron: '12 * * * *'
+    - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - scripts/build_articles.py
-      - scripts/github_articles.py
+      - 'scripts/**'
       - wp-content.js
       - .github/workflows/article-seo.yml
-
 permissions:
   contents: write
-
+  pages: write
 concurrency:
-  group: dingodor-article-seo
+  group: dingodor-publication
   cancel-in-progress: false
-
 jobs:
   build:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: true
-      - name: Générer les pages et le sitemap depuis WordPress
-        run: python3 scripts/build_articles.py
-      - name: Publier les nouvelles pages
+          ref: main
+      - run: python3 -m unittest discover -s tests -v
+      - name: Préparer les pages sans exposer les nouveaux index
+        run: python3 scripts/build_articles.py --metadata-dir "$RUNNER_TEMP/publication"
+      - name: Enregistrer uniquement les pages
         run: |
-          git add posts sitemap.xml
+          git config user.name "dingodor-articles[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add posts
           if ! git diff --cached --quiet; then
-            git config user.name "dingodor-articles[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git commit -m "Actualiser les articles indexables et le sitemap"
-            git push
+            git commit -m "Créer les pages avant leur annonce"
+            git push origin HEAD:main
           fi
+      - name: Déployer explicitement les pages et attendre le succès
+        run: python3 scripts/deploy_branch.py
+      - name: Vérifier le contenu réel des nouvelles pages publiques
+        run: python3 scripts/verify_publication.py "$RUNNER_TEMP/publication/data/published-posts.json" data/published-posts.json
+      - name: Annoncer uniquement les pages vérifiées
+        run: |
+          cp "$RUNNER_TEMP/publication/data/published-posts.json" data/published-posts.json
+          cp "$RUNNER_TEMP/publication/sitemap.xml" sitemap.xml
+          git add data/published-posts.json sitemap.xml
+          if ! git diff --cached --quiet; then
+            git commit -m "Indexer les articles après vérification du déploiement"
+            git push origin HEAD:main
+          fi
+      - name: Déployer les index validés
+        run: python3 scripts/deploy_branch.py
