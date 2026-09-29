@@ -1,0 +1,51 @@
+name: Créer le brouillon du nouvel article
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: article-draft-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  draft:
+    if: contains(github.event.issue.labels.*.name, 'article')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: brouillons
+          fetch-depth: 1
+      - name: Créer le fichier brouillon
+        id: create
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: echo "slug=$(python3 scripts/create_draft_from_issue.py)" >> "$GITHUB_OUTPUT"
+      - name: Enregistrer le brouillon
+        env:
+          SLUG: ${{ steps.create.outputs.slug }}
+        run: |
+          git config user.name "dingodor-drafts[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "brouillons/$SLUG.html"
+          git commit -m "Créer le brouillon $SLUG"
+          git push origin HEAD:brouillons
+      - name: Répondre avec le lien de modification
+        uses: actions/github-script@v7
+        env:
+          SLUG: ${{ steps.create.outputs.slug }}
+        with:
+          script: |
+            const url = `https://github.com/${context.repo.owner}/${context.repo.repo}/edit/brouillons/brouillons/${process.env.SLUG}.html`;
+            const publish = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/workflows/publish-github-article.yml`;
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.issue.number,
+              body: `Brouillon créé sur le nouveau site : [ouvrir et modifier le brouillon](${url}).\n\nQuand il est prêt, garde le statut \\`ready\\` puis lance [la préparation de publication](${publish}) depuis la branche \\`main\\`. Rien n’a été publié sur WordPress.`
+            });
