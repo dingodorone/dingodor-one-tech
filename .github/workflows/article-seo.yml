@@ -7,6 +7,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/**'
+      - 'data/native-candidates/**'
       - wp-content.js
       - .github/workflows/article-seo.yml
 permissions:
@@ -34,6 +35,7 @@ jobs:
           git config user.name "dingodor-articles[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add posts
+          if [ -d publications ]; then git add publications; fi
           if ! git diff --cached --quiet; then
             git commit -m "Créer les pages avant leur annonce"
             git push origin HEAD:main

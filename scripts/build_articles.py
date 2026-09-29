@@ -120,6 +120,11 @@ def main(metadata_dir=None):
         raise RuntimeError("No published posts returned; preserving existing pages and sitemap")
     # Keep previous URLs alive through both deployments and for cached lists.
     entries.extend(sitemap_entries(ROOT))
+    from native_articles import build as build_native
+    native = build_native(ROOT)
+    listing.extend(native)
+    entries.extend((post['url'], date_iso(post['date'])) for post in native)
+    listing.sort(key=lambda post: post['date'], reverse=True)
     urls = [f"  <url><loc>{html.escape(ORIGIN + path, quote=True)}</loc></url>" for path in STATIC_URLS]
     urls += [f"  <url><loc>{ORIGIN + path}</loc><lastmod>{modified}</lastmod></url>" for path, modified in entries]
     metadata_dir = Path(metadata_dir) if metadata_dir else ROOT
