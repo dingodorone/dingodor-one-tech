@@ -6,6 +6,8 @@ Le site présente les guides, tests, vidéos, codes promo et liens vers les arti
 
 ## Écrire un article depuis GitHub
 
+Le bouton [Rédiger un article](https://dingodoronetech.eu.org/rediger.html) ouvre un formulaire simple avec un titre, un résumé, une image et le texte. Le formulaire crée automatiquement un brouillon dans la branche `brouillons`, sans publier l’article sur WordPress. Après relecture, le brouillon peut être préparé puis publié volontairement avec le workflow décrit ci-dessous.
+
 Les brouillons se trouvent **uniquement sur la branche `brouillons`**, dans le dossier `brouillons/`. Ils ne sont jamais chargés par le site, les listes, le sitemap, les flux WordPress ou les notifications. La branche `main` reste la branche publique. Ne changez pas la source GitHub Pages vers `brouillons` et ne fusionnez jamais cette branche entière dans `main`.
 
 Attention : ce dépôt GitHub est public. Les brouillons sont exclus du site, mais restent lisibles sur GitHub. Ce système ne convient pas aux informations confidentielles.

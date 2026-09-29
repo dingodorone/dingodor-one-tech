@@ -14,19 +14,24 @@ concurrency:
 
 jobs:
   draft:
-    if: contains(github.event.issue.labels.*.name, 'article')
+    if: startsWith(github.event.issue.title, '[Article]')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: brouillons
+          ref: main
           fetch-depth: 1
+      - name: Préparer la branche des brouillons
+        run: |
+          cp scripts/create_draft_from_issue.py "$RUNNER_TEMP/create_draft_from_issue.py"
+          git fetch origin brouillons --depth=1
+          git switch --detach FETCH_HEAD
       - name: Créer le fichier brouillon
         id: create
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
-        run: echo "slug=$(python3 scripts/create_draft_from_issue.py)" >> "$GITHUB_OUTPUT"
+        run: echo "slug=$(python3 "$RUNNER_TEMP/create_draft_from_issue.py")" >> "$GITHUB_OUTPUT"
       - name: Enregistrer le brouillon
         env:
           SLUG: ${{ steps.create.outputs.slug }}
