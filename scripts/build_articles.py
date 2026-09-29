@@ -100,15 +100,15 @@ def main(metadata_dir=None):
     current = set()
     for post in api_posts():
         path = article_path(post)
-        if path == "/alarme-pg107.html":
-            continue  # The existing hand-built guide is the canonical version.
         local = ROOT / path.lstrip("/")
         if local in current:
             raise RuntimeError(f"Duplicate slug: {path}")
         current.add(local)
         modified = date_iso(post.get("modified") or post["date"])
-        entries.append((path, modified))
-        write_if_changed(local, article_html(post, ORIGIN + path))
+        if path != '/alarme-pg107.html':
+            entries.append((path, modified))
+            write_if_changed(local, article_html(post, ORIGIN + path))
+        # The hand-built PG107 guide stays in listings without being overwritten.
         title = plain(post.get('title'))
         if not title:
             heading = re.search(r'<h1\b[^>]*>(.*?)</h1>', post.get('content', ''), re.S | re.I)

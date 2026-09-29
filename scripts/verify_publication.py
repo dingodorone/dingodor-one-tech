@@ -12,7 +12,7 @@ ORIGIN = 'https://dingodoronetech.eu.org'
 
 def verify_post(post):
     path = post['url']
-    if not path.startswith('/posts/') or '..' in path or '?' in path:
+    if (not path.startswith('/posts/') and path != '/alarme-pg107.html') or '..' in path or '?' in path:
         raise ValueError('Invalid publication URL')
     request = Request(ORIGIN + path, headers={'Cache-Control': 'no-cache', 'User-Agent': 'Dingodor-publication-check/1.0'})
     with urlopen(request, timeout=60) as response:

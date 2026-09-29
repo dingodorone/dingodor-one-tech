@@ -16,6 +16,18 @@ import deploy_branch
 
 
 class DeploymentTests(unittest.TestCase):
+    def test_manual_guide_remains_in_index_without_overwrite(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            guide = root / 'alarme-pg107.html'
+            guide.write_text('manual guide', encoding='utf-8')
+            posts = [dict(ID=1, slug='pg107', title='PG107', date='2026-09-29T06:30:00Z'), dict(ID=2, slug='test', title='Test', date='2026-09-29T06:30:00Z')]
+            with patch.object(build_articles, 'ROOT', root), patch.object(build_articles, 'api_posts', return_value=posts):
+                build_articles.main(root / 'pending')
+            index = json.loads((root / 'pending/data/published-posts.json').read_text())
+            self.assertEqual(index['posts'][0]['url'], '/alarme-pg107.html')
+            self.assertEqual(guide.read_text(), 'manual guide')
+
     def test_public_response_must_match_page(self):
         post = {'url': '/posts/1-test.html', 'sha256': hashlib.sha256(b'article').hexdigest()}
         response = MagicMock()
