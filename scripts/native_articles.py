@@ -7,6 +7,15 @@ from datetime import datetime, timezone
 from html.parser import HTMLParser
 from urllib.parse import urlsplit
 
+PHOTO_CSS = '''
+.wp-content figure.dt-photo{max-width:100%;box-sizing:border-box;margin-top:1.5em;margin-bottom:1.5em;padding:0;clear:both}
+.wp-content figure.dt-photo img{display:block;width:100%;max-width:100%;height:auto;margin:0;border-radius:10px}
+.wp-content figure.dt-photo.dt-align-left{margin-left:0;margin-right:auto}
+.wp-content figure.dt-photo.dt-align-center{margin-left:auto;margin-right:auto}
+.wp-content figure.dt-photo.dt-align-right{margin-left:auto;margin-right:0}
+.wp-content figure.dt-photo figcaption{text-align:center;font-size:.9em;line-height:1.5;color:#62717e;margin-top:.65em;overflow-wrap:anywhere}
+''' + ''.join('.wp-content figure.dt-photo.dt-width-%d{width:%d%%}' % (n,n) for n in range(10,101))
+
 
 class SafeHTML(HTMLParser):
     tags = set('p br h2 h3 h4 h5 h6 strong b em i u s del blockquote ul ol li a img figure figcaption pre code table thead tbody tr td th hr div span'.split())
@@ -28,6 +37,10 @@ class SafeHTML(HTMLParser):
                 continue
             if key in {'title', 'alt'}:
                 safe.append((key, value))
+            elif key == 'class' and tag == 'figure':
+                classes = [c for c in value.split() if c == 'dt-photo' or c in {'dt-align-left', 'dt-align-center', 'dt-align-right'} or re.fullmatch(r'dt-width-(?:[1-9][0-9]|100)', c)]
+                if classes:
+                    safe.append(('class', ' '.join(dict.fromkeys(classes))))
             elif key in {'colspan', 'rowspan', 'start', 'width', 'height'} and value.isdigit():
                 safe.append((key, value))
             elif key == 'href' and tag == 'a' and urlsplit(value).scheme in {'https', 'http', 'mailto'}:
@@ -74,6 +87,7 @@ def render(data):
     path = '/publications/' + slug + '.html'
     post = dict(ID=identifier, title=data['title'], slug=slug, date=data['date'], excerpt=data.get('excerpt', ''), featured_image=featured, content=content)
     page = article_html(post, ORIGIN + path).replace('data-view="static-post"', 'data-view="github-post"')
+    page = page.replace('</head>', '<style>' + PHOTO_CSS + '</style></head>')
     return page, {k: v for k, v in dict(post, url=path, source='github', sha256=hashlib.sha256(page.encode()).hexdigest()).items() if k != 'content'}
 
 
@@ -88,3 +102,4 @@ def build(root):
         write_if_changed(root / post['url'].lstrip('/'), page)
         posts.append(post)
     return posts
+
