@@ -7,7 +7,32 @@ from datetime import datetime, timezone
 from html.parser import HTMLParser
 from urllib.parse import urlsplit
 
+def safe_text_style(value):
+    rules = []
+    for declaration in value.split(';'):
+        key, sep, val = declaration.partition(':')
+        key, val = key.strip().lower(), val.strip().lower()
+        allowed = False
+        if key in {'color', 'background-color'}:
+            allowed = bool(re.fullmatch(r'#[0-9a-f]{3}(?:[0-9a-f]{3})?|rgb\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\)', val))
+        elif key == 'font-size':
+            allowed = bool(re.fullmatch(r'(?:1[2-9]|[2-5][0-9]|6[0-4])px', val))
+        elif key == 'text-align':
+            allowed = val in {'left','center','right','justify'}
+        elif key == 'font-weight':
+            allowed = val in {'normal','bold','400','700'}
+        elif key == 'font-style':
+            allowed = val in {'normal','italic'}
+        elif key == 'text-decoration-line':
+            allowed = val in {'underline','line-through','underline line-through','none'}
+        elif key == 'line-height':
+            allowed = val in {'1','1.25','1.5','1.75','2'}
+        if sep and allowed:
+            rules.append(key + ':' + val)
+    return ';'.join(rules)
+
 PHOTO_CSS = '''
+.wp-content table{border-collapse:collapse;width:100%;table-layout:fixed;margin:1em 0}.wp-content td,.wp-content th{border:1px solid #b7c6ce;padding:10px;overflow-wrap:anywhere}.wp-content th{background:#eaf1f4}.wp-content blockquote{border-left:4px solid #168675;margin:1em 0;padding:12px 22px;background:#eef6f4}.wp-content pre{white-space:pre-wrap;background:#eef1f3;padding:16px}
 .wp-content figure.dt-photo{max-width:100%;box-sizing:border-box;margin-top:1.5em;margin-bottom:1.5em;padding:0;clear:both}
 .wp-content figure.dt-photo img{display:block;width:100%;max-width:100%;height:auto;margin:0;border-radius:10px}
 .wp-content figure.dt-photo.dt-align-left{margin-left:0;margin-right:auto}
@@ -18,7 +43,7 @@ PHOTO_CSS = '''
 
 
 class SafeHTML(HTMLParser):
-    tags = set('p br h2 h3 h4 h5 h6 strong b em i u s del blockquote ul ol li a img figure figcaption pre code table thead tbody tr td th hr div span'.split())
+    tags = set('p br h2 h3 h4 h5 h6 strong b em i u s del sub sup blockquote ul ol li a img figure figcaption pre code table thead tbody tr td th hr div span'.split())
     void = {'br', 'img', 'hr'}
 
     def __init__(self):
@@ -37,6 +62,10 @@ class SafeHTML(HTMLParser):
                 continue
             if key in {'title', 'alt'}:
                 safe.append((key, value))
+            elif key == 'style' and tag not in {'img','figure'}:
+                style = safe_text_style(value)
+                if style:
+                    safe.append(('style', style))
             elif key == 'class' and tag == 'figure':
                 classes = [c for c in value.split() if c == 'dt-photo' or c in {'dt-align-left', 'dt-align-center', 'dt-align-right'} or re.fullmatch(r'dt-width-(?:[1-9][0-9]|100)', c)]
                 if classes:
