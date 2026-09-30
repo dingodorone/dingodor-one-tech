@@ -1,0 +1,258 @@
+{
+  "tapo_budget": {
+    "title": "TP-Link Tapo C200",
+    "fr": "https://www.amazon.fr/s?k=TP-Link%20Tapo%20C200&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=TP-Link%20Tapo%20C200&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  },
+  "tapo_premium": {
+    "title": "TP-Link Tapo C210",
+    "fr": "https://www.amazon.fr/s?k=TP-Link%20Tapo%20C210&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=TP-Link%20Tapo%20C210&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  },
+  "switchbot_budget": {
+    "title": "SwitchBot Caméra Intérieure",
+    "fr": "https://www.amazon.fr/s?k=SwitchBot%20Cam%C3%A9ra%20Int%C3%A9rieure&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=SwitchBot%20Cam%C3%A9ra%20Int%C3%A9rieure&tag=dingodor00e-21"
+  },
+  "switchbot_premium": {
+    "title": "SwitchBot Pan/Tilt Cam (3MP)",
+    "fr": "https://www.amazon.fr/s?k=SwitchBot%20Pan%2FTilt%20Cam%20(3MP)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=SwitchBot%20Pan%2FTilt%20Cam%20(3MP)&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B084CJJRBW?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B084CJJRBW?tag=dingodor00e-21"
+  },
+  "switchbot_outdoor": {
+    "title": "SwitchBot Ensemble Caméra Spotlight Extérieure + Panneau Solaire",
+    "fr": "https://www.amazon.fr/s?k=SwitchBot%20Ensemble%20Cam%C3%A9ra%20Spotlight%20Ext%C3%A9rieure%20%2B%20Panneau%20Solaire&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=SwitchBot%20Ensemble%20Cam%C3%A9ra%20Spotlight%20Ext%C3%A9rieure%20%2B%20Panneau%20Solaire&tag=dingodor00e-21",
+    "official": "https://eu.switch-bot.com/fr/products/combo-camera-projecteur-exterieur?sca_ref=2274537.x1K7OdVgTO&utm_source=uppromote&utm_medium=affiliate&utm_campaign=2274537",
+    "sdFR": "https://www.amazon.fr/dp/B084CJJRBW?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B084CJJRBW?tag=dingodor00e-21"
+  },
+  "tapo_fixed": {
+    "title": "TP-Link Tapo C110",
+    "fr": "https://www.amazon.fr/s?k=TP-Link%20Tapo%20C110&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=TP-Link%20Tapo%20C110&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  },
+  "doorbell": {
+    "title": "Reolink Video Doorbell WiFi",
+    "fr": "https://www.amazon.fr/s?k=Reolink%20Video%20Doorbell%20WiFi&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Reolink%20Video%20Doorbell%20WiFi&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  },
+  "doorbell_battery": {
+    "title": "Reolink Video Doorbell (Battery)",
+    "fr": "https://www.amazon.fr/s?k=Reolink%20Video%20Doorbell%20(Battery)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Reolink%20Video%20Doorbell%20(Battery)&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  },
+  "poe_budget": {
+    "title": "Reolink RLC-510A (PoE)",
+    "fr": "https://www.amazon.fr/s?k=Reolink%20RLC-510A%20(PoE)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Reolink%20RLC-510A%20(PoE)&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B084CJJRBW?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B084CJJRBW?tag=dingodor00e-21"
+  },
+  "poe_premium": {
+    "title": "Reolink RLC-810A (PoE)",
+    "fr": "https://www.amazon.fr/s?k=Reolink%20RLC-810A%20(PoE)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Reolink%20RLC-810A%20(PoE)&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B084CJJRBW?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B084CJJRBW?tag=dingodor00e-21"
+  },
+  "poe_premium_color": {
+    "title": "Reolink RLC-81PA (PoE, projecteur couleur)",
+    "fr": "https://www.amazon.fr/s?k=Reolink%20RLC-81PA%20(PoE%2C%20projecteur%20couleur)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Reolink%20RLC-81PA%20(PoE%2C%20projecteur%20couleur)&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B084CJJRBW?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B084CJJRBW?tag=dingodor00e-21"
+  },
+  "imou_premium": {
+    "title": "Imou Caméra Extérieure WiFi (3MP)",
+    "fr": "https://www.amazon.fr/s?k=Imou%20Cam%C3%A9ra%20Ext%C3%A9rieure%20WiFi%20(3MP)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Imou%20Cam%C3%A9ra%20Ext%C3%A9rieure%20WiFi%20(3MP)&tag=dingodor00e-21"
+  },
+  "zoom": {
+    "title": "Reolink RLC-823A 16X (PTZ)",
+    "fr": "https://www.amazon.fr/s?k=Reolink%20RLC-823A%2016X%20(PTZ)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Reolink%20RLC-823A%2016X%20(PTZ)&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B084CJJRBW?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B084CJJRBW?tag=dingodor00e-21"
+  },
+  "zoom_color": {
+    "title": "Reolink RLC-811A (PoE, zoom couleur)",
+    "fr": "https://www.amazon.fr/s?k=Reolink%20RLC-811A%20(PoE%2C%20zoom%20couleur)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Reolink%20RLC-811A%20(PoE%2C%20zoom%20couleur)&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B084CJJRBW?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B084CJJRBW?tag=dingodor00e-21"
+  },
+  "kit": {
+    "title": "Reolink RLK8-800B4",
+    "fr": "https://www.amazon.fr/s?k=Reolink%20RLK8-800B4&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Reolink%20RLK8-800B4&tag=dingodor00e-21"
+  },
+  "kit_annke": {
+    "title": "Annke Kit 4K/8MP (8CH NVR + 4 caméras)",
+    "fr": "https://www.amazon.fr/s?k=Annke%20Kit%204K%2F8MP%20(8CH%20NVR%20%2B%204%20cam%C3%A9ras)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Annke%20Kit%204K%2F8MP%20(8CH%20NVR%20%2B%204%20cam%C3%A9ras)&tag=dingodor00e-21"
+  },
+  "solar_wifi": {
+    "title": "Reolink Argus 3 Pro + Panneau solaire",
+    "fr": "https://www.amazon.fr/s?k=Reolink%20Argus%203%20Pro%20%2B%20Panneau%20solaire&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Reolink%20Argus%203%20Pro%20%2B%20Panneau%20solaire&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  },
+  "solar_wifi_pt": {
+    "title": "Reolink Argus PT Ultra + Panneau solaire",
+    "fr": "https://www.amazon.fr/s?k=Reolink%20Argus%20PT%20Ultra%20%2B%20Panneau%20solaire&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Reolink%20Argus%20PT%20Ultra%20%2B%20Panneau%20solaire&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  },
+  "solar_wifi_ezviz": {
+    "title": "EZVIZ BC1C (WiFi, batterie 7800mAh)",
+    "fr": "https://www.amazon.fr/s?k=EZVIZ%20BC1C%20(WiFi%2C%20batterie%207800mAh)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=EZVIZ%20BC1C%20(WiFi%2C%20batterie%207800mAh)&tag=dingodor00e-21"
+  },
+  "ezviz_indoor": {
+    "title": "EZVIZ C6N",
+    "fr": "https://www.amazon.fr/s?k=EZVIZ%20C6N&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=EZVIZ%20C6N&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  },
+  "ezviz_zoom": {
+    "title": "EZVIZ C8c (5MP)",
+    "fr": "https://www.amazon.fr/s?k=EZVIZ%20C8c%20(5MP)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=EZVIZ%20C8c%20(5MP)&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B084CJJRBW?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B084CJJRBW?tag=dingodor00e-21"
+  },
+  "solar_4g": {
+    "title": "Reolink Go Plus + Panneau solaire",
+    "fr": "https://www.amazon.fr/s?k=Reolink%20Go%20Plus%20%2B%20Panneau%20solaire&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Reolink%20Go%20Plus%20%2B%20Panneau%20solaire&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  },
+  "solar_4g_pt": {
+    "title": "Reolink TrackMix LTE + Panneau solaire",
+    "fr": "https://www.amazon.fr/s?k=Reolink%20TrackMix%20LTE%20%2B%20Panneau%20solaire&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Reolink%20TrackMix%20LTE%20%2B%20Panneau%20solaire&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B084CJJRBW?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B084CJJRBW?tag=dingodor00e-21"
+  },
+  "kit_imou": {
+    "title": "Imou Kit WiFi (4CH NVR + 4 caméras)",
+    "fr": "https://www.amazon.fr/s?k=Imou%20Kit%20WiFi%20(4CH%20NVR%20%2B%204%20cam%C3%A9ras)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Imou%20Kit%20WiFi%20(4CH%20NVR%20%2B%204%20cam%C3%A9ras)&tag=dingodor00e-21"
+  },
+  "nest_cam_battery": {
+    "title": "Google Nest Cam (Batterie)",
+    "fr": "https://www.amazon.fr/s?k=Google%20Nest%20Cam%20(Batterie)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Google%20Nest%20Cam%20(Batterie)&tag=dingodor00e-21"
+  },
+  "somfy_outdoor": {
+    "title": "Somfy Outdoor Camera",
+    "fr": "https://www.amazon.fr/s?k=Somfy%20Outdoor%20Camera&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Somfy%20Outdoor%20Camera&tag=dingodor00e-21"
+  },
+  "aqara_indoor_fixed": {
+    "title": "Aqara Camera Hub G2H Pro",
+    "fr": "https://www.amazon.fr/s?k=Aqara%20Camera%20Hub%20G2H%20Pro&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Aqara%20Camera%20Hub%20G2H%20Pro&tag=dingodor00e-21"
+  },
+  "aqara_indoor_motorized": {
+    "title": "Aqara Camera Hub G3",
+    "fr": "https://www.amazon.fr/s?k=Aqara%20Camera%20Hub%20G3&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Aqara%20Camera%20Hub%20G3&tag=dingodor00e-21"
+  },
+  "aqara_outdoor_poe": {
+    "title": "Aqara Camera Hub G5 Pro (PoE)",
+    "fr": "https://www.amazon.fr/s?k=Aqara%20Camera%20Hub%20G5%20Pro%20(PoE)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Aqara%20Camera%20Hub%20G5%20Pro%20(PoE)&tag=dingodor00e-21"
+  },
+  "somfy_indoor": {
+    "title": "Somfy Indoor Camera",
+    "fr": "https://www.amazon.fr/s?k=Somfy%20Indoor%20Camera&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Somfy%20Indoor%20Camera&tag=dingodor00e-21"
+  },
+  "tuya_generic": {
+    "title": "Caméra WiFi 5MP Tuya Smart Life (générique)",
+    "fr": "https://www.amazon.fr/s?k=Cam%C3%A9ra%20WiFi%205MP%20Tuya%20Smart%20Life%20(g%C3%A9n%C3%A9rique)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Cam%C3%A9ra%20WiFi%205MP%20Tuya%20Smart%20Life%20(g%C3%A9n%C3%A9rique)&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  },
+  "imou_indoor": {
+    "title": "Imou Ranger 2C",
+    "fr": "https://www.amazon.fr/s?k=Imou%20Ranger%202C&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Imou%20Ranger%202C&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  },
+  "imou_zoom": {
+    "title": "Imou Cruiser 2 AI (PTZ)",
+    "fr": "https://www.amazon.fr/s?k=Imou%20Cruiser%202%20AI%20(PTZ)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Imou%20Cruiser%202%20AI%20(PTZ)&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B084CJJRBW?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B084CJJRBW?tag=dingodor00e-21"
+  },
+  "imou_solar_pt": {
+    "title": "Imou 3K Solaire PTZ (batterie 5000mAh)",
+    "fr": "https://www.amazon.fr/s?k=Imou%203K%20Solaire%20PTZ%20(batterie%205000mAh)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Imou%203K%20Solaire%20PTZ%20(batterie%205000mAh)&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  },
+  "imou_doorbell": {
+    "title": "Imou Doorbell Kit 2S (DB2S)",
+    "fr": "https://www.amazon.fr/s?k=Imou%20Doorbell%20Kit%202S%20(DB2S)&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Imou%20Doorbell%20Kit%202S%20(DB2S)&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  },
+  "tapo_doorbell": {
+    "title": "TP-Link Tapo D235",
+    "fr": "https://www.amazon.fr/s?k=TP-Link%20Tapo%20D235&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=TP-Link%20Tapo%20D235&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  },
+  "aqara_doorbell": {
+    "title": "Aqara Video Doorbell G4",
+    "fr": "https://www.amazon.fr/s?k=Aqara%20Video%20Doorbell%20G4&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Aqara%20Video%20Doorbell%20G4&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  },
+  "switchbot_doorbell": {
+    "title": "SwitchBot Sonnette Vidéo avec Moniteur",
+    "fr": "https://www.amazon.fr/s?k=SwitchBot%20Sonnette%20Vid%C3%A9o%20avec%20Moniteur&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=SwitchBot%20Sonnette%20Vid%C3%A9o%20avec%20Moniteur&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  },
+  "switchbot_outdoor_ptz": {
+    "title": "SwitchBot Outdoor Pan/Tilt Cam 3K",
+    "fr": "https://www.amazon.fr/s?k=SwitchBot%20Outdoor%20Pan%2FTilt%20Cam%203K&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=SwitchBot%20Outdoor%20Pan%2FTilt%20Cam%203K&tag=dingodor00e-21",
+    "official": "https://eu.switch-bot.com/fr/products/outdoor-ptc-3k5mp?sca_ref=2274537.x1K7OdVgTO&utm_source=uppromote&utm_medium=affiliate&utm_campaign=2274537"
+  },
+  "reolink_indoor": {
+    "title": "Reolink E1",
+    "fr": "https://www.amazon.fr/s?k=Reolink%20E1&tag=dingodor-21",
+    "be": "https://www.amazon.com.be/s?k=Reolink%20E1&tag=dingodor00e-21",
+    "sdFR": "https://www.amazon.fr/dp/B07NY23WBG?tag=dingodor-21",
+    "sdBE": "https://www.amazon.com.be/dp/B07NY23WBG?tag=dingodor00e-21"
+  }
+}
