@@ -7,6 +7,15 @@ from datetime import datetime, timezone
 from html.parser import HTMLParser
 from urllib.parse import urlsplit
 
+def safe_image_source(value):
+    if (value.startswith('/media/') or value.startswith('/article-media/')) and '..' not in value and not any(c in value for c in ['?', '#', '%', '\\']):
+        return True
+    url = urlsplit(value)
+    return (url.scheme == 'https' and url.netloc == 'dingodoronetech.wordpress.com'
+            and url.path.startswith('/wp-content/uploads/')
+            and url.path.lower().endswith(('.jpg','.jpeg','.png','.webp','.gif'))
+            and not url.query and not url.fragment)
+
 def safe_text_style(value):
     rules = []
     for declaration in value.split(';'):
@@ -74,7 +83,7 @@ class SafeHTML(HTMLParser):
                 safe.append((key, value))
             elif key == 'href' and tag == 'a' and urlsplit(value).scheme in {'https', 'http', 'mailto'}:
                 safe.append((key, value))
-            elif key == 'src' and tag == 'img' and (value.startswith('/media/') or value.startswith('/article-media/')) and '..' not in value and not any(c in value for c in ['?', '#', '%', '\\']):
+            elif key == 'src' and tag == 'img' and safe_image_source(value):
                 safe.append((key, value))
         if tag == 'img' and not any(k == 'src' for k, v in safe):
             raise ValueError('Importer les images dans la médiathèque privée avant de continuer.')
