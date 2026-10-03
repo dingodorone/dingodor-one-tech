@@ -134,6 +134,12 @@ def build(root):
     posts = []
     for source in sorted((root / 'data/native-candidates').glob('*.json')):
         data = json.loads(source.read_text(encoding='utf-8'))
+        if data.get('withdrawn'):
+            slug=data['slug']
+            if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*',slug):
+                raise ValueError('Invalid withdrawn slug')
+            write_if_changed(root / 'publications' / (slug + '.html'), '<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>Article retiré</title></head><body><h1>Cet article a été retiré.</h1><p><a href="/articles.html">Voir les autres articles</a></p></body></html>')
+            continue
         if datetime.fromisoformat(data['date'].replace('Z', '+00:00')) > datetime.now(timezone.utc):
             raise ValueError('Future article reached public repository')
         page, post = render(data)
