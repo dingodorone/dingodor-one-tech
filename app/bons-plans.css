@@ -1,0 +1,25 @@
+#sec-bons-plans .app-deals-note{font-size:12px;color:#a4bac9;margin:12px 0;line-height:1.6}
+#sec-bons-plans .deal-day{font-size:13px;color:#a4bac9;margin:24px 0 12px;text-transform:capitalize}
+#sec-bons-plans .deal-post{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px}
+#sec-bons-plans .deal-author{position:static;z-index:auto;background:none;backdrop-filter:none;height:auto;padding:0;display:flex;justify-content:flex-start;gap:10px;border:0}
+#sec-bons-plans .deal-avatar{width:36px;height:36px;background:url('../logo-maison.svg') center/contain no-repeat;flex-shrink:0}
+#sec-bons-plans .deal-author strong,#sec-bons-plans .deal-author time{display:block}
+#sec-bons-plans .deal-author strong{font-size:13px}
+#sec-bons-plans .deal-author time{font-size:11px;color:#a4bac9}
+#sec-bons-plans .deal-text{white-space:pre-wrap;overflow-wrap:anywhere;margin:16px 0;line-height:1.7}
+#sec-bons-plans .deal-text a{color:#71e8f1}
+#sec-bons-plans .deal-products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#sec-bons-plans .deal-product{display:flex;flex-direction:column;min-width:0;overflow:hidden;border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text)}
+#sec-bons-plans .deal-image{height:220px;flex-shrink:0;padding:16px;background:white;display:flex;align-items:center;justify-content:center}
+#sec-bons-plans .deal-image img{display:block;width:100%;height:100%;min-width:0;min-height:0;object-fit:contain}
+#sec-bons-plans .deal-image.empty{height:90px;background:var(--bg3);color:#a4bac9;font-size:12px;text-align:center}
+#sec-bons-plans .deal-info{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1;overflow-wrap:anywhere}
+#sec-bons-plans .deal-info small{font-size:11px;color:#a4bac9}
+#sec-bons-plans .deal-info strong{font-size:14px;line-height:1.4}
+#sec-bons-plans .deal-price{font-size:20px;font-weight:700;color:#71e8f1}
+#sec-bons-plans .deal-cta{margin-top:auto;padding-top:8px;color:#71e8f1;font-weight:700;font-size:13px}
+#sec-bons-plans .deal-product:focus-visible{outline:2px solid #71e8f1;outline-offset:2px}
+#sec-bons-plans .deal-empty{padding:16px;background:var(--bg2);border-radius:16px}
+#sec-bons-plans .deal-empty a{color:#71e8f1}
+.bottom-nav .nav-item{min-width:0;padding-left:2px;padding-right:2px}
+@media(max-width:600px){#sec-bons-plans .deal-products{grid-template-columns:1fr}}
