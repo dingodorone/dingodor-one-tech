@@ -1,8 +1,10 @@
-const CACHE = 'dingodor-v30-verified-publications';
+const CACHE = 'dingodor-v31-bons-plans';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
+  './bons-plans.css?v=1',
+  './bons-plans.js?v=1',
   '../logo-maison.svg'
 ];
 
@@ -24,7 +26,8 @@ self.addEventListener('fetch', e => {
   const isDynamicData = url.hostname === 'public-api.wordpress.com' ||
     url.hostname === 'raw.githubusercontent.com' ||
     url.pathname.endsWith('/data/site-data.json') ||
-    url.pathname.endsWith('/data/published-posts.json');
+    url.pathname.endsWith('/data/published-posts.json') ||
+    url.pathname.endsWith('/data/bons-plans.json');
 
   if (isDynamicData) {
     e.respondWith(fetch(e.request, {cache: 'no-store'}));
