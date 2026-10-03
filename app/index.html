@@ -905,6 +905,7 @@
 .cam-nav-actions button:focus-visible,.cam-result-actions button:focus-visible{outline:3px solid #fff;outline-offset:2px}
 @media(max-width:350px){.cam-nav-actions,.cam-result-actions{gap:7px}.cam-nav-actions .cam-back,.cam-result-actions .cam-restart-btn{padding:8px 6px;font-size:11px}}
 </style>
+<link rel="stylesheet" href="bons-plans.css?v=1">
 </head>
 <body>
 
@@ -931,6 +932,7 @@
 <div class="tabs" id="main-tabs">
   <button class="tab active" onclick="switchTab('accueil', this)">Accueil</button>
   <button class="tab" onclick="switchTab('articles', this)">Articles</button>
+  <button class="tab" onclick="switchTab('bons-plans', this)">Bons plans du jour</button>
   <button class="tab" onclick="switchTab('promos', this)">Codes promo</button>
   <button class="tab" onclick="switchTab('partenaires', this)">Boutiques partenaires</button>
   <button class="tab" onclick="switchTab('reseaux', this)">Réseaux</button>
@@ -980,6 +982,13 @@
 </div>
 
 <!-- SECTION PROMOS -->
+<div class="section" id="sec-bons-plans">
+  <div class="hero"><h2>Bons plans du jour</h2><p>Les bons plans sélectionnés par Dingodor, avec les liens pour en profiter.</p></div>
+  <p class="app-deals-note">Prix indiqués au moment de la publication, susceptibles de changer. Vérifie le prix et la disponibilité chez le marchand.</p>
+  <div id="deals-status" role="status">Chargement des bons plans…</div>
+  <div id="deals-feed"></div>
+  <p class="app-deals-note">Certains liens sont affiliés : une commission peut soutenir Dingodor sans augmenter ton prix.</p>
+</div>
 <div class="section" id="sec-promos">
   <div class="hero" style="margin-bottom:20px">
     <div class="hero-label">🏷️ Codes promo</div>
@@ -1108,6 +1117,10 @@
   <button class="nav-item" id="nav-articles" onclick="switchSection('articles')">
     <svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
     <span>Articles</span>
+  </button>
+  <button class="nav-item" id="nav-bons-plans" onclick="switchSection('bons-plans')">
+    <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M13 2L3 14h8l-1 8L21 10h-8l1-8z"/></svg>
+    <span>Bons plans</span>
   </button>
   <button class="nav-item" id="nav-promos" onclick="switchSection('promos')">
     <svg fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
@@ -1445,7 +1458,7 @@ function switchTab(id, el) {
 
 // Ouvre directement un onglet précis si l'URL contient un lien du type #camera, #promos, etc.
 (function () {
-  const validTabs = ['accueil', 'articles', 'promos', 'partenaires', 'reseaux', 'camera', 'about'];
+  const validTabs = ['accueil', 'articles', 'bons-plans', 'promos', 'partenaires', 'reseaux', 'camera', 'about'];
   const requested = window.location.hash.replace('#', '');
   if (validTabs.includes(requested)) {
     document.addEventListener('DOMContentLoaded', () => {
@@ -2961,6 +2974,7 @@ if ('serviceWorker' in navigator) {
 
 
 
+<script src="bons-plans.js?v=1"></script>
 <script src="../webpushr.js"></script>
 </body>
 </html>
