@@ -170,6 +170,12 @@ function menu() {
   const button = document.querySelector('.menu-button');
   const nav = document.querySelector('#navigation');
   if (!button || !nav) return;
+  if (!nav.querySelector('a[href="bons-plans.html"]')) {
+    const dealsLink = document.createElement('a');
+    dealsLink.href = '/bons-plans.html';
+    dealsLink.textContent = 'Bon plan du jour';
+    nav.querySelector('a[href="articles.html"], a[href="/articles.html"]')?.after(dealsLink);
+  }
   button.addEventListener('click', () => {
     const open = nav.classList.toggle('open');
     button.setAttribute('aria-expanded', String(open));
@@ -500,3 +506,4 @@ document.addEventListener('DOMContentLoaded', () => {
     showComments({ID: Number(document.body.dataset.postId)});
   }
 });
+
