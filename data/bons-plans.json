@@ -1,3 +1,22 @@
 {
-  "deals": []
+  "deals": [
+    {
+      "id": "cms-pc-20261003-125420-e75e6f",
+      "message": "Bon Plan Amazon France 51.49€ The Legend of Zelda : Ocarina of Time https://t.co/9nIUEfLJqS\net une switch 2 a 419€ https://t.co/X811WztQXt",
+      "products": [
+        {
+          "url": "https://t.co/9nIUEfLJqS",
+          "title": "The Legend of Zelda : Ocarina of Time : Amazon.fr: Jeux vidéo",
+          "image": "/bon-plan-media/147c9f01e125683ed2fe185b2f832dc960cb556733f95926540f40cb99615826.jpg"
+        },
+        {
+          "url": "https://t.co/X811WztQXt",
+          "title": "Nintendo - Switch 2 : Amazon.fr: Jeux vidéo",
+          "image": "/bon-plan-media/714568d0994915e5f9684fa7783078cbd779e7a270350b4bb366e493560a66b6.jpg"
+        }
+      ],
+      "date": "2026-10-03T11:05:38.565192+00:00",
+      "fingerprint": "55d29878f4c2f48fd53bfb7920f21b5f12e7c63e7ac023d553ea3af4c7d718d3"
+    }
+  ]
 }
