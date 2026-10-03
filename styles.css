@@ -35,3 +35,5 @@
   .promo-october-close{right:.55rem;top:.5rem;width:30px;height:30px}
 }
 
+
+.home-latest{grid-template-columns:repeat(3,minmax(0,1fr))}.home-latest .article-card{display:flex;flex-direction:column}.home-article-image{display:block;width:100%;height:auto}.home-latest .article-body{display:flex;flex-direction:column;flex:1}.home-latest .read{margin-top:auto}.home-latest [role=status]{grid-column:1/-1}@media(max-width:980px){.home-latest{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:720px){.home-latest{grid-template-columns:1fr}}
