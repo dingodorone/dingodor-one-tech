@@ -2380,7 +2380,9 @@ function camRenderCard(p, extraBadge, baseCategory, extraNote, ansOverride) {
   const brandMatchNote = (ans.existing_brand && ans.existing_brand === p.brand)
     ? `<li style="color:var(--accent2)">✓ Compatible avec ton écosystème ${p.brand} existant, même appli</li>`
     : '';
-  const usageTip = CAM_USAGE_TIPS[ans.usage] || '';
+  const usageTip = p.blinkStorage && ans.usage === 'animaux'
+    ? '🐾 Pour observer tes animaux et leur parler : place la caméra face à leur zone habituelle. Son objectif reste fixe, sans suivi motorisé ni détection spécifique des animaux.'
+    : CAM_USAGE_TIPS[ans.usage] || '';
   const installTip = p.category === 'exterieur' ? CAM_INSTALL_TIP : '';
   const aiTip = p.longRange ? CAM_AI_LONGDIST_TIP : '';
   const zoomTip = p.zoomTradeoff ? CAM_ZOOM_TRADEOFF_TIP : '';
