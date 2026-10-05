@@ -1472,6 +1472,45 @@ const CAM_STEPS = {
 
 // Chaque profil : specs vérifiées, vision nocturne réelle, détection animaux/colis, carte microSD conseillée, compatibilité Home Assistant
 const CAM_PROFILES = {
+  blink_mini_2k: {
+    brand: "Blink", badge: "Intérieur · WiFi + secteur · Fixe",
+    title: "Blink Mini 2K+",
+    desc: "Caméra compacte à objectif fixe pour surveiller une pièce ou observer ses animaux et leur parler. Fonctionne dans l'application Blink et avec Alexa.",
+    specs: ["Vidéo 2K 2560 × 1440 à 24 i/s, angle 138° diagonal (115° horizontal)",
+      "WiFi 2,4 GHz, débit montant de 6 Mb/s minimum en 2K",
+      "Alimentation USB-C 5 V / 1 A, adaptateur intérieur et câble de 2 m inclus ; aucune batterie",
+      "Vision infrarouge et couleur si la lumière est suffisante, projecteur intégré",
+      "Audio bidirectionnel avec réduction du bruit et sirène intégrée",
+      "Détection des personnes et véhicules avec abonnement Blink ou essai ; pas de détection spécifique des animaux/colis",
+      "Clips sur mouvement, pas d'enregistrement continu 24 h/24 ni de rotation motorisée",
+      "Cloud avec abonnement ou stockage local via Sync Module 2 + USB / Sync Module XR + microSD (vendus séparément)",
+      "Pas de logement microSD dans la caméra, pas de flux RTSP/ONVIF pour NVR/NAS"],
+    asin: 'B0F3BDBWK2', productFR: 'https://www.amazon.fr/dp/B0F3BDBWK2?tag=dingodor-21',
+    productBE: 'https://www.amazon.com.be/dp/B0F3BDBWK2?tag=dingodor0f-21',
+    nightVision: 'conditional_color', petDetection: false, packageDetection: false,
+    maxSD: null, category: 'interieur', haCompatible: false, hasSiren: true, hasIntercom: true,
+    hasAutoTracking: false, sdAsin: null, blinkStorage: true
+  },
+  blink_mini_2k_outdoor: {
+    brand: "Blink", badge: "Extérieur · WiFi + secteur · Fixe · Adaptateur requis",
+    title: "Blink Mini 2K+",
+    desc: "La Mini 2K+ peut surveiller une zone extérieure proche avec du WiFi et une prise, à condition d'ajouter l'adaptateur Blink résistant aux intempéries, vendu séparément.",
+    specs: ["Vidéo 2K 2560 × 1440 à 24 i/s, angle 138° diagonal (115° horizontal)",
+      "WiFi 2,4 GHz, débit montant de 6 Mb/s minimum en 2K ; alimentation secteur USB-C",
+      "IP65 uniquement avec l'adaptateur Blink résistant aux intempéries (non inclus), de −20 à 45 °C",
+      "Objectif fixe, pas de rotation motorisée ni de zoom optique ; pas de batterie",
+      "Vision infrarouge et couleur si la lumière est suffisante, projecteur intégré",
+      "Audio bidirectionnel avec réduction du bruit et sirène intégrée",
+      "Détection personnes/véhicules avec abonnement Blink ou essai ; pas de détection animaux/colis",
+      "Clips sur mouvement, pas d'enregistrement continu 24 h/24",
+      "Cloud avec abonnement ou stockage local via Sync Module 2 + USB / Sync Module XR + microSD (vendus séparément)",
+      "Pas de carte microSD dans la caméra ni de flux RTSP/ONVIF pour NVR/NAS ; application Blink et Alexa"],
+    asin: 'B0F3BDBWK2', productFR: 'https://www.amazon.fr/dp/B0F3BDBWK2?tag=dingodor-21',
+    productBE: 'https://www.amazon.com.be/dp/B0F3BDBWK2?tag=dingodor0f-21',
+    nightVision: 'conditional_color', petDetection: false, packageDetection: false,
+    maxSD: null, category: 'exterieur', haCompatible: false, hasSiren: true, hasIntercom: true,
+    hasAutoTracking: false, sdAsin: null, blinkStorage: true
+  },
   tapo_budget: {
     brand: "TP-Link Tapo", badge: "Intérieur · WiFi · Petit budget",
     title: "TP-Link Tapo C200",
@@ -1803,7 +1842,7 @@ const CAM_COLOR_ALT = { poe_premium: 'poe_premium_color', zoom: 'zoom_color' };
 const CAM_PAIR_OF = {
   tapo_budget: ['tapo_budget', 'switchbot_budget', 'imou_indoor'],
   tapo_premium: ['tapo_premium', 'imou_indoor', 'ezviz_indoor'],
-  tapo_fixed: ['tapo_fixed', 'aqara_indoor_fixed'],
+  tapo_fixed: ['tapo_fixed', 'aqara_indoor_fixed', 'blink_mini_2k'],
   doorbell: ['doorbell', 'tapo_doorbell', 'aqara_doorbell'],
   doorbell_battery: ['doorbell_battery', 'imou_doorbell', 'tapo_doorbell'],
   poe_budget: ['poe_budget', 'imou_premium'],
@@ -1947,9 +1986,10 @@ const BUDGET_RESOLVE = {
 // Calcule, pour chaque marque connue, si elle a une référence vérifiée (native ou de repli) pour chaque
 // catégorie de base donnée. Sert à proposer directement les marques qui couvrent vraiment tout le système,
 // plutôt que de demander au client de deviner une marque au hasard.
-const CAM_ALL_BRANDS = ['Reolink', 'Imou', 'TP-Link Tapo', 'Aqara', 'EZVIZ', 'SwitchBot', 'Annke', 'Google Nest', 'Somfy', 'Tuya/SmartLife'];
+const CAM_ALL_BRANDS = ['Reolink', 'Imou', 'TP-Link Tapo', 'Aqara', 'EZVIZ', 'SwitchBot', 'Annke', 'Google Nest', 'Somfy', 'Tuya/SmartLife', 'Blink'];
 
 function camBrandCoversCategory(brand, baseCategory) {
+  if (brand === 'Blink') return baseCategory === 'interieur_fixe' || baseCategory === 'wifi_secteur_fixe';
   const nativeProfile = (BUDGET_RESOLVE[baseCategory] || {}).peu_importe;
   if (nativeProfile && CAM_PROFILES[nativeProfile] && CAM_PROFILES[nativeProfile].brand === brand) return true;
   const family = CAM_FAMILY_OF_BASECATEGORY[baseCategory];
@@ -2196,6 +2236,19 @@ function camApplyEcosystemFilter(profileKeys, a) {
 }
 
 function camStorageBlock(p, storageAnswer, retentionAnswer) {
+  if (p.blinkStorage) {
+    return `<div class="cam-note" style="margin-top:14px">
+      <strong>Stockage Blink et coûts à prévoir</strong><br>
+      Le direct et les alertes de mouvement fonctionnent sans abonnement. Pour sauvegarder les clips :
+      abonnement Blink pour le cloud, ou Sync Module 2 avec clé USB / Sync Module XR avec carte microSD,
+      vendus séparément. Le Sync Module Core ne permet pas le stockage local.
+      La caméra ne reçoit aucune carte microSD et ne fournit pas de flux RTSP/ONVIF pour un NVR/NAS.
+      Les détections personnes/véhicules restent liées à un abonnement ou à l'essai gratuit de 30 jours.
+      L'enregistrement se fait par clips sur mouvement, pas en continu.
+      ${p.category === 'exterieur' ? '<br><strong>Extérieur :</strong> ajouter impérativement l’adaptateur Blink résistant aux intempéries ; celui fourni est réservé à l’intérieur.' : ''}
+      <br><a style="color:var(--accent2)" href="https://support.blinkforhome.com/fr_FR/faq-mini-2k" target="_blank" rel="noopener">Caractéristiques et conditions officielles Blink</a>
+    </div>`;
+  }
   if (p.builtInStorage) {
     return `
     <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)">
@@ -2261,7 +2314,9 @@ function camNvrNasBlock(p) {
 function camRenderCard(p, extraBadge, baseCategory, extraNote, ansOverride) {
   const ans = ansOverride || camAnswers;
   const productImages = camProductImages(p);
-  const nvNote = p.nightVision === 'color'
+  const nvNote = p.nightVision === 'conditional_color'
+    ? `<li style="color:var(--muted)">ℹ️ Couleur avec une lumière suffisante (ambiante ou projecteur), sinon infrarouge noir et blanc.</li>`
+    : p.nightVision === 'color'
     ? `<li style="color:var(--accent2)">✓ Vision nocturne EN COULEUR</li>`
     : `<li style="color:var(--muted)">ℹ️ Vision nocturne infrarouge classique, noir et blanc</li>`;
   let animalNote = '';
@@ -2369,8 +2424,8 @@ function camRenderCard(p, extraBadge, baseCategory, extraNote, ansOverride) {
       <div class="cam-buy-row">
         ${p.store === 'switchbot'
           ? `<a class="cam-buy-btn" href="${camLinkSwitchBot(p.storePath)}" target="_blank" rel="noopener" style="flex:1 1 100%">🛒 Voir sur SwitchBot.com (-10% avec ce lien)</a>`
-          : `<a class="cam-buy-btn" href="${camLinkFR(p.title)}" target="_blank" rel="noopener">🇫🇷 Rechercher le modèle sur Amazon France</a>
-        <a class="cam-buy-btn" href="${camLinkBE(p.title)}" target="_blank" rel="noopener">🇧🇪 Rechercher le modèle sur Amazon Belgique</a>`}
+          : `<a class="cam-buy-btn" href="${p.productFR || camLinkFR(p.title)}" target="_blank" rel="noopener">${p.productFR ? "🇫🇷 Voir le modèle sur Amazon France" : "🇫🇷 Rechercher le modèle sur Amazon France"}</a>
+        <a class="cam-buy-btn" href="${p.productBE || camLinkBE(p.title)}" target="_blank" rel="noopener">${p.productBE ? "🇧🇪 Voir le modèle sur Amazon Belgique" : "🇧🇪 Rechercher le modèle sur Amazon Belgique"}</a>`}
       </div>
       ${camStorageBlock(p, ans.storage, ans.retention)}
       ${chimeAccessoryBlock}
@@ -2383,7 +2438,13 @@ function camRenderCard(p, extraBadge, baseCategory, extraNote, ansOverride) {
 // de la préférence de marque et du filtre Home Assistant. Réutilisé pour la zone en cours
 // et pour chaque zone déjà accumulée dans un système multi-caméras.
 function camResolveDisplayKeys(profile, baseCategory, ans) {
-  const defaultPair = CAM_PAIR_OF[profile] || [profile];
+  const blinkCategory = baseCategory === 'interieur_fixe' || baseCategory === 'wifi_secteur_fixe';
+  const blinkKey = baseCategory === 'interieur_fixe' ? 'blink_mini_2k' : 'blink_mini_2k_outdoor';
+  const blinkFits = blinkCategory && ans.ecosystem !== 'home_assistant' &&
+    ans.storage !== 'sd' && ans.storage !== 'nvr_nas' && ans.animal !== 'oui' &&
+    ans.package !== 'oui' && ans.tracking !== 'oui';
+  const defaultPair = (CAM_PAIR_OF[profile] || [profile]).filter(k => !CAM_PROFILES[k].blinkStorage || blinkFits);
+  if (blinkFits && !defaultPair.includes(blinkKey)) defaultPair.push(blinkKey);
   let profileKeys = defaultPair;
   let brandNote = '';
   let brandNoMatch = false;
