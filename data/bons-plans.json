@@ -1,6 +1,24 @@
 {
   "deals": [
     {
+      "id": "cms-pc-20261005-161958-afcb3a",
+      "message": "🚨 Caméra Blink en grosse promo !\n\n(Allez voir mon guide d'achat selon votre besoin avant d'acheter)\n\n👉 À partir de 19,99 € : https://link.amazon/B012Erha9\n\n📱 Poco X8 Pro à 262 € avec le code promo FRPRD30\n\n👉 https://s.click.aliexpress.com/e/_c36JSMPb",
+      "products": [
+        {
+          "url": "https://link.amazon/B012Erha9",
+          "title": "",
+          "image": "/bon-plan-media/09d484f7d0e126799b2a580fb1211e85d002e53d32ea03c1ff2860ffcb576380.jpg"
+        },
+        {
+          "url": "https://s.click.aliexpress.com/e/_c36JSMPb",
+          "title": "POCO X8 Pro 5G, NFC, Dimensity 8500-Ultra, 6,59 inch,120 Hz, 50 MP camera, 6500 mAh, IP68 stof- en waterbestendigheid - AliExpress 509",
+          "image": "/bon-plan-media/09a53d6b13f07604bbd5c7e09f797da3217b91bb335a015ae7a9fd67878dfafe.jpg"
+        }
+      ],
+      "date": "2026-10-05T14:36:32.302928+00:00",
+      "fingerprint": "9637c57ded522b0ee04d2b384d7cb8fabf1911d8d4c823ba33c76ec2d3a2b4ee"
+    },
+    {
       "id": "cms-pc-20261003-125420-e75e6f",
       "message": "Bon Plan Amazon France 51.49€ The Legend of Zelda : Ocarina of Time https://t.co/9nIUEfLJqS\net une switch 2 a 419€ https://t.co/X811WztQXt",
       "products": [
