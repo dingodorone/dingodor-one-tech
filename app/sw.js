@@ -1,11 +1,16 @@
-const CACHE = 'dingodor-v35-amazon-be';
+const CACHE = 'dingodor-v36-avatars';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './bons-plans.css?v=1',
   './bons-plans.js?v=1',
-  '../logo-maison.svg'
+  '../logo-maison.svg',
+  '../mascotte.js?v=2-avatars',
+  '../assets/avatars/dingo-pensif.webp',
+  '../assets/avatars/dingo-bricole.webp',
+  '../assets/avatars/dingo-surpris.webp',
+  '../assets/avatars/dingo-camera.webp'
 ];
 
 self.addEventListener('install', e => {
