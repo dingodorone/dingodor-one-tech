@@ -37,8 +37,10 @@
     const before = urls.filter(m => m.index < match.index).at(-1);
     const segment = plain.slice(before ? before.index + before[0].length : 0, match.index).trim();
     const price = segment.match(/\d+(?:[.,]\d{1,2})?\s*(?:€|EUR)/i);
+    const promo = segment.match(/\b(?:code(?:\s+promo(?:tionnel)?)?|coupon)\s*(?:[:=]\s*)?["'«]?([A-Z0-9][A-Z0-9_-]{2,39})\b/i);
+    const promoCode = promo && /\d|^[A-Z0-9_-]+$/.test(promo[1]) ? promo[1] : '';
     const title = segment.replace(/\d+(?:[.,]\d{1,2})?\s*(?:€|EUR)/gi, '').replace(/^\s*(?:et\s+)?(?:une?\s+)?/i, '').replace(/\b(?:link\.amazon|amzn\.to)\/\S+/g, '').trim();
-    return {title: product.title || title || `Offre ${index + 1}`, price: price ? price[0].replace('.', ',') : ''};
+    return {title: product.title || title || `Offre ${index + 1}`, price: price ? price[0].replace('.', ',') : '', promoCode};
   }
   function productCard(product, message, index) {
     const url = safeUrl(product.url);
@@ -52,6 +54,7 @@
     } else { box.classList.add('empty'); box.textContent = 'Voir le produit chez le marchand'; }
     const info = el('div', 'deal-info'); info.append(el('small', '', new URL(url).hostname), el('strong', '', context.title));
     if (context.price) info.append(el('span', 'deal-price', context.price));
+    if (context.promoCode) info.append(el('strong', 'deal-promo', `Code promo : ${context.promoCode}`));
     info.append(el('span', 'deal-cta', 'Voir l’offre ↗')); card.append(box, info); return card;
   }
   async function load() {
