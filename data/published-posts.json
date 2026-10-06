@@ -1,6 +1,17 @@
 {
   "posts": [
     {
+      "ID": -97067522091813,
+      "title": "Le stockage cloud est-il devenu moins cher que le stockage local pour les caméras ?",
+      "slug": "le-stockage-cloud-est-il-devenu-moins-cher-que-le-stockage-local-8d5095",
+      "date": "2026-10-06T14:33:32.718067+00:00",
+      "excerpt": "MicroSD, HDD, SSD, NVR ou cloud : quelle solution coûte réellement le moins cher pour stocker les vidéos de ses caméras ? Ce guide compare les coûts du stockage local et des principaux abonnements cloud sur plusieurs années. Il explique également comment choisir une carte microSD selon la résolution et le type d’enregistrement, pourquoi l’endurance est essentielle en 24/24, et les avantages et limites du stockage local, du cloud et du NAS. L’objectif : trouver le bon équilibre entre coût, capacité et sécurité des enregistrements.",
+      "featured_image": "/article-media/1d4040016edcce903e53128e4c907a57cbe5cf287b856ad59e09bee62565de7b.jpg",
+      "url": "/publications/le-stockage-cloud-est-il-devenu-moins-cher-que-le-stockage-local-8d5095.html",
+      "source": "github",
+      "sha256": "6a871759f11763135faaf370d059fe4071b3c42c9926a231357a458cc12a4054"
+    },
+    {
       "ID": 21254,
       "slug": "21254",
       "date": "2026-09-29T06:30:00+02:00",
