@@ -5,9 +5,12 @@ import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 ORIGIN = 'https://dingodoronetech.eu.org'
+# CDN propagation can lag behind a successful Pages deployment.
+RETRY_DELAYS = (5, 10, 20, 30, 45, 60, 60, 60)
 
 
 def verify_post(post):
@@ -23,6 +26,33 @@ def verify_post(post):
         raise RuntimeError('Public page does not match generated article: ' + path)
 
 
+def verify_with_retry(post):
+    """Wait for propagation without accepting a missing or outdated page."""
+    url = ORIGIN + post['url']
+    attempts = len(RETRY_DELAYS) + 1
+    for attempt in range(attempts):
+        try:
+            verify_post(post)
+            return
+        except (OSError, RuntimeError) as error:
+            # Authentication and other permanent client errors need intervention.
+            retryable = not isinstance(error, HTTPError) or (
+                error.code in {404, 408, 429} or 500 <= error.code < 600
+            )
+            if not retryable or attempt == attempts - 1:
+                raise RuntimeError(
+                    f'Publication verification failed for {url} after '
+                    f'{attempt + 1} attempt(s): {error}. '
+                    'The article was not added to the index. '
+                    'Fix the error or rerun the failed publication job.'
+                ) from error
+            delay = RETRY_DELAYS[attempt]
+            print(f'Waiting for {url}: {error}; '
+                  f'retrying in {delay}s ({attempt + 1}/{attempts})',
+                  flush=True)
+            time.sleep(delay)
+
+
 def verify_manifest(candidate, previous=None):
     posts = json.loads(Path(candidate).read_text(encoding='utf-8'))['posts']
     # A previous manifest was itself gated by this check. Recheck new/changed pages.
@@ -30,17 +60,8 @@ def verify_manifest(candidate, previous=None):
     if previous and Path(previous).exists():
         old = {p['url']: p['sha256'] for p in json.loads(Path(previous).read_text(encoding='utf-8'))['posts']}
     pending = [p for p in posts if old.get(p['url']) != p['sha256']]
-    def retry(post):
-        for attempt in range(4):
-            try:
-                verify_post(post)
-                return
-            except (OSError, RuntimeError):
-                if attempt == 3:
-                    raise
-                time.sleep(2 ** attempt)
     with ThreadPoolExecutor(max_workers=4) as pool:
-        list(pool.map(retry, pending))
+        list(pool.map(verify_with_retry, pending))
     print(f'{len(pending)} new or changed public pages verified')
 
 
