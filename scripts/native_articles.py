@@ -41,7 +41,7 @@ def safe_text_style(value):
     return ';'.join(rules)
 
 PHOTO_CSS = '''
-.wp-content table{border-collapse:collapse;width:100%;table-layout:fixed;margin:1em 0}.wp-content td,.wp-content th{border:1px solid #b7c6ce;padding:10px;overflow-wrap:anywhere}.wp-content th{background:#eaf1f4}.wp-content blockquote{border-left:4px solid #168675;margin:1em 0;padding:12px 22px;background:#eef6f4}.wp-content pre{white-space:pre-wrap;background:#eef1f3;padding:16px}
+.wp-content table{border-collapse:collapse;width:100%;table-layout:auto;margin:1.5em 0}.wp-content td,.wp-content th{border:1px solid #d6e3e5;padding:14px 16px;overflow-wrap:normal;word-break:normal;hyphens:none;vertical-align:top}.wp-content th{background:#eaf4f3;text-align:left}.wp-content blockquote{border-left:4px solid #168675;margin:1em 0;padding:12px 22px;background:#eef6f4}.wp-content pre{white-space:pre-wrap;background:#eef1f3;padding:16px}
 .wp-content figure.dt-photo{max-width:100%;box-sizing:border-box;margin-top:1.5em;margin-bottom:1.5em;padding:0;clear:both}
 .wp-content figure.dt-photo img{display:block;width:100%;max-width:100%;height:auto;margin:0;border-radius:10px}
 .wp-content figure.dt-photo.dt-align-left{margin-left:0;margin-right:auto}
