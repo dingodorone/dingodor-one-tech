@@ -1,4 +1,4 @@
-const CACHE = 'dingodor-v36-avatars';
+const CACHE = 'dingodor-v37-apparition';
 const ASSETS = [
   './',
   './index.html',
@@ -6,7 +6,7 @@ const ASSETS = [
   './bons-plans.css?v=1',
   './bons-plans.js?v=1',
   '../logo-maison.svg',
-  '../mascotte.js?v=2-avatars',
+  '../mascotte.js?v=3-apparition',
   '../assets/avatars/dingo-pensif.webp',
   '../assets/avatars/dingo-bricole.webp',
   '../assets/avatars/dingo-surpris.webp',
