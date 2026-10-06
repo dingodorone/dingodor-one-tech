@@ -1455,6 +1455,7 @@ const CAM_STEPS = {
   existing_brand: {
     question: "Quelle marque utilises-tu déjà principalement ?",
     options: [
+      { value: 'Ring', label: "Ring", sub: "Application Ring / Alexa ; historique vidéo avec abonnement" },
       { value: 'Reolink', label: "Reolink" },
       { value: 'TP-Link Tapo', label: "TP-Link / Tapo" },
       { value: 'EZVIZ', label: "EZVIZ" },
@@ -1472,6 +1473,88 @@ const CAM_STEPS = {
 
 // Chaque profil : specs vérifiées, vision nocturne réelle, détection animaux/colis, carte microSD conseillée, compatibilité Home Assistant
 const CAM_PROFILES = {
+  ring_indoor: {
+  "brand": "Ring",
+  "nightVision": "conditional_color",
+  "petDetection": false,
+  "packageDetection": false,
+  "maxSD": null,
+  "haCompatible": false,
+  "hasIntercom": true,
+  "hasAutoTracking": false,
+  "sdAsin": null,
+  "ringStorage": true,
+  "badge": "Intérieur · WiFi + secteur · Fixe",
+  "title": "Ring Indoor Camera (2e génération)",
+  "desc": "Une caméra compacte pour une pièce, avec cache manuel qui coupe la caméra et le microphone. Elle se pilote dans l’application Ring et fonctionne avec Alexa.",
+  "specs": [
+    "Vidéo Full HD 1920 × 1080, vision nocturne infrarouge et couleur avec éclairage suffisant",
+    "Alimentation secteur, WiFi ; objectif fixe, aucune rotation ni suivi automatique",
+    "Audio bidirectionnel et cache de confidentialité manuel",
+    "Direct et alertes de mouvement sans abonnement ; historique vidéo dans le cloud avec abonnement Ring Protect",
+    "Aucune carte microSD ni flux RTSP/ONVIF local pour NVR/NAS"
+  ],
+  "category": "interieur",
+  "hasSiren": false,
+  "image": "https://images.ctfassets.net/2xsswpd01u70/variant-58850545795419-fr-fr/33d802cafcf7ae2085a1cad231648c4c/variant-58850545795419-fr-fr.jpg",
+  "sourceUrl": "https://ring.com/fr/fr/products/mini-indoor-security-camera-plug-in"
+},
+  ring_spotlight_battery: {
+  "brand": "Ring",
+  "nightVision": "conditional_color",
+  "petDetection": false,
+  "packageDetection": false,
+  "maxSD": null,
+  "haCompatible": false,
+  "hasIntercom": true,
+  "hasAutoTracking": false,
+  "sdAsin": null,
+  "ringStorage": true,
+  "badge": "Extérieur · WiFi + batterie · Solaire en option · Fixe",
+  "title": "Ring Spotlight Cam Plus Battery",
+  "desc": "Pour surveiller un jardin ou une allée sans prise : deux spots LED, sirène et batterie rechargeable. Le panneau solaire compatible est vendu séparément.",
+  "specs": [
+    "Vidéo Full HD 1920 × 1080, champ de vision 140°",
+    "WiFi 2,4 GHz obligatoire : aucune connexion 4G",
+    "Batterie rechargeable amovible ; panneau solaire compatible à acheter séparément, exposition au soleil nécessaire",
+    "Deux spots LED, vision nocturne couleur avec éclairage suffisant et infrarouge dans l’obscurité",
+    "Sirène activable à distance et audio bidirectionnel",
+    "Objectif fixe, pas de suivi automatique ; cloud vidéo avec abonnement Ring Protect"
+  ],
+  "category": "exterieur",
+  "hasSiren": true,
+  "image": "https://images.ctfassets.net/2xsswpd01u70/variant-58850806268251-fr-fr/6c7203f9856cc4a49a244dd399fd55ed/variant-58850806268251-fr-fr.jpg",
+  "sourceUrl": "https://ring.com/fr/fr/products/spotlight-cam-plus-battery"
+},
+  ring_spotlight_power: {
+  "brand": "Ring",
+  "nightVision": "conditional_color",
+  "petDetection": false,
+  "packageDetection": false,
+  "maxSD": null,
+  "haCompatible": false,
+  "hasIntercom": true,
+  "hasAutoTracking": false,
+  "sdAsin": null,
+  "ringStorage": true,
+  "badge": "Extérieur · WiFi + secteur · Fixe · Adaptateur requis",
+  "title": "Ring Spotlight Cam Plus + adaptateur secteur compatible",
+  "desc": "La Spotlight Cam Plus peut fonctionner sur secteur avec un adaptateur Ring compatible vendu séparément. Vérifie le contenu du pack et l’adaptateur avant l’achat.",
+  "specs": [
+    "Vidéo Full HD 1920 × 1080, champ de vision 140°",
+    "Connexion WiFi 2,4 GHz ; aucune alimentation PoE",
+    "Adaptateur secteur Ring compatible vendu séparément pour la version Battery",
+    "Deux spots LED et sirène commandable à distance",
+    "Vision nocturne couleur avec éclairage suffisant, infrarouge dans l’obscurité",
+    "Audio bidirectionnel ; objectif fixe sans suivi automatique",
+    "Historique vidéo cloud avec abonnement Ring Protect"
+  ],
+  "category": "exterieur",
+  "hasSiren": true,
+  "image": "https://images.ctfassets.net/2xsswpd01u70/variant-58850806268251-fr-fr/6c7203f9856cc4a49a244dd399fd55ed/variant-58850806268251-fr-fr.jpg",
+  "sourceUrl": "https://ring.com/fr/fr/products/spotlight-cam-plus-battery"
+},
+
   blink_mini_2k: {
     brand: "Blink", badge: "Intérieur · WiFi + secteur · Fixe",
     title: "Blink Mini 2K+",
@@ -1986,9 +2069,14 @@ const BUDGET_RESOLVE = {
 // Calcule, pour chaque marque connue, si elle a une référence vérifiée (native ou de repli) pour chaque
 // catégorie de base donnée. Sert à proposer directement les marques qui couvrent vraiment tout le système,
 // plutôt que de demander au client de deviner une marque au hasard.
-const CAM_ALL_BRANDS = ['Reolink', 'Imou', 'TP-Link Tapo', 'Aqara', 'EZVIZ', 'SwitchBot', 'Annke', 'Google Nest', 'Somfy', 'Tuya/SmartLife', 'Blink'];
+const CAM_ALL_BRANDS = ['Reolink', 'Imou', 'TP-Link Tapo', 'Aqara', 'EZVIZ', 'SwitchBot', 'Annke', 'Google Nest', 'Somfy', 'Tuya/SmartLife', 'Blink', 'Ring'];
 
+const CAM_RING_BY_CATEGORY = { interieur_fixe: 'ring_indoor', wifi_secteur_fixe: 'ring_spotlight_power', solar_wifi_fixe: 'ring_spotlight_battery' };
+function camRingFits(baseCategory, a) {
+  return !!CAM_RING_BY_CATEGORY[baseCategory] && a.ecosystem !== 'home_assistant' && a.storage !== 'sd' && a.storage !== 'nvr_nas' && a.animal !== 'oui' && a.package !== 'oui' && a.tracking !== 'oui' && !(baseCategory === 'interieur_fixe' && a.siren === 'oui');
+}
 function camBrandCoversCategory(brand, baseCategory) {
+  if (brand === 'Ring') return !!CAM_RING_BY_CATEGORY[baseCategory];
   if (brand === 'Blink') return baseCategory === 'interieur_fixe' || baseCategory === 'wifi_secteur_fixe';
   const nativeProfile = (BUDGET_RESOLVE[baseCategory] || {}).peu_importe;
   if (nativeProfile && CAM_PROFILES[nativeProfile] && CAM_PROFILES[nativeProfile].brand === brand) return true;
@@ -2236,6 +2324,16 @@ function camApplyEcosystemFilter(profileKeys, a) {
 }
 
 function camStorageBlock(p, storageAnswer, retentionAnswer) {
+  if (p.ringStorage) return `<div class="cam-note" style="margin-top:14px">
+    <strong>Stockage Ring et abonnement</strong><br>
+    Direct, alertes de mouvement et audio sans abonnement. Pour conserver et revoir les vidéos :
+    abonnement Ring Protect requis après l’essai, historique jusqu’à 180 jours selon le forfait et les réglages.
+    Pas de carte microSD ni d’enregistrement local RTSP/ONVIF sur NVR/NAS.
+    Les fonctions de détection avancée dépendent du forfait, du modèle et du pays ; elles ne sont pas présentées ici comme des détections locales gratuites.
+    Télécharge les clips importants avant leur expiration pour un archivage durable.
+    <br><a style="color:var(--accent2)" href="${p.sourceUrl}" target="_blank" rel="noopener">Fiche officielle Ring</a>
+  </div>`;
+
   if (p.blinkStorage) {
     return `<div class="cam-note" style="margin-top:14px">
       <strong>Stockage Blink et coûts à prévoir</strong><br>
@@ -2447,6 +2545,8 @@ function camResolveDisplayKeys(profile, baseCategory, ans) {
     ans.package !== 'oui' && ans.tracking !== 'oui';
   const defaultPair = (CAM_PAIR_OF[profile] || [profile]).filter(k => !CAM_PROFILES[k].blinkStorage || blinkFits);
   if (blinkFits && !defaultPair.includes(blinkKey)) defaultPair.push(blinkKey);
+  const ringKey = CAM_RING_BY_CATEGORY[baseCategory];
+  if (camRingFits(baseCategory, ans)) defaultPair.push(ringKey);
   let profileKeys = defaultPair;
   let brandNote = '';
   let brandNoMatch = false;
