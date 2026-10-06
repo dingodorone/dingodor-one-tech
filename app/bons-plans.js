@@ -29,18 +29,27 @@
     return p;
   }
   function productContext(message, product, index) {
-    // Text between two URLs belongs to the following product, as in a tweet.
     const plain = message.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '$1 $2');
     const urls = [...plain.matchAll(/https?:\/\/[^\s<>\[\]"\)]+/g)];
     const match = urls.find(m => m[0].replace(/[.,;!]+$/, '') === product.url);
-    if (!match) return {title: product.title || `Offre ${index + 1}`, price: ''};
+    if (!match) return {title: product.title || 'Offre ' + (index + 1), price: '', promoCode: ''};
     const before = urls.filter(m => m.index < match.index).at(-1);
-    const segment = plain.slice(before ? before.index + before[0].length : 0, match.index).trim();
+    const segment = plain.slice(before ? before.index + before[0].length : 0, match.index).trim().split(/\n\s*\n/).at(-1);
     const price = segment.match(/\d+(?:[.,]\d{1,2})?\s*(?:€|EUR)/i);
     const promo = segment.match(/\b(?:code(?:\s+promo(?:tionnel)?)?|coupon)\s*(?:[:=]\s*)?["'«]?([A-Z0-9][A-Z0-9_-]{2,39})\b/i);
     const promoCode = promo && /\d|^[A-Z0-9_-]+$/.test(promo[1]) ? promo[1] : '';
-    const title = segment.replace(/\d+(?:[.,]\d{1,2})?\s*(?:€|EUR)/gi, '').replace(/^\s*(?:et\s+)?(?:une?\s+)?/i, '').replace(/\b(?:link\.amazon|amzn\.to)\/\S+/g, '').trim();
-    return {title: product.title || title || `Offre ${index + 1}`, price: price ? price[0].replace('.', ',') : '', promoCode};
+    const lines = segment.split(/\r?\n/).map(line => line
+      .replace(/(?:👉|➡️?|→)?\s*(?:Amazon(?:\s+(?:FR|BE|France|Belgique))?|lien|voir\s+l['’]offre)\s*:\s*.*$/i, '')
+      .replace(/\b(?:code(?:\s+promo(?:tionnel)?)?|coupon)\s*[:=]?\s*["'«]?[A-Z0-9_-]{3,40}["'»]?/gi, '')
+      .replace(/\d+(?:[.,]\d{1,2})?\s*(?:€|EUR)/gi, '')
+      .replace(/\b(?:au lieu de|à partir de)\b/gi, '')
+      .replace(/\b(?:link\.amazon|amzn\.to)\/\S+/g, '')
+      .replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '')
+      .replace(/^\s*(?:et\s+)?(?:une?\s+)?/i, '')
+      .replace(/^\s*à\s*|\s+à\s*$/gi, '')
+      .trim()).filter(Boolean);
+    const title = lines.at(-1) || '';
+    return {title: product.title || title || 'Offre ' + (index + 1), price: price ? price[0].replace('.', ',') : '', promoCode};
   }
   function productCard(product, message, index) {
     const url = safeUrl(product.url);
