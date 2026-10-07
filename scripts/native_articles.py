@@ -5,7 +5,7 @@ import json
 import re
 from datetime import datetime, timezone
 from html.parser import HTMLParser
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, parse_qs
 
 def safe_image_source(value):
     if (value.startswith('/media/') or value.startswith('/article-media/')) and '..' not in value and not any(c in value for c in ['?', '#', '%', '\\']):
@@ -107,6 +107,46 @@ def clean(value):
     return ''.join(parser.output)
 
 
+def video_markup(item):
+    value = (item.get('file') or item.get('url') or '').strip()
+    if not value:
+        return ''
+    caption = html.escape(item.get('caption', ''))
+    title = html.escape(item.get('caption') or 'Vidéo', quote=True)
+    if value.startswith(('/media/', '/article-media/')):
+        if '..' in value or any(c in value for c in '?#%\\') or not value.lower().endswith(('.mp4', '.webm')):
+            raise ValueError('Fichier vidéo invalide')
+        player = '<video controls playsinline preload="metadata" src="' + html.escape(value, quote=True) + '"></video>'
+    else:
+        url = urlsplit(value)
+        if url.scheme != 'https':
+            raise ValueError('Utiliser un lien vidéo HTTPS')
+        host = url.hostname
+        identifier = ''
+        embed = ''
+        if host in {'youtube.com', 'www.youtube.com', 'm.youtube.com', 'youtu.be', 'www.youtube-nocookie.com'}:
+            identifier = url.path.strip('/').split('/')[-1] if url.path != '/watch' else parse_qs(url.query).get('v', [''])[0]
+            if re.fullmatch(r'[A-Za-z0-9_-]{11}', identifier):
+                embed = 'https://www.youtube-nocookie.com/embed/' + identifier
+        elif host in {'vimeo.com', 'www.vimeo.com', 'player.vimeo.com'}:
+            identifier = url.path.strip('/').split('/')[-1]
+            if identifier.isdigit():
+                embed = 'https://player.vimeo.com/video/' + identifier
+        elif host in {'dailymotion.com', 'www.dailymotion.com', 'dai.ly'}:
+            identifier = url.path.strip('/').split('/')[-1].split('_')[0]
+            if re.fullmatch(r'[A-Za-z0-9]+', identifier):
+                embed = 'https://www.dailymotion.com/embed/video/' + identifier
+        if embed:
+            player = '<iframe src="' + embed + '" title="' + title + '" loading="lazy" allow="fullscreen; picture-in-picture" allowfullscreen></iframe>'
+        elif url.path.lower().endswith(('.mp4', '.webm')):
+            player = '<video controls playsinline preload="metadata" src="' + html.escape(value, quote=True) + '"></video>'
+        else:
+            player = '<p>Vidéo disponible sur sa plateforme :</p>'
+        player += '<p><a href="' + html.escape(value, quote=True) + '" target="_blank" rel="noopener noreferrer">Ouvrir la vidéo</a></p>'
+    return '<figure class="dt-video">' + player + ('<figcaption>' + caption + '</figcaption>' if caption else '') + '</figure>'
+
+VIDEO_CSS = '.wp-content .dt-video{margin:1.5em auto;width:100%;max-width:900px}.wp-content .dt-video iframe{display:block;width:100%;aspect-ratio:16/9;height:auto;border:0}.wp-content .dt-video video{display:block;width:100%;max-height:75vh;background:#000}.wp-content .dt-video figcaption{text-align:center;color:#62717e}.wp-content .dt-video p{font-size:.9em}'
+
 def render(data):
     from build_articles import article_html, ORIGIN
     slug = data['slug']
@@ -121,11 +161,18 @@ def render(data):
     featured = data.get('featured_image', '')
     if featured:
         content = clean('<figure><img src="' + html.escape(featured, quote=True) + '" alt=""></figure>') + content
+    for index, item in enumerate(data.get('videos', []), 1):
+        markup = video_markup(item)
+        marker = '[[video:' + str(index) + ']]'
+        if marker in content:
+            content = content.replace('<p>' + marker + '</p>', markup).replace(marker, markup)
+        else:
+            content += markup
     identifier = -int(hashlib.sha256(slug.encode()).hexdigest()[:12], 16)
     path = '/publications/' + slug + '.html'
     post = dict(ID=identifier, title=data['title'], slug=slug, date=data['date'], excerpt=data.get('excerpt', ''), featured_image=featured, content=content)
     page = article_html(post, ORIGIN + path).replace('data-view="static-post"', 'data-view="github-post"')
-    page = page.replace('</head>', '<style>' + PHOTO_CSS + '</style></head>')
+    page = page.replace('</head>', '<style>' + PHOTO_CSS + VIDEO_CSS + '</style></head>')
     return page, {k: v for k, v in dict(post, url=path, source='github', sha256=hashlib.sha256(page.encode()).hexdigest()).items() if k != 'content'}
 
 
