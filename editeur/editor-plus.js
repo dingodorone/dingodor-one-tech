@@ -16,12 +16,45 @@ $('recover').onclick=()=>{const root=tools('Textes récupérables sur ce PC');co
 // Optional encrypted storage: no plaintext credential or passphrase is persisted.
 const b64=bytes=>btoa(String.fromCharCode(...bytes));const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 async function vaultKey(pass,salt){const material=await crypto.subtle.importKey('raw',new TextEncoder().encode(pass),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);}
-function vaultButtons(){const exists=!!localStorage.getItem(VAULT);$('unlock-key').hidden=!exists;$('forget-key').hidden=!exists;}
+let vaultLogin=false;
+const keyLabel=$('token').closest('label'),rememberLabel=$('remember-key').closest('label'),loginButton=$('login-form').querySelector('button.primary');
+function hasVault(){try{return !!localStorage.getItem(VAULT);}catch{return false;}}
+function vaultButtons(useStored=hasVault()){
+ vaultLogin=useStored&&hasVault();keyLabel.hidden=vaultLogin;rememberLabel.hidden=vaultLogin;
+ $('token').required=!vaultLogin;$('token').disabled=vaultLogin;
+ $('remember-key').checked=false;
+ $('passphrase-label').hidden=!vaultLogin;$('key-passphrase').required=vaultLogin;
+ $('key-passphrase').minLength=vaultLogin?1:12;$('key-passphrase').autocomplete=vaultLogin?'current-password':'new-password';
+ loginButton.textContent=vaultLogin?'Déverrouiller mes brouillons':'Ouvrir mes brouillons';
+ $('unlock-key').hidden=!hasVault();$('unlock-key').textContent=vaultLogin?'Utiliser une autre clé GitHub':'Utiliser ma clé mémorisée';
+ $('forget-key').hidden=!hasVault();
+}
 $('remember-key').onchange=()=>{$('passphrase-label').hidden=!$('remember-key').checked;$('key-passphrase').required=$('remember-key').checked;};
-window.editorConnected=async()=>{if(!$('remember-key').checked)return;const pass=$('key-passphrase').value;if(pass.length<12)throw Error('Utilisez une phrase secrète d’au moins 12 caractères.');const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),key=await vaultKey(pass,salt);const encrypted=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(token)));localStorage.setItem(VAULT,JSON.stringify({salt:b64(salt),iv:b64(iv),cipher:b64(encrypted)}));$('key-passphrase').value='';vaultButtons();};
-$('unlock-key').onclick=()=>{const root=tools('Déverrouiller ma connexion');const input=document.createElement('input');input.type='password';input.autocomplete='current-password';input.placeholder='Votre phrase secrète';input.setAttribute('aria-label','Phrase secrète');root.append(input,action('Déverrouiller',()=>task(async()=>{try{const v=JSON.parse(localStorage.getItem(VAULT));const key=await vaultKey(input.value,unb64(v.salt));const raw=await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(v.iv)},key,unb64(v.cipher));token=new TextDecoder().decode(raw);input.value='';await refreshList();$('login').hidden=true;$('workspace').hidden=false;$('logout').hidden=false;current=null;paint(mode==='articles'?{body:'<p></p>'}:{message:'',published:false});$('tools-dialog').close();status('Connexion déverrouillée.');}catch(e){throw Error('Déverrouillage impossible : phrase incorrecte, clé expirée ou accès GitHub indisponible.');}})));};
-$('forget-key').onclick=()=>{localStorage.removeItem(VAULT);vaultButtons();status('La copie chiffrée a été oubliée sur ce PC.');};
-try{vaultButtons();}catch{}
+window.editorConnected=async()=>{
+ if(!$('remember-key').checked)return;
+ const pass=$('key-passphrase').value;if(pass.length<12)throw Error('Utilisez une phrase secrète d’au moins 12 caractères.');
+ const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),key=await vaultKey(pass,salt);
+ const encrypted=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(token)));
+ try{localStorage.setItem(VAULT,JSON.stringify({salt:b64(salt),iv:b64(iv),cipher:b64(encrypted)}));}
+ catch{throw Error('Ce navigateur ne peut pas mémoriser la clé. Autorisez le stockage du site ou décochez la mémorisation pour ouvrir vos brouillons.');}
+ $('key-passphrase').value='';vaultButtons();
+};
+const connectWithKey=$('login-form').onsubmit;
+$('login-form').onsubmit=e=>{
+ if(!vaultLogin){connectWithKey(e);return;}
+ e.preventDefault();task(async()=>{
+  let raw;
+  try{const v=JSON.parse(localStorage.getItem(VAULT)),key=await vaultKey($('key-passphrase').value,unb64(v.salt));raw=await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(v.iv)},key,unb64(v.cipher));}
+  catch{token='';throw Error('Phrase secrète incorrecte ou copie mémorisée illisible. Réessayez, ou utilisez « Utiliser une autre clé GitHub ».');}
+  token=new TextDecoder().decode(raw);
+  try{await refreshList();}catch(error){token='';throw error;}
+  $('key-passphrase').value='';$('login').hidden=true;$('workspace').hidden=false;$('logout').hidden=false;current=null;
+  paint(mode==='articles'?{body:'<p></p>'}:{message:'',published:false});status('Connexion déverrouillée avec la clé mémorisée sur ce PC.');
+ });
+};
+$('unlock-key').onclick=()=>{vaultButtons(!vaultLogin);$('key-passphrase').value='';(vaultLogin?$('key-passphrase'):$('token')).focus();};
+$('forget-key').onclick=()=>{try{localStorage.removeItem(VAULT);}catch{status('Impossible d’effacer la copie mémorisée dans ce navigateur.',true);return;}vaultButtons(false);$('key-passphrase').value='';status('La copie chiffrée a été oubliée sur ce PC.');};
+vaultButtons();
 function updateSEO(){const title=$('seo-title').value||$('title').value,desc=$('seo-description').value||$('excerpt').value,slug=current?.path.split('/').pop().replace(/\.json$/,'')||slugify($('seo-slug').value||$('title').value);$('seo-preview').replaceChildren(textNode('strong',title||'Titre de votre article'),textNode('p','dingodoronetech.eu.org/publications/'+slug+'.html'),textNode('p',desc||'Description de votre article'),textNode('small',title.length+' caractères de titre · '+desc.length+' de description'));}
 for(const id of ['title','excerpt','seo-title','seo-description','seo-slug'])$(id).addEventListener('input',updateSEO);
 const originalPaint=paint;paint=function(data){originalPaint(data);updateSEO();};
@@ -64,5 +97,5 @@ $('image-remove').onclick=()=>{
 
 // Keep search connected to the enhanced title/category list after its replacement.
 $('search').oninput=()=>drawList();
-window.editorDisconnected=()=>{clearTimeout(autoTimer);metadataCache.clear();selectedImage=null;selectedCell=null;galleryTarget=null;range=null;editingChip=null;for(const id of ['deal-message','seo-title','seo-description','seo-slug','categories','tags','search'])$(id).value='';$('deal-published').checked=false;document.querySelectorAll('dialog[open]').forEach(d=>d.close());$('preview-content').replaceChildren();if(exactFrameURL){URL.revokeObjectURL(exactFrameURL);exactFrameURL=null;}};
+window.editorDisconnected=()=>{vaultButtons();$('key-passphrase').value='';clearTimeout(autoTimer);metadataCache.clear();selectedImage=null;selectedCell=null;galleryTarget=null;range=null;editingChip=null;for(const id of ['deal-message','seo-title','seo-description','seo-slug','categories','tags','search'])$(id).value='';$('deal-published').checked=false;document.querySelectorAll('dialog[open]').forEach(d=>d.close());$('preview-content').replaceChildren();if(exactFrameURL){URL.revokeObjectURL(exactFrameURL);exactFrameURL=null;}};
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'&&!$('workspace').hidden){e.preventDefault();if(!busy)task(save);}});
