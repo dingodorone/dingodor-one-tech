@@ -11,6 +11,17 @@ import build_articles
 
 
 class NativeTests(unittest.TestCase):
+    def test_new_article_and_update_keep_comments_mount(self):
+        data = dict(title='Article', slug='article', date='2026-01-01T12:00:00+00:00', body='<p>Texte</p>')
+        for body in ('<p>Texte</p>', '<p>Texte mis à jour</p>'):
+            data['body'] = body
+            page, post = native_articles.render(data)
+            self.assertIn('data-view="github-post"', page)
+            self.assertIn('<section id="comments"', page)
+            self.assertIn('/wp-content.js', page)
+            self.assertLess(page.index('</article>'), page.index('<section id="comments"'))
+            self.assertEqual(post['slug'], 'article')
+
     def test_sanitizes_active_content_and_rejects_remote_images(self):
         self.assertEqual(native_articles.clean('<p onclick="x()">Bonjour<strong>oui</strong><script>secret()</script></p>'), '<p>Bonjour<strong>oui</strong></p>')
         self.assertNotIn('javascript:', native_articles.clean('<a href="javascript:alert(1)">Lien</a>'))
