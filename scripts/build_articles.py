@@ -84,7 +84,7 @@ def article_html(post, url):
 <body data-view="static-post" data-post-id="{int(post['ID'])}"><a class="skip" href="#contenu">Aller au contenu</a>
 <header class="site-header"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><span>Dingodor <strong>One Tech</strong></span></a><button class="menu-button" type="button" aria-expanded="false" aria-controls="navigation">Menu</button><nav id="navigation"><a href="/">Accueil</a><a href="/articles.html">Articles</a><a href="/guide-camera.html">Guide caméra</a><a href="/page.html?slug=code-promo-2">Codes promo</a><a href="/partenaires.html">Partenaires</a><a class="nav-contact" href="/page.html?slug=contact">✉ Contact</a></nav></header>
 <main id="contenu" class="article-wrap"><header class="article-head"><a class="back" href="/articles.html">← Tous les articles</a><h1>{safe_title}</h1><p class="meta"><time datetime="{published}">{published}</time></p></header><article id="wp-content" class="wp-content">{content}</article><section id="comments" class="comments-section" hidden></section></main>
-<footer>© Dingodor One Tech · <a href="/page.html?slug=contact">Contact</a></footer><script src="/wp-content.js?v=16" defer></script><script src="/webpushr.js" defer></script></body></html>'''
+<footer>© Dingodor One Tech · <a href="/page.html?slug=contact">Contact</a></footer><script src="/wp-content.js?v=17" defer></script><script src="/webpushr.js" defer></script></body></html>'''
 
 
 def write_if_changed(path, contents):
