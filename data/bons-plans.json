@@ -1,6 +1,24 @@
 {
   "deals": [
     {
+      "id": "cms-pc-20261007-161146-0593e4",
+      "message": "📷 Bon plan : SanDisk High Endurance 128 Go pour vos caméras\n🇧🇪 Amazon Belgique : 30,30 €\nAvec PRIME10 : 10 € de réduction dès 50 € d’achat éligible.\nDeux cartes reviennent à 50,60 €, soit 25,30 € chacune, si le code s’applique dans votre panier.\n👉 https://link.amazon/B0eghb1tQ\n🇫🇷 Amazon France : 32,76 €\nAucun code supplémentaire identifié.\n👉 https://link.amazon/B09wpmM5B\nCette carte est conçue pour les écritures répétées des caméras de surveillance et des dashcams. Vérifiez que votre appareil accepte une microSD de 128 Go.\nPrix susceptibles de changer. Conditions PRIME10 et éventuels frais de livraison à vérifier dans le panier.\nLiens affiliés : je peux recevoir une commission, sans supplément pour vous.",
+      "products": [
+        {
+          "url": "https://link.amazon/B0eghb1tQ",
+          "title": "SanDisk 128 Go High Endurance carte microSDXC pour les caméras IP et les caméras embarquées + adaptateur SD jusqu'à 10 000 heures de vidéo Full HD / 4K jusqu'à 100 Mo/s UHS-I Class 10 U3 V30 : Amazon.com.be: High-tech",
+          "image": "/bon-plan-media/6c06f73d5eed8dec9dd76025dd306497695e1e8f51daec1c0837542714920c0c.jpg"
+        },
+        {
+          "url": "https://link.amazon/B09wpmM5B",
+          "title": "SanDisk 128 Go High Endurance carte microSDXC pour les caméras IP et les caméras embarquées + adaptateur SD jusqu'à 10 000 heures de vidéo Full HD / 4K jusqu'à 100 Mo/s UHS-I Class 10 U3 V30 : Amazon.fr: Informatique",
+          "image": "/bon-plan-media/6c06f73d5eed8dec9dd76025dd306497695e1e8f51daec1c0837542714920c0c.jpg"
+        }
+      ],
+      "date": "2026-10-07T14:12:55.316292+00:00",
+      "fingerprint": "c91c14b50d2b854103f607f795e76f899a2081e6c784d730c8a392341202e439"
+    },
+    {
       "id": "cms-pc-20261006-132811-323f09",
       "message": "🔥 SUPER BONS PLANS TECH – 6 OCTOBRE\n\n📷 Blink Outdoor 2K+ + sonnette vidéo 2K+ + Sync Module Core\n🔥 107,99 €\n👉 Amazon FR : https://link.amazon/B01StXVwE\n\n📺 Fire TV Stick 4K Select  \n🔥 27,99 €\n👉 Amazon FR : https://link.amazon/B0cOa0Q0D\n\n🔊 Tous les bons plan Amazon Prime  \n👉 Amazon FR : https://link.amazon/B01TqEFwd\n\n📷 Ring Indoor Camera (2e gén.)  \n🔥 24,99 € au lieu de 49,99 €  \n👉 Amazon FR : https://link.amazon/B04gSbLut\n\n⏳ Jours Flash Prime : 6 et 7 octobre. Les prix peuvent évoluer rapidement.\n\n#BonPlan #Amazon #PrimeDay #Tech #Domotique #CameraSurveillance #DingodorOneTech",
       "products": [
