@@ -31,7 +31,7 @@ function vaultButtons(useStored=hasVault()){
 }
 $('remember-key').onchange=()=>{$('passphrase-label').hidden=!$('remember-key').checked;$('key-passphrase').required=$('remember-key').checked;};
 window.editorConnected=async()=>{
- if(!$('remember-key').checked)return;
+ if($('stay-connected').checked)rememberDevice();if(!$('remember-key').checked)return;
  const pass=$('key-passphrase').value;if(pass.length<12)throw Error('Utilisez une phrase secrète d’au moins 12 caractères.');
  const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),key=await vaultKey(pass,salt);
  const encrypted=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(token)));
@@ -48,7 +48,7 @@ $('login-form').onsubmit=e=>{
   catch{token='';throw Error('Phrase secrète incorrecte ou copie mémorisée illisible. Réessayez, ou utilisez « Utiliser une autre clé GitHub ».');}
   token=new TextDecoder().decode(raw);
   try{await refreshList();}catch(error){token='';throw error;}
-  $('key-passphrase').value='';$('login').hidden=true;$('workspace').hidden=false;$('logout').hidden=false;current=null;
+  if($('stay-connected').checked)rememberDevice();$('key-passphrase').value='';$('login').hidden=true;$('workspace').hidden=false;$('logout').hidden=false;current=null;
   paint(mode==='articles'?{body:'<p></p>'}:{message:'',published:false});status('Connexion déverrouillée avec la clé mémorisée sur ce PC.');
  });
 };
@@ -97,5 +97,16 @@ $('image-remove').onclick=()=>{
 
 // Keep search connected to the enhanced title/category list after its replacement.
 $('search').oninput=()=>drawList();
-window.editorDisconnected=()=>{vaultButtons();$('key-passphrase').value='';clearTimeout(autoTimer);metadataCache.clear();selectedImage=null;selectedCell=null;galleryTarget=null;range=null;editingChip=null;for(const id of ['deal-message','seo-title','seo-description','seo-slug','categories','tags','search'])$(id).value='';$('deal-published').checked=false;document.querySelectorAll('dialog[open]').forEach(d=>d.close());$('preview-content').replaceChildren();if(exactFrameURL){URL.revokeObjectURL(exactFrameURL);exactFrameURL=null;}};
+window.editorDisconnected=()=>{forgetDevice();vaultButtons();$('key-passphrase').value='';clearTimeout(autoTimer);metadataCache.clear();selectedImage=null;selectedCell=null;galleryTarget=null;range=null;editingChip=null;for(const id of ['deal-message','seo-title','seo-description','seo-slug','categories','tags','search'])$(id).value='';$('deal-published').checked=false;document.querySelectorAll('dialog[open]').forEach(d=>d.close());$('preview-content').replaceChildren();if(exactFrameURL){URL.revokeObjectURL(exactFrameURL);exactFrameURL=null;}};
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'&&!$('workspace').hidden){e.preventDefault();if(!busy)task(save);}});
+
+// Explicit opt-in: this browser profile can access the editor without a passphrase.
+const DEVICE_ACCESS='dingodor-editor-device-access-v1';
+function deviceAccess(){try{const value=JSON.parse(localStorage.getItem(DEVICE_ACCESS)||'null');if(value&&typeof value.token==='string'&&value.expires>Date.now())return value;localStorage.removeItem(DEVICE_ACCESS);}catch{}return null;}
+function updateDeviceButton(){const button=$('device-access');button.hidden=$('workspace').hidden;button.textContent=deviceAccess()?'Supprimer l’accès automatique sur cet appareil':'Rester connecté sur cet appareil';}
+function rememberDevice(){try{localStorage.setItem(DEVICE_ACCESS,JSON.stringify({token,expires:Date.now()+30*24*60*60*1000}));}catch{throw Error('Le navigateur ne peut pas mémoriser cet appareil. Décochez « Rester connecté » pour continuer.');}updateDeviceButton();}
+function forgetDevice(){try{localStorage.removeItem(DEVICE_ACCESS);}catch{}$('stay-connected').checked=false;updateDeviceButton();}
+$('device-access').onclick=()=>{if(deviceAccess()){forgetDevice();status('Accès automatique supprimé. Vous restez connecté dans cet onglet.');}else{rememberDevice();status('Cet appareil est mémorisé pendant 30 jours.');}};
+const loginObserver=new MutationObserver(updateDeviceButton);loginObserver.observe($('workspace'),{attributes:true,attributeFilter:['hidden']});
+const originalForget=$('forget-key').onclick;$('forget-key').onclick=()=>{forgetDevice();originalForget();};
+queueMicrotask(()=>{const access=deviceAccess();if(!access)return;task(async()=>{status('Connexion automatique en cours…');token=access.token;try{await refreshList();}catch(error){token='';if(/Accès refusé/.test(error.message))forgetDevice();throw error;}$('login').hidden=true;$('workspace').hidden=false;$('logout').hidden=false;current=null;paint(mode==='articles'?{body:'<p></p>'}:{message:'',published:false});updateDeviceButton();status('Connecté automatiquement sur cet appareil.');});});
