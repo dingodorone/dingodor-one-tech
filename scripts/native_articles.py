@@ -166,6 +166,19 @@ def render(data):
         marker = '[[video:' + str(index) + ']]'
         if marker in content:
             content = content.replace('<p>' + marker + '</p>', markup).replace(marker, markup)
+        elif item.get('position') == 'start':
+            content = markup + content
+        elif item.get('position') == 'paragraph':
+            try:
+                number = max(1, int(item.get('paragraph') or 1))
+            except (ValueError, TypeError):
+                raise ValueError('Numéro de paragraphe invalide')
+            endings = list(re.finditer(r'</p>', content))
+            if endings:
+                offset = endings[min(number, len(endings)) - 1].end()
+                content = content[:offset] + markup + content[offset:]
+            else:
+                content += markup
         else:
             content += markup
     identifier = -int(hashlib.sha256(slug.encode()).hexdigest()[:12], 16)
