@@ -102,11 +102,11 @@ document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLower
 
 // Explicit opt-in: this browser profile can access the editor without a passphrase.
 const DEVICE_ACCESS='dingodor-editor-device-access-v1';
-function deviceAccess(){try{const value=JSON.parse(localStorage.getItem(DEVICE_ACCESS)||'null');if(value&&typeof value.token==='string'&&value.expires>Date.now())return value;localStorage.removeItem(DEVICE_ACCESS);}catch{}return null;}
+function deviceAccess(){try{const value=JSON.parse(localStorage.getItem(DEVICE_ACCESS)||'null');if(value&&typeof value.token==='string'&&value.token.trim())return value;localStorage.removeItem(DEVICE_ACCESS);}catch{}return null;}
 function updateDeviceButton(){const button=$('device-access');button.hidden=$('workspace').hidden;button.textContent=deviceAccess()?'Supprimer l’accès automatique sur cet appareil':'Rester connecté sur cet appareil';}
-function rememberDevice(){try{localStorage.setItem(DEVICE_ACCESS,JSON.stringify({token,expires:Date.now()+30*24*60*60*1000}));}catch{throw Error('Le navigateur ne peut pas mémoriser cet appareil. Décochez « Rester connecté » pour continuer.');}updateDeviceButton();}
+function rememberDevice(){try{localStorage.setItem(DEVICE_ACCESS,JSON.stringify({token}));}catch{throw Error('Le navigateur ne peut pas mémoriser cet appareil. Décochez « Rester connecté » pour continuer.');}updateDeviceButton();}
 function forgetDevice(){try{localStorage.removeItem(DEVICE_ACCESS);}catch{}$('stay-connected').checked=false;updateDeviceButton();}
-$('device-access').onclick=()=>{if(deviceAccess()){forgetDevice();status('Accès automatique supprimé. Vous restez connecté dans cet onglet.');}else{rememberDevice();status('Cet appareil est mémorisé pendant 30 jours.');}};
+$('device-access').onclick=()=>{if(deviceAccess()){forgetDevice();status('Accès automatique supprimé. Vous restez connecté dans cet onglet.');}else{rememberDevice();status('Cet appareil est mémorisé sans limite de durée.');}};
 const loginObserver=new MutationObserver(updateDeviceButton);loginObserver.observe($('workspace'),{attributes:true,attributeFilter:['hidden']});
 const originalForget=$('forget-key').onclick;$('forget-key').onclick=()=>{forgetDevice();originalForget();};
 queueMicrotask(()=>{const access=deviceAccess();if(!access)return;task(async()=>{status('Connexion automatique en cours…');token=access.token;try{await refreshList();}catch(error){token='';if(/Accès refusé/.test(error.message))forgetDevice();throw error;}$('login').hidden=true;$('workspace').hidden=false;$('logout').hidden=false;current=null;paint(mode==='articles'?{body:'<p></p>'}:{message:'',published:false});updateDeviceButton();status('Connecté automatiquement sur cet appareil.');});});
