@@ -44,7 +44,8 @@ export async function showNativeComments() {
     return {label, input};
   }
   const author = field('Nom ou pseudonyme', 'author', 'text', 80);
-  const email = field('E-mail (non publié)', 'email', 'email', 254);
+  const email = field('E-mail (facultatif, non publié)', 'email', 'email', 254);
+  email.input.required = false;
   const body = field('Commentaire', 'comment', 'textarea', 5000);
   grid.append(author.label, email.label);
   const trap = node('input'); trap.name = 'website'; trap.type = 'text';
@@ -99,7 +100,7 @@ export async function showNativeComments() {
     if (sending || !form.reportValidity()) return;
     if (trap.value) { sendStatus.textContent = 'Votre commentaire a été reçu.'; return; }
     const payload = {article_slug:slug, author_name:author.input.value.trim(),
-      email:email.input.value.trim(), body:body.input.value.trim()};
+      email:email.input.value.trim() || null, body:body.input.value.trim()};
     if (!payload.author_name || payload.body.length < 3) {
       sendStatus.textContent = 'Indiquez votre nom et un commentaire d’au moins 3 caractères.'; return;
     }
