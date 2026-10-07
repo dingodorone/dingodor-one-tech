@@ -75,13 +75,23 @@ class SafeHTML(HTMLParser):
                 style = safe_text_style(value)
                 if style:
                     safe.append(('style', style))
+            elif key == 'id' and tag in {'h2','h3','h4'} and re.fullmatch(r'[a-zA-Z][a-zA-Z0-9_-]{0,100}', value):
+                safe.append(('id', value))
+            elif key == 'class' and tag == 'div':
+                classes = [c for c in value.split() if c in {'dt-buttons','dt-callout','dt-toc','dt-gallery'}]
+                if classes:
+                    safe.append(('class', ' '.join(classes)))
+            elif key == 'rel' and tag == 'a':
+                safe.append(('rel', ' '.join(c for c in value.split() if c in {'nofollow','sponsored','noopener','noreferrer'})))
+            elif key == 'target' and tag == 'a' and value == '_blank':
+                safe.append(('target', '_blank'))
             elif key == 'class' and tag == 'figure':
                 classes = [c for c in value.split() if c == 'dt-photo' or c in {'dt-align-left', 'dt-align-center', 'dt-align-right'} or re.fullmatch(r'dt-width-(?:[1-9][0-9]|100)', c)]
                 if classes:
                     safe.append(('class', ' '.join(dict.fromkeys(classes))))
             elif key in {'colspan', 'rowspan', 'start', 'width', 'height'} and value.isdigit():
                 safe.append((key, value))
-            elif key == 'href' and tag == 'a' and urlsplit(value).scheme in {'https', 'http', 'mailto'}:
+            elif key == 'href' and tag == 'a' and (urlsplit(value).scheme in {'https', 'http', 'mailto'} or re.fullmatch(r'#[a-zA-Z][a-zA-Z0-9_-]{0,100}', value)):
                 safe.append((key, value))
             elif key == 'src' and tag == 'img' and safe_image_source(value):
                 safe.append((key, value))
@@ -147,6 +157,8 @@ def video_markup(item):
 
 VIDEO_CSS = '.wp-content .dt-video{margin:1.5em auto;width:100%;max-width:900px}.wp-content .dt-video iframe{display:block;width:100%;aspect-ratio:16/9;height:auto;border:0}.wp-content .dt-video video{display:block;width:100%;max-height:75vh;background:#000}.wp-content .dt-video figcaption{text-align:center;color:#62717e}.wp-content .dt-video p{font-size:.9em}'
 
+BLOCK_CSS = '.wp-content .dt-buttons{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0}.wp-content .dt-buttons a{display:inline-block;background:#0879ed;color:white;padding:12px 18px;border-radius:10px;text-decoration:none}.wp-content .dt-callout,.wp-content .dt-toc{background:#edf6ff;border-left:4px solid #0879ed;padding:20px;margin:20px 0}.wp-content .dt-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px}'
+
 def render(data):
     from build_articles import article_html, ORIGIN
     slug = data['slug']
@@ -185,7 +197,26 @@ def render(data):
     path = '/publications/' + slug + '.html'
     post = dict(ID=identifier, title=data['title'], slug=slug, date=data['date'], excerpt=data.get('excerpt', ''), featured_image=featured, content=content)
     page = article_html(post, ORIGIN + path).replace('data-view="static-post"', 'data-view="github-post"')
-    page = page.replace('</head>', '<style>' + PHOTO_CSS + VIDEO_CSS + '</style></head>')
+    seo_title = str(data.get('seo_title') or '').strip()
+    meta = str(data.get('meta_description') or '').strip()
+    if seo_title:
+        page = re.sub(r'<title>.*?</title>', lambda match: '<title>' + html.escape(seo_title) + ' — Dingodor One Tech</title>', page, count=1)
+        page = re.sub(r'<meta property="og:title" content="[^"]*">', lambda match: '<meta property="og:title" content="' + html.escape(seo_title, quote=True) + '">', page, count=1)
+    if meta:
+        for key in ('name="description"', 'property="og:description"'):
+            page = re.sub(r'<meta ' + key + r' content="[^"]*">', lambda match: '<meta ' + key + ' content="' + html.escape(meta, quote=True) + '">', page, count=1)
+    if featured.startswith('/article-media/'):
+        page = page.replace('</head>', '<meta property="og:image" content="' + ORIGIN + featured + '"></head>')
+    taxonomy = dict(categories=data.get('categories', []), tags=data.get('tags', []))
+    if taxonomy['categories'] or taxonomy['tags'] or data.get('modified'):
+        def enhance_schema(match):
+            schema = json.loads(match.group(1))
+            schema.update(articleSection=taxonomy['categories'], keywords=taxonomy['tags'], dateModified=data.get('modified', data['date']))
+            encoded = json.dumps(schema, ensure_ascii=False).replace('<', chr(92) + 'u003c')
+            return '<script type="application/ld+json">' + encoded + '</script>'
+        page = re.sub(r'<script type="application/ld\+json">(.*?)</script>', enhance_schema, page, count=1, flags=re.S)
+    post.update(taxonomy)
+    page = page.replace('</head>', '<style>' + PHOTO_CSS + VIDEO_CSS + BLOCK_CSS + '</style></head>')
     return page, {k: v for k, v in dict(post, url=path, source='github', sha256=hashlib.sha256(page.encode()).hexdigest()).items() if k != 'content'}
 
 
