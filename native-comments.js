@@ -49,6 +49,7 @@ export async function showNativeComments() {
   grid.append(author.label, email.label);
   const trap = node('input'); trap.name = 'website'; trap.type = 'text';
   trap.tabIndex = -1; trap.autocomplete = 'off'; trap.className = 'comment-honeypot';
+  trap.hidden = true; trap.style.setProperty('display', 'none', 'important');
   trap.setAttribute('aria-hidden', 'true');
   const submit = node('button', 'Envoyer mon commentaire'); submit.type = 'submit';
   const sendStatus = node('p'); sendStatus.setAttribute('role', 'status');

@@ -504,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
     enhanceArticleMedia(content);
     localizeWordPressLinks(content);
     if (type === 'github-post') {
-      import('/native-comments.js?v=2').then(module => module.showNativeComments()).catch(() => {
+      import('/native-comments.js?v=3').then(module => module.showNativeComments()).catch(() => {
         const section = document.querySelector('#comments');
         if (section) { section.hidden = false; section.textContent = 'Commentaires temporairement indisponibles. Actualisez la page pour réessayer.'; }
       });
