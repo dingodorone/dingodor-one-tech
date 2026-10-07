@@ -499,11 +499,16 @@ document.addEventListener('DOMContentLoaded', () => {
     loadPosts({reset: Boolean(currentSearch)});
   }
   if (type === 'post' || type === 'page') showSingle(type);
-  if (type === 'static-post') {
+  if (type === 'static-post' || type === 'github-post') {
     const content = document.querySelector('#wp-content');
     enhanceArticleMedia(content);
     localizeWordPressLinks(content);
-    showComments({ID: Number(document.body.dataset.postId)});
+    if (type === 'github-post') {
+      import('/native-comments.js?v=2').then(module => module.showNativeComments()).catch(() => {
+        const section = document.querySelector('#comments');
+        if (section) { section.hidden = false; section.textContent = 'Commentaires temporairement indisponibles. Actualisez la page pour réessayer.'; }
+      });
+    } else showComments({ID: Number(document.body.dataset.postId)});
   }
 });
 

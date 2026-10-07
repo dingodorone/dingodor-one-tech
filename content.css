@@ -122,3 +122,5 @@ body.custom-landing{background:radial-gradient(circle at 80% 5%,#0d3451 0,transp
     font-weight: 600;
   }
 }
+
+.comment-text{white-space:pre-wrap;overflow-wrap:anywhere}.comment-owner-reply{margin:18px 0 0 18px;padding:16px;border-left:3px solid #2563eb;background:#f0f6ff;border-radius:8px}.comment-owner-reply strong{display:block;margin-bottom:8px}.comment-honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;opacity:0}.comments-more[hidden]{display:none}.comments-more{margin:16px 0;padding:12px 18px;border-radius:8px;cursor:pointer}
