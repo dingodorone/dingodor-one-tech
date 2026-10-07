@@ -31,7 +31,7 @@ export async function showNativeComments() {
   more.type = 'button'; more.hidden = true;
   const card = node('div', undefined, 'comment-form-card');
   card.append(node('h3', 'Laisser un commentaire'), node('p',
-    'Sans création de compte. Votre commentaire sera visible après validation. Votre adresse e-mail restera privée et servira uniquement à la gestion de votre message. Les données sont conservées avec Supabase.'));
+    'Votre commentaire sera visible après validation. Votre adresse e-mail restera privée et servira uniquement à la gestion de votre message.'));
   const form = node('form');
   const grid = node('div', undefined, 'form-grid');
   function field(title, name, type, max) {
