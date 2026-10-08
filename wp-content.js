@@ -206,11 +206,12 @@ async function showPartners(container) {
 
 function enhanceArticleMedia(container) {
   const base = 'https://dingodoronetech.wordpress.com/';
+  const imageURL = value => new URL(value, /^\/article-media\//.test(value) ? location.origin : base).href;
   container.querySelectorAll('img').forEach((img, index) => {
     const lazySrc = img.getAttribute('data-lazy-src') || img.getAttribute('data-src') || img.getAttribute('data-original');
     const src = img.getAttribute('src') || '';
-    if (lazySrc && (!src || src.startsWith('data:') || /placeholder|blank\.gif/i.test(src))) img.src = new URL(lazySrc, base).href;
-    else if (src && !/^(?:https?:|data:|blob:)/i.test(src)) img.src = new URL(src, base).href;
+    if (lazySrc && (!src || src.startsWith('data:') || /placeholder|blank\.gif/i.test(src))) img.src = imageURL(lazySrc);
+    else if (src && !/^(?:https?:|data:|blob:)/i.test(src)) img.src = imageURL(src);
     const lazySet = img.getAttribute('data-lazy-srcset') || img.getAttribute('data-srcset');
     if (lazySet && !img.getAttribute('srcset')) img.setAttribute('srcset', lazySet);
     img.loading = index === 0 ? 'eager' : 'lazy';
