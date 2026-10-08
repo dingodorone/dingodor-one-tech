@@ -151,14 +151,8 @@ $('trash-list').onclick=()=>task(async()=>{
 $('publish').onclick=()=>{
  if(current&&managementRequests.has(current.path)){status('Attendez la fin de la gestion en cours avant de publier.',true);return;}
  if(mode==='articles'){
-  task(async()=>{
-   if(current){
-    const path=current.path.replace(/^articles\//,'queue/'),file=await optionalContent(path);
-    if(file)publicationStates.set(path,JSON.parse(decode(file.content)));
-    else publicationStates.delete(path);
-   }
-   updatePublishLabels();$('publish-date').value='';$('publish-dialog').showModal();
-  });return;
+  updatePublishLabels();$('publish-date').value='';$('publish-feedback').textContent='';
+  $('publish-dialog').showModal();return;
  }
  if(!confirm('Publier cette version du bon plan sur le site ?'))return;
  task(async()=>{const previous=$('deal-published').checked;$('deal-published').checked=true;
@@ -176,4 +170,27 @@ save=async function(){
 };
 const lifecycleTask=task;
 task=async function(fn){await lifecycleTask(fn);if(!busy)updateManagementControls();};
+
+// Keep progress and errors in the dialog the user is looking at.
+$('publish-form').onsubmit=event=>{
+ event.preventDefault();
+ if(busy){$('publish-feedback').textContent='Une opération est en cours. Attendez sa fin puis confirmez à nouveau.';return;}
+ task(async()=>{
+  const feedback=$('publish-feedback');
+  feedback.textContent='Vérification de l’article…';feedback.classList.remove('error');
+  try{
+   if(current){
+    const path=current.path.replace(/^articles\//,'queue/'),file=await optionalContent(path);
+    if(file)publicationStates.set(path,JSON.parse(decode(file.content)));else publicationStates.delete(path);
+   }
+   const update=articleNeedsUpdate(),value=$('publish-date').value;
+   const publish_at=value?new Date(value).toISOString():'';
+   feedback.textContent='Enregistrement du brouillon et envoi de la publication…';
+   await dispatch('publish.yml',{publish_at,update});
+   $('publish-dialog').close();
+  }catch(error){
+   feedback.textContent=error.message;feedback.classList.add('error');throw error;
+  }
+ });
+};
 
