@@ -1,3 +1,13 @@
+// Statistiques partag?es : charg?es une seule fois, avec choix du visiteur.
+(function () {
+  if (document.getElementById('dingodor-analytics-loader')) return;
+  var script = document.createElement('script');
+  script.id = 'dingodor-analytics-loader';
+  script.src = '/analytics.js?v=1';
+  script.defer = true;
+  document.head.appendChild(script);
+}());
+
 const menuButton = document.querySelector('.menu-button');
 const navigation = document.querySelector('#navigation');
 if (navigation && !navigation.querySelector('a[href="bons-plans.html"]')) {

@@ -1,3 +1,13 @@
+// Statistiques partag?es : charg?es une seule fois, avec choix du visiteur.
+(function () {
+  if (document.getElementById('dingodor-analytics-loader')) return;
+  var script = document.createElement('script');
+  script.id = 'dingodor-analytics-loader';
+  script.src = '/analytics.js?v=1';
+  script.defer = true;
+  document.head.appendChild(script);
+}());
+
 const API = 'https://public-api.wordpress.com/rest/v1.1/sites/dingodoronetech.wordpress.com';
 const WP_ROOT = 'https://dingodoronetech.wordpress.com/';
 const SHARED_DATA_URL = 'data/site-data.json';
