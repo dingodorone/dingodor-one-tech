@@ -49,7 +49,7 @@
       .replace(/^\s*à\s*|\s+à\s*$/gi, '')
       .trim()).filter(Boolean);
     const title = lines.at(-1) || '';
-    return {title: product.title || title || 'Offre ' + (index + 1), price: price ? price[0].replace('.', ',') : '', promoCode};
+    return {title: (/[\p{L}]{3}/u.test(title) && !/^(?:partir de\s*:?)$/i.test(title) ? title : product.title) || 'Offre ' + (index + 1), price: price ? price[0].replace('.', ',') : '', promoCode};
   }
   function productCard(product, message, index) {
     const url = safeUrl(product.url);
