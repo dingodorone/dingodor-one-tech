@@ -250,6 +250,7 @@ function enhanceArticleMedia(container) {
     return true;
   };
   container.querySelectorAll('iframe').forEach(frame => {
+    if (frame.closest('.dt-video, .article-video')) return;
     const lazySrc = frame.getAttribute('data-src') || frame.getAttribute('data-lazy-src');
     if (lazySrc && !frame.getAttribute('src')) frame.src = lazySrc;
     if (videoId(frame.src || '')) {
@@ -271,6 +272,7 @@ function enhanceArticleMedia(container) {
     if (/^https?:\/\//i.test(value)) addVideo(wrapper, value);
   });
   container.querySelectorAll('p').forEach(paragraph => {
+    if (paragraph.closest('.dt-video, .article-video')) return;
     if (paragraph.children.length && !(paragraph.children.length === 1 && paragraph.firstElementChild.tagName === 'A')) return;
     const link = paragraph.querySelector('a');
     const value = link?.href || paragraph.textContent.trim();
