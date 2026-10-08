@@ -1,6 +1,18 @@
 'use strict';
 let publicationStates=new Map(), managementRequests=new Map(), lifecycleVersion=0;
 
+function articleNeedsUpdate(){
+ const q=publicationStates.get(current?.path.replace(/^articles\//,'queue/'));
+ return Boolean(q?.state==='transmitted'||q?.action==='remove');
+}
+function updatePublishLabels(){
+ const update=articleNeedsUpdate();
+ $('publish').textContent=update?'Mettre à jour l’article':'Publier l’article';
+ $('publish-heading').textContent=update?'Mettre à jour l’article':'Publier l’article';
+ $('publish-confirm').textContent=update?'Confirmer la mise à jour':'Confirmer la publication';
+ $('publish-description').textContent=update?'Cette version remplacera l’article sur le site et dans l’application, en conservant la même adresse. Vos notes restent privées.':'Cette version deviendra publique sur le site et dans l’application. Vos notes restent privées.';
+}
+
 async function optionalContent(path){
  try{return await api('/contents/'+path+'?ref=main');}
  catch(error){if(error.httpStatus===404)return null;throw error;}
@@ -21,16 +33,13 @@ function updateManagementControls(){
  if(path&&managementRequests.has(path))$('content-state').textContent='Gestion en cours…';
  $('save').textContent=mode==='bons-plans'&&data.published?'Enregistrer et mettre à jour':'Enregistrer le brouillon';
  $('publish').hidden=false;
- $('publish').textContent=mode==='bons-plans'?(data.published?'Mettre à jour le bon plan':'Publier le bon plan'):'Publier / programmer';
+ if(mode==='bons-plans')$('publish').textContent=data.published?'Mettre à jour le bon plan':'Publier le bon plan';
+ else updatePublishLabels();
  $('return-draft').disabled=!path||managementRequests.has(path);
  $('trash-content').disabled=!path||managementRequests.has(path);
  $('cancel-schedule').hidden=true;
- if(mode==='articles'){
-  const q=publicationStates.get(path?.replace(/^articles\//,'queue/'));
-  $('publish-update').checked=q?.state==='transmitted'||q?.action==='remove';
- }
  $('publication-help').textContent=mode==='articles'?
-  'Enregistrer conserve votre travail en privé. Pour remplacer la version en ligne, utilisez Publier / programmer. Repasser en brouillon retire la version en ligne et annule sa programmation.':
+  'Enregistrer conserve votre travail en privé. Utilisez le bouton de publication pour publier ou mettre à jour l’article. Vous pouvez aussi choisir une date. Repasser en brouillon retire la version en ligne et annule sa programmation.':
   'Ouvrez un bon plan pour modifier son texte, ses liens et ses images. Repasser en brouillon le retire du site. La corbeille permet de le restaurer.';
 }
 const lifecyclePaint=paint;
@@ -139,10 +148,18 @@ $('trash-list').onclick=()=>task(async()=>{
  }
  if(!count)root.append(textNode('p','La corbeille est vide.'));
 });
-const lifecyclePublish=$('publish').onclick;
 $('publish').onclick=()=>{
  if(current&&managementRequests.has(current.path)){status('Attendez la fin de la gestion en cours avant de publier.',true);return;}
- if(mode==='articles'){lifecyclePublish();return;}
+ if(mode==='articles'){
+  task(async()=>{
+   if(current){
+    const path=current.path.replace(/^articles\//,'queue/'),file=await optionalContent(path);
+    if(file)publicationStates.set(path,JSON.parse(decode(file.content)));
+    else publicationStates.delete(path);
+   }
+   updatePublishLabels();$('publish-date').value='';$('publish-dialog').showModal();
+  });return;
+ }
  if(!confirm('Publier cette version du bon plan sur le site ?'))return;
  task(async()=>{const previous=$('deal-published').checked;$('deal-published').checked=true;
   try{await save();updateManagementControls();}catch(error){$('deal-published').checked=previous;updateManagementControls();throw error;}
