@@ -1,6 +1,19 @@
 {
   "posts": [
     {
+      "ID": -37863870870319,
+      "title": "Test CZUR Aura Pro : mon avis sur ce scanner de livres A3 et ses limites",
+      "slug": "test-czur-aura-pro-scanner-livres-avis",
+      "date": "2026-10-08T19:10:56.382024+00:00",
+      "excerpt": "Mon test du CZUR Aura Pro sur des livres illustrés, un livre de lecture et des documents : qualité des scans, OCR, lampe, points forts et limites.",
+      "featured_image": "/article-media/7578c1a24588280113f5172b8d1dd908ddbb3f12faab03dea87a6071bdb9cc3f.webp",
+      "categories": [],
+      "tags": [],
+      "url": "/publications/test-czur-aura-pro-scanner-livres-avis.html",
+      "source": "github",
+      "sha256": "ef4e765f75f43a0d9c1af8abae344bb6b22b4636e53fc3a5656b31494aa73b55"
+    },
+    {
       "ID": -97067522091813,
       "title": "Le stockage cloud est-il devenu moins cher que le stockage local pour les caméras ?",
       "slug": "le-stockage-cloud-est-il-devenu-moins-cher-que-le-stockage-local-8d5095",
