@@ -153,7 +153,11 @@ def video_markup(item):
         else:
             player = '<p>Vidéo disponible sur sa plateforme :</p>'
         player += '<p><a href="' + html.escape(value, quote=True) + '" target="_blank" rel="noopener noreferrer">Ouvrir la vidéo</a></p>'
-    return '<figure class="dt-video">' + player + ('<figcaption>' + caption + '</figcaption>' if caption else '') + '</figure>'
+    try:
+        width = min(100, max(10, round(float(item.get('width', 100)))))
+    except (ValueError, TypeError, OverflowError):
+        width = 100
+    return '<figure class="dt-video" style="width:' + str(width) + '%">' + player + ('<figcaption>' + caption + '</figcaption>' if caption else '') + '</figure>'
 
 VIDEO_CSS = '.wp-content .dt-video{margin:1.5em auto;width:100%;max-width:900px}.wp-content .dt-video iframe{display:block;width:100%;aspect-ratio:16/9;height:auto;border:0}.wp-content .dt-video video{display:block;width:100%;max-height:75vh;background:#000}.wp-content .dt-video figcaption{text-align:center;color:#62717e}.wp-content .dt-video p{font-size:.9em}'
 
@@ -237,4 +241,5 @@ def build(root):
         write_if_changed(root / post['url'].lstrip('/'), page)
         posts.append(post)
     return posts
+
 

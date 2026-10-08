@@ -11,3 +11,5 @@ select{font:inherit;color:inherit;padding:10px;border:1px solid #cddaea;border-r
 
 .content-entry{padding:12px 0;border-bottom:1px solid #d9e6f5;display:grid;gap:8px}.content-entry strong{overflow-wrap:anywhere}.content-entry small{color:#52647b}.content-state{font-weight:700;padding:12px;background:#edf6ff;border-radius:8px}.danger{color:#a82b2b;border-color:#d9a3a3}#publication-help{color:#52647b;font-size:14px}
 
+#cover-preview img{display:block;max-width:100%;max-height:260px;object-fit:contain;margin:1em 0;border-radius:8px}
+
