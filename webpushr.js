@@ -11,7 +11,7 @@
   document.head.append(style);
   const button = document.getElementById('dingodor-subscribe-button');
   const status = document.getElementById('dingodor-notification-status');
-  let confirmed=false, working=false;
+  let confirmed=false, working=false, existingSubscriber=false, subscriptionPaused=false;
   function update() {
     if (!('Notification' in window) || !('serviceWorker' in navigator)) {
       button.hidden = true;
@@ -19,13 +19,46 @@
     } else if (Notification.permission === 'denied') {
       button.hidden = true;
       status.textContent = 'Les notifications sont bloquées. Autorisez-les dans les réglages de ce site dans votre navigateur.';
+    } else if (subscriptionPaused) {
+      button.hidden = true;
+      status.textContent = 'Votre abonnement existe, mais les notifications sont désactivées. Réactivez-les avec la cloche de notifications.';
     } else if (confirmed) {
       button.hidden = true;
-      status.textContent = 'Vous êtes abonné aux notifications sur ce navigateur.';
+      status.textContent = existingSubscriber ? 'Vous êtes déjà abonné aux notifications sur ce navigateur.' : 'Vous êtes abonné aux notifications sur ce navigateur.';
+    } else {
+      button.hidden = false;
+      button.textContent = Notification.permission === 'granted' ? 'Finaliser mon abonnement' : 'S’abonner aux notifications';
     }
   }
   update();
-  window.addEventListener('focus', update);
+  async function checkExistingSubscription() {
+    if (working || !('Notification' in window) || !navigator.serviceWorker) return;
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      let saved = {};
+      try { saved = JSON.parse(localStorage.getItem('_webpushr') || '{}') || {}; } catch (_) {}
+      let active = false;
+      for (const registration of registrations) {
+        const worker = registration.active || registration.waiting || registration.installing;
+        if (!worker || new URL(worker.scriptURL).pathname !== '/webpushr-sw.js') continue;
+        const subscription = await registration.pushManager.getSubscription();
+        if (subscription && subscription.endpoint === saved.endpoint && (!subscription.expirationTime || subscription.expirationTime > Date.now())) active = true;
+      }
+      const wasConfirmed = confirmed;
+      existingSubscriber = active && Notification.permission === 'granted';
+      subscriptionPaused = existingSubscriber && saved.bell_notification === 'off';
+      confirmed = existingSubscriber && !subscriptionPaused;
+      if (wasConfirmed && !confirmed && !subscriptionPaused) status.textContent = '';
+      update();
+    } catch (_) { update(); }
+  }
+  checkExistingSubscription();
+  window.addEventListener('focus', checkExistingSubscription);
+  let subscriptionChecks = 0;
+  const subscriptionTimer = setInterval(() => {
+    checkExistingSubscription();
+    if (++subscriptionChecks >= 30) clearInterval(subscriptionTimer);
+  }, 1000);
   const ready=()=>typeof window._webpushrSubscribeNow==='function' && window.WebPushr?.swRegistration && typeof window._wp_prompt_info!=='undefined';
   button.addEventListener('click', async () => {
     if(working)return;
