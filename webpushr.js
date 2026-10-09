@@ -57,7 +57,7 @@
       status.textContent = existingSubscriber ? 'Vous êtes déjà abonné aux notifications sur ce navigateur.' : 'Vous êtes abonné aux notifications sur ce navigateur.';
     } else {
       button.hidden = false;
-      button.textContent = Notification.permission === 'granted' ? 'Finaliser mon abonnement' : 'S’abonner aux notifications';
+      button.textContent = Notification.permission === 'granted' ? 'Activer les notifications' : 'S’abonner aux notifications';
     }
   }
   update();
@@ -70,7 +70,7 @@
       let active = false;
       for (const registration of registrations) {
         const worker = registration.active || registration.waiting || registration.installing;
-        if (!worker || new URL(worker.scriptURL).pathname !== '/webpushr-sw.js') continue;
+        if (!worker || !['/webpushr-sw.js','/app/sw.js'].includes(new URL(worker.scriptURL).pathname)) continue;
         const subscription = await registration.pushManager.getSubscription();
         if (subscription && subscription.endpoint === saved.endpoint && (!subscription.expirationTime || subscription.expirationTime > Date.now())) active = true;
       }
@@ -111,7 +111,7 @@
       status.textContent=Notification.permission==='granted'?'Autorisation accordée, mais l’abonnement n’a pas pu être enregistré. Si votre protection bloque Webpushr, autorisez ce service sur ce site puis réessayez.':'La demande n’a pas pu s’ouvrir. Vérifiez les autorisations de ce site dans votre navigateur.';
     }finally{
       working=false;button.disabled=false;document.body.classList.remove('notification-permission-active');
-      if(Notification.permission==='granted'&&!confirmed)button.textContent='Finaliser mon abonnement';
+      if(Notification.permission==='granted'&&!confirmed)button.textContent='Activer les notifications';
       update();
     }
   });
@@ -133,5 +133,6 @@
 })(window, document, 'script', 'webpushr-jssdk');
 
 webpushr('setup', {
-  key: 'BKm-wMk2Xcx2UUBRth0YXGgU4BQ85P_NR8qX6U5YTTrj7skEnKIwDsFNlQPpbzxlikl9b0ZDihe6L0apTD6OpPU'
+  key: 'BKm-wMk2Xcx2UUBRth0YXGgU4BQ85P_NR8qX6U5YTTrj7skEnKIwDsFNlQPpbzxlikl9b0ZDihe6L0apTD6OpPU',
+  ...(location.pathname.startsWith('/app/') ? {sw:'/app/sw.js',scope:'/app/'} : {})
 });

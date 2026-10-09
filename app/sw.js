@@ -1,4 +1,5 @@
-const CACHE = 'dingodor-v39-notification-layout';
+importScripts('https://cdn.webpushr.com/sw-server.min.js');
+const CACHE = 'dingodor-v40-unified-notifications';
 const ASSETS = [
   './',
   './index.html',
