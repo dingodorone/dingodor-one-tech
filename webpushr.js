@@ -93,22 +93,53 @@
   button.addEventListener('click', async () => {
     if(working)return;
     working=true;button.disabled=true;document.body.classList.add('notification-permission-active');
+    let stage='AUTORISATION';
     try {
       status.textContent='Confirmez votre choix dans la demande de votre navigateur.';
       const permission=await Notification.requestPermission();
       if(permission!=='granted'){status.textContent=permission==='denied'?'Les notifications sont bloquées dans le navigateur.':'Vous pouvez vous abonner plus tard.';return;}
+      stage='CHARGEMENT';
       status.textContent='Autorisation accordée. Connexion au service de notifications…';
       if(!ready()&&typeof window._webpushrSubscribeNow!=='function'){
         document.getElementById('webpushr-jssdk')?.remove();
         const retry=document.createElement('script');retry.id='webpushr-jssdk';retry.async=true;retry.src='https://cdn.webpushr.com/app.min.js?retry='+Date.now();document.head.append(retry);
       }
-      for(let i=0;i<40&&!ready();i++)await new Promise(resolve=>setTimeout(resolve,500));
+      for(let i=0;i<24&&!ready();i++)await new Promise(resolve=>setTimeout(resolve,500));
       if(!ready())throw Error('unavailable');
-      const result=await Promise.race([window._webpushrSubscribeNow(),new Promise((_,reject)=>setTimeout(()=>reject(Error('timeout')),20000))]);
-      if(result!=='true')throw Error('registration');
+      stage='ABONNEMENT-TELEPHONE';
+      const registration=window.WebPushr.swRegistration;
+      if(!registration.active) {
+        await new Promise((resolve,reject)=>{
+          const timer=setTimeout(()=>reject(Error('worker-timeout')),10000);
+          const worker=registration.installing||registration.waiting;
+          if(!worker){clearTimeout(timer);reject(Error('worker-inactive'));return;}
+          worker.addEventListener('statechange',()=>{if(worker.state==='activated'){clearTimeout(timer);resolve();}});
+        });
+      }
+      const subscription=await Promise.race([
+        registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:window._wp_urlBase64ToUint8Array(window.applicationServerKey)}),
+        new Promise((_,reject)=>setTimeout(()=>reject(Error('push-timeout')),15000))
+      ]);
+      stage='ENREGISTREMENT-SERVEUR';
+      window.WebPushr.endpoint=subscription.endpoint;
+      await Promise.race([
+        window._webpushrSendSubscriptionToServer(subscription,'POST'),
+        new Promise((_,reject)=>setTimeout(()=>reject(Error('server-timeout')),15000))
+      ]);
+      window._webpushrSetLocalStorage('endpoint',subscription.endpoint);
+      window._webpushrSetCookie('_webpushrEndPoint',subscription.endpoint,90);
       confirmed=true;status.textContent='Vous êtes abonné aux notifications sur ce navigateur.';
-    }catch(_){
-      status.textContent=Notification.permission==='granted'?'Autorisation accordée, mais l’abonnement n’a pas pu être enregistré. Si votre protection bloque Webpushr, autorisez ce service sur ce site puis réessayez.':'La demande n’a pas pu s’ouvrir. Vérifiez les autorisations de ce site dans votre navigateur.';
+    }catch(error){
+      const reasons={
+        'AUTORISATION':'La demande d’autorisation du navigateur n’a pas pu s’ouvrir.',
+        'CHARGEMENT':'Le composant de notifications n’a pas terminé son chargement.',
+        'ABONNEMENT-TELEPHONE':'Le navigateur n’a pas pu créer l’abonnement aux notifications.',
+        'ENREGISTREMENT-SERVEUR':'L’abonnement n’a pas pu être enregistré auprès du service de notifications.'
+      };
+      const http=String(error?.message||'').match(/HTTP\s+(\d{3})/);
+      const detail=http?'HTTP '+http[1]:['NotAllowedError','InvalidStateError','AbortError','NotSupportedError','TypeError'].includes(error?.name)?error.name:/timeout/.test(error?.message||'')?'DELAI-DEPASSE':'ECHEC';
+      status.textContent=reasons[stage]+' Vous pouvez réessayer. Diagnostic : '+stage+' / '+detail+'.';
+      status.dataset.diagnostic=stage+' / '+detail;
     }finally{
       working=false;button.disabled=false;document.body.classList.remove('notification-permission-active');
       if(Notification.permission==='granted'&&!confirmed)button.textContent='Activer les notifications';
