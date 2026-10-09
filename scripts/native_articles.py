@@ -199,7 +199,7 @@ def render(data):
             content += markup
     identifier = -int(hashlib.sha256(slug.encode()).hexdigest()[:12], 16)
     path = '/publications/' + slug + '.html'
-    post = dict(ID=identifier, title=data['title'], slug=slug, date=data['date'], excerpt=data.get('excerpt', ''), featured_image=featured, content=content)
+    post = dict(spotlight=data.get('spotlight') is True, ID=identifier, title=data['title'], slug=slug, date=data['date'], excerpt=data.get('excerpt', ''), featured_image=featured, content=content)
     page = article_html(post, ORIGIN + path).replace('data-view="static-post"', 'data-view="github-post"')
     seo_title = str(data.get('seo_title') or '').strip()
     meta = str(data.get('meta_description') or '').strip()

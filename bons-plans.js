@@ -1,3 +1,5 @@
+
+const spotlightStyles=document.createElement('link');spotlightStyles.rel='stylesheet';spotlightStyles.href='/spotlight.css?v=1';document.head.append(spotlightStyles);
 (() => {
   'use strict';
   const feed = document.querySelector('#deals-feed');
@@ -73,24 +75,26 @@
       if (!response.ok) throw new Error('feed');
       const data = await response.json();
       if (!Array.isArray(data.deals)) throw new Error('format');
-      const deals = data.deals.filter(d => typeof d.message === 'string' && Array.isArray(d.products) && !Number.isNaN(Date.parse(d.date))).sort((a,b) => Date.parse(b.date)-Date.parse(a.date));
+      const deals = data.deals.filter(d => typeof d.message === 'string' && Array.isArray(d.products) && !Number.isNaN(Date.parse(d.date))).sort((a,b) => Number(b.spotlight === true)-Number(a.spotlight === true) || Date.parse(b.date)-Date.parse(a.date));
       feed.replaceChildren();
       if (!deals.length) {
         const empty = el('section', 'deal-empty'); empty.append(el('h2', '', 'Les prochains bons plans arrivent ici.'), el('p', '', 'En attendant, retrouve les codes promo disponibles.'));
         const a = el('a', 'text-link', 'Voir les codes promo →'); a.href = 'page.html?slug=code-promo-2'; empty.append(a); feed.append(empty);
       }
-      let lastDay = '';
+      let lastDay = '', spotlightHeading = false;
       const dateFormat = new Intl.DateTimeFormat('fr-FR', {dateStyle:'long', timeZone:'Europe/Paris'});
       const timeFormat = new Intl.DateTimeFormat('fr-FR', {hour:'2-digit', minute:'2-digit', timeZone:'Europe/Paris'});
       const today = dateFormat.format(new Date());
       for (const deal of deals) {
         const date = new Date(deal.date); const day = dateFormat.format(date);
-        if (day !== lastDay) {feed.append(el('h2', 'deal-day', day === today ? `Aujourd’hui · ${day}` : day)); lastDay = day;}
-        const article = el('article', 'deal-post'); article.id = /^[a-z0-9-]+$/.test(deal.id) ? deal.id : '';
+        if (deal.spotlight === true && !spotlightHeading) {feed.append(el('h2','deal-spotlight-heading','✦ Les bons plans à la une'));spotlightHeading=true;}
+        if (deal.spotlight !== true && day !== lastDay) {feed.append(el('h2', 'deal-day', day === today ? `Aujourd’hui · ${day}` : day)); lastDay = day;}
+        const article = el('article', 'deal-post' + (deal.spotlight === true ? ' is-spotlight' : '')); article.id = /^[a-z0-9-]+$/.test(deal.id) ? deal.id : '';
         const author = el('header', 'deal-author'); const avatar = el('span', 'deal-avatar'); avatar.setAttribute('aria-hidden', 'true');
         const label = el('div'); const time = el('time', '', `${day} à ${timeFormat.format(date)}`); time.dateTime = deal.date;
         label.append(el('strong', '', 'Dingodor One Tech'), time); author.append(avatar, label);
         const cards = el('div', 'deal-products'); deal.products.forEach((p,i) => {const card = productCard(p, deal.message, i); if (card) cards.append(card);});
+        if (deal.spotlight === true) article.append(el('span','spotlight-badge','✦ À la une'));
         article.append(author, linkText(deal.message), cards); feed.append(article);
       }
       status.textContent = ''; status.hidden = true;

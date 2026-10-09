@@ -1,3 +1,5 @@
+
+const spotlightStyles=document.createElement('link');spotlightStyles.rel='stylesheet';spotlightStyles.href='/spotlight.css?v=1';document.head.append(spotlightStyles);
 // Statistiques partag?es : charg?es une seule fois, avec choix du visiteur.
 (function () {
   if (document.getElementById('dingodor-analytics-loader')) return;
@@ -409,9 +411,9 @@ function appendPostCards(posts, {replace = false} = {}) {
     const image = post.featured_image || '';
     const excerpt = textOnly(post.excerpt || '').slice(0, 150);
     const card = document.createElement('a');
-    card.className = 'post-card';
+    card.className = 'post-card' + (post.spotlight === true ? ' is-spotlight' : '');
     card.href = postPermalink(post);
-    card.innerHTML = `${image ? `<img src="${esc(image)}" alt="" loading="lazy" decoding="async">` : ''}<div class="post-card-body"><time>${new Intl.DateTimeFormat('fr-FR',{dateStyle:'long'}).format(new Date(post.date))}</time><h2>${esc(textOnly(post.title))}</h2><p>${esc(excerpt)}${excerpt.length >= 150 ? '…' : ''}</p></div>`;
+    card.innerHTML = `${image ? `<img src="${esc(image)}" alt="" loading="lazy" decoding="async">` : ''}<div class="post-card-body">${post.spotlight === true ? '<span class="spotlight-badge">✦ À la une</span>' : ''}<time>${new Intl.DateTimeFormat('fr-FR',{dateStyle:'long'}).format(new Date(post.date))}</time><h2>${esc(textOnly(post.title))}</h2><p>${esc(excerpt)}${excerpt.length >= 150 ? '…' : ''}</p></div>`;
     grid.appendChild(card);
   });
 }
@@ -450,7 +452,7 @@ async function loadPosts({reset = false} = {}) {
     if (!response.ok) throw new Error(`Erreur ${response.status}`);
     const manifest = await response.json();
     const query = currentSearch.toLocaleLowerCase('fr');
-    const matches = manifest.posts.filter(post => !query || textOnly(`${post.title} ${post.excerpt}`).toLocaleLowerCase('fr').includes(query));
+    const matches = [...manifest.posts].sort((a,b) => Number(b.spotlight === true)-Number(a.spotlight === true)).filter(post => !query || textOnly(`${post.title} ${post.excerpt}`).toLocaleLowerCase('fr').includes(query));
     const data = {posts: matches.slice(offset, offset + batch), found: matches.length};
     if (request !== postsRequest) return;
     const firstPage = offset === 0;
