@@ -26,6 +26,7 @@
   const button = document.getElementById('dingodor-subscribe-button');
   const status = document.getElementById('dingodor-notification-status');
   const android = /Android/i.test(navigator.userAgent);
+  const androidChrome = android && /Chrome\/\d+/i.test(navigator.userAgent) && !/\bwv\b|EdgA|OPR\/|SamsungBrowser|YaBrowser|DuckDuckGo|Bing/i.test(navigator.userAgent);
   const help = document.createElement('div');
   help.className = 'notification-mobile-help';
   if (android) {
@@ -37,12 +38,14 @@
     const destination = currentUrl.host + currentUrl.pathname + currentUrl.search;
     open.href = 'intent://' + destination + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(currentUrl.href) + ';end';
     open.style.cssText = 'display:inline-block;margin-top:12px;color:#086c73;font-weight:700;text-decoration:underline';
-    help.append(open,details);
+    if (!androidChrome) help.append(open);
+    help.append(details);
     details.style.cssText = 'margin-top:12px;font-size:14px;max-width:420px';
     section.querySelector('.notification-actions').append(help);
   }
   let confirmed=false, working=false, existingSubscriber=false, subscriptionPaused=false;
   function update() {
+    help.hidden = confirmed && !subscriptionPaused && window.Notification?.permission === 'granted';
     if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
       button.hidden = true;
       status.textContent = /iPad|iPhone|iPod/.test(navigator.userAgent) ? 'Sur iPhone ou iPad, ajoutez le site à l’écran d’accueil, puis ouvrez-le pour activer les notifications.' : android ? 'Ce navigateur ne propose pas les notifications du site. Ouvrez le site directement dans Chrome.' : 'Les notifications ne sont pas disponibles dans ce navigateur.';
