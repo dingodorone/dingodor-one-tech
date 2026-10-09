@@ -8,6 +8,8 @@
   document.head.appendChild(script);
 }());
 
+(function () { const nav = document.querySelector('#navigation'); if (nav && !nav.querySelector('a[href="/occasion-dingo.html"],a[href="occasion-dingo.html"]')) { const link = document.createElement('a'); link.href = '/occasion-dingo.html'; link.textContent = 'Occasion Dingo'; nav.append(link); } }());
+
 const menuButton = document.querySelector('.menu-button');
 const navigation = document.querySelector('#navigation');
 if (navigation && !navigation.querySelector('a[href="bons-plans.html"]')) {
