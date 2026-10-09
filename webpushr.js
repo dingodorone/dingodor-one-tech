@@ -98,16 +98,12 @@
       status.textContent='Confirmez votre choix dans la demande de votre navigateur.';
       const permission=await Notification.requestPermission();
       if(permission!=='granted'){status.textContent=permission==='denied'?'Les notifications sont bloquées dans le navigateur.':'Vous pouvez vous abonner plus tard.';return;}
-      stage='CHARGEMENT';
-      status.textContent='Autorisation accordée. Connexion au service de notifications…';
-      if(!ready()&&typeof window._webpushrSubscribeNow!=='function'){
-        document.getElementById('webpushr-jssdk')?.remove();
-        const retry=document.createElement('script');retry.id='webpushr-jssdk';retry.async=true;retry.src='https://cdn.webpushr.com/app.min.js?retry='+Date.now();document.head.append(retry);
-      }
-      for(let i=0;i<24&&!ready();i++)await new Promise(resolve=>setTimeout(resolve,500));
-      if(!ready())throw Error('unavailable');
-      stage='ABONNEMENT-TELEPHONE';
-      const registration=window.WebPushr.swRegistration;
+      stage='COMPOSANT-APPLICATION';
+      status.textContent='Autorisation accordée. Activation des notifications…';
+      const publicKey='BKm-wMk2Xcx2UUBRth0YXGgU4BQ85P_NR8qX6U5YTTrj7skEnKIwDsFNlQPpbzxlikl9b0ZDihe6L0apTD6OpPU';
+      const app=location.pathname.startsWith('/app/');
+      const registration=await navigator.serviceWorker.register(app?'/app/sw.js':'/webpushr-sw.js',{scope:app?'/app/':'/'});
+      const decodeKey=value=>{const raw=atob(value.replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-value.length%4)%4));return Uint8Array.from(raw,c=>c.charCodeAt(0));};
       if(!registration.active) {
         await new Promise((resolve,reject)=>{
           const timer=setTimeout(()=>reject(Error('worker-timeout')),10000);
@@ -117,22 +113,24 @@
         });
       }
       const subscription=await Promise.race([
-        registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:window._wp_urlBase64ToUint8Array(window.applicationServerKey)}),
+        registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodeKey(publicKey)}),
         new Promise((_,reject)=>setTimeout(()=>reject(Error('push-timeout')),15000))
       ]);
       stage='ENREGISTREMENT-SERVEUR';
-      window.WebPushr.endpoint=subscription.endpoint;
-      await Promise.race([
-        window._webpushrSendSubscriptionToServer(subscription,'POST'),
-        new Promise((_,reject)=>setTimeout(()=>reject(Error('server-timeout')),15000))
-      ]);
-      window._webpushrSetLocalStorage('endpoint',subscription.endpoint);
-      window._webpushrSetCookie('_webpushrEndPoint',subscription.endpoint,90);
+      const encode=value=>value?btoa(String.fromCharCode(...new Uint8Array(value))):null;
+      const response=await fetch('https://subscriber.webpushr.com/subscribe/',{
+        method:'POST',signal:AbortSignal.timeout(15000),
+        body:JSON.stringify({endpoint:subscription.endpoint,key:encode(subscription.getKey('p256dh')),token:encode(subscription.getKey('auth')),site_id:publicKey,type:'POST',old:'',welcome_notification:1,timezone:new Date().getTimezoneOffset(),email:'',phone:''})
+      });
+      if(!response.ok)throw Error('HTTP '+response.status);
+      let saved={};try{saved=JSON.parse(localStorage.getItem('_webpushr')||'{}')||{};}catch(_){}
+      localStorage.setItem('_webpushr',JSON.stringify({...saved,endpoint:subscription.endpoint,bell_notification:'on'}));
+      document.cookie='_webpushrEndPoint='+subscription.endpoint+';max-age=7776000;path=/;SameSite=Lax;Secure';
       confirmed=true;status.textContent='Vous êtes abonné aux notifications sur ce navigateur.';
     }catch(error){
       const reasons={
         'AUTORISATION':'La demande d’autorisation du navigateur n’a pas pu s’ouvrir.',
-        'CHARGEMENT':'Le composant de notifications n’a pas terminé son chargement.',
+        'COMPOSANT-APPLICATION':'Le composant de notifications de l’application n’a pas pu démarrer.',
         'ABONNEMENT-TELEPHONE':'Le navigateur n’a pas pu créer l’abonnement aux notifications.',
         'ENREGISTREMENT-SERVEUR':'L’abonnement n’a pas pu être enregistré auprès du service de notifications.'
       };
