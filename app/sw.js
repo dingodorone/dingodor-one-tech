@@ -1,4 +1,4 @@
-const CACHE = 'dingodor-v38-analytics';
+const CACHE = 'dingodor-v39-notification-layout';
 const ASSETS = [
   './',
   './index.html',
@@ -28,7 +28,7 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
-  const isDynamicData = url.hostname === 'public-api.wordpress.com' ||
+  const isDynamicData = url.pathname.endsWith('/webpushr.js') || url.hostname.endsWith('webpushr.com') || url.hostname === 'public-api.wordpress.com' ||
     url.hostname === 'raw.githubusercontent.com' ||
     url.pathname.endsWith('/data/site-data.json') ||
     url.pathname.endsWith('/data/published-posts.json') ||

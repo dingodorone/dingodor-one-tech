@@ -4,11 +4,25 @@
   section.id = 'dingodor-notifications';
   section.setAttribute('aria-label', 'Abonnement aux notifications');
   section.innerHTML = '<div><strong>Gardons le contact</strong><p>Recevez les nouveaux articles et bons plans directement dans votre navigateur.</p></div><div class="notification-actions"><button type="button" id="dingodor-subscribe-button" data-button-text="S’abonner aux notifications" data-show-subscriber-count="false" data-background-color="#087f86" data-border-radius="999px" data-padding="12px 20px" data-font-family="inherit">S’abonner aux notifications</button><p id="dingodor-notification-status" role="status" aria-live="polite"></p></div>';
+  const appHome = document.querySelector('#sec-accueil');
   const footer = document.querySelector('footer');
-  if (footer) footer.before(section); else document.body.append(section);
+  if (appHome) { section.classList.add('notification-app-card'); appHome.append(section); }
+  else if (footer) footer.before(section); else document.body.append(section);
   const style = document.createElement('style');
   style.textContent = '#dingodor-notifications{max-width:1100px;margin:36px auto;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:24px;background:linear-gradient(120deg,#eaf8f6,#eff5ff);border:1px solid #bcdcd9;border-radius:24px;box-sizing:border-box;color:#173e48;font-family:inherit}#dingodor-notifications strong{font-size:22px}#dingodor-notifications p{margin:8px 0 0;font-size:14px;line-height:1.6}#dingodor-notifications button{border:0;background:#087f86;color:white;padding:12px 20px;border-radius:999px;cursor:pointer;font:700 14px inherit}#dingodor-notifications button:focus-visible{outline:3px solid #174c91;outline-offset:4px}.notification-actions{min-width:230px}#dingodor-notification-status{max-width:330px}@media(max-width:700px){#dingodor-notifications{margin:28px 18px;padding:22px;display:block}.notification-actions{margin-top:18px;min-width:0}}';
+  style.textContent += '#dingodor-notifications{box-shadow:none;background:#f0f7f7;border-radius:20px}#dingodor-notifications strong{font-size:20px;letter-spacing:-.02em}#dingodor-notifications.notification-app-card{margin:22px 0;padding:20px;background:linear-gradient(145deg,#142d42,#0d1e30);border:1px solid rgba(22,199,216,.24);color:#e8faff;display:block;border-radius:22px;box-shadow:0 12px 28px rgba(0,0,0,.14)}.notification-app-card .notification-actions{min-width:0;margin-top:16px}.notification-app-card p{color:#a9c2d1}.notification-app-card details{color:#a9c2d1}.notification-app-card summary{cursor:pointer;font-size:12px}.notification-app-card a{color:#78eaf2!important}.notification-app-card #dingodor-subscribe-button{width:100%;min-height:46px;font-family:system-ui,sans-serif;font-weight:700;color:#05202b;background:linear-gradient(120deg,#16c7d8,#55dee7);box-sizing:border-box;border-radius:14px}body:has(#sec-accueil) .section{padding-bottom:calc(150px + env(safe-area-inset-bottom))}.notification-permission-active .bottom-nav{visibility:hidden}.notification-permission-active .install-banner{display:none!important}#webpushr-prompt-wrapper{position:relative;z-index:10000!important}#webpushr-lightbox-optin{z-index:10001!important}';
   document.head.append(style);
+  if (appHome) {
+    const observePrompt = () => {
+      const approve = document.getElementById('webpushr-approve-button');
+      const visible = approve && approve.getClientRects().length > 0;
+      document.body.classList.toggle('notification-provider-prompt', Boolean(visible));
+    };
+    style.textContent += '.notification-provider-prompt .install-banner{display:none!important}.notification-provider-prompt .bottom-nav{visibility:hidden}';
+    const observer = new MutationObserver(observePrompt);
+    observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style','hidden']});
+    observePrompt();
+  }
   const button = document.getElementById('dingodor-subscribe-button');
   const status = document.getElementById('dingodor-notification-status');
   const android = /Android/i.test(navigator.userAgent);
@@ -78,7 +92,7 @@
   const ready=()=>typeof window._webpushrSubscribeNow==='function' && window.WebPushr?.swRegistration && typeof window._wp_prompt_info!=='undefined';
   button.addEventListener('click', async () => {
     if(working)return;
-    working=true;button.disabled=true;
+    working=true;button.disabled=true;document.body.classList.add('notification-permission-active');
     try {
       status.textContent='Confirmez votre choix dans la demande de votre navigateur.';
       const permission=await Notification.requestPermission();
@@ -96,7 +110,7 @@
     }catch(_){
       status.textContent=Notification.permission==='granted'?'Autorisation accordée, mais l’abonnement n’a pas pu être enregistré. Si votre protection bloque Webpushr, autorisez ce service sur ce site puis réessayez.':'La demande n’a pas pu s’ouvrir. Vérifiez les autorisations de ce site dans votre navigateur.';
     }finally{
-      working=false;button.disabled=false;
+      working=false;button.disabled=false;document.body.classList.remove('notification-permission-active');
       if(Notification.permission==='granted'&&!confirmed)button.textContent='Finaliser mon abonnement';
       update();
     }
