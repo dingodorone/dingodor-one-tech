@@ -11,14 +11,30 @@
   document.head.append(style);
   const button = document.getElementById('dingodor-subscribe-button');
   const status = document.getElementById('dingodor-notification-status');
+  const android = /Android/i.test(navigator.userAgent);
+  const help = document.createElement('div');
+  help.className = 'notification-mobile-help';
+  if (android) {
+    const details = document.createElement('details');
+    details.innerHTML = '<summary>Activer les notifications sur Android</summary><p>Dans Chrome : ⋮ → Paramètres → Paramètres des sites → Notifications. Autorisez les notifications, puis vérifiez que dingodoronetech.eu.org n’est pas bloqué.</p><p>Dans les réglages du téléphone : Applications → Chrome → Notifications → Autoriser les notifications.</p><p>Si vous êtes dans l’application Bing, ouvrez le site dans Chrome, en dehors de l’application. Évitez la navigation privée.</p>';
+    const open = document.createElement('a');
+    open.textContent = 'Ouvrir le site dans Chrome';
+    const currentUrl = new URL(location.href);
+    const destination = currentUrl.host + currentUrl.pathname + currentUrl.search;
+    open.href = 'intent://' + destination + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(currentUrl.href) + ';end';
+    open.style.cssText = 'display:inline-block;margin-top:12px;color:#086c73;font-weight:700;text-decoration:underline';
+    help.append(open,details);
+    details.style.cssText = 'margin-top:12px;font-size:14px;max-width:420px';
+    section.querySelector('.notification-actions').append(help);
+  }
   let confirmed=false, working=false, existingSubscriber=false, subscriptionPaused=false;
   function update() {
-    if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+    if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
       button.hidden = true;
-      status.textContent = /iPad|iPhone|iPod/.test(navigator.userAgent) ? 'Sur iPhone ou iPad, ajoutez le site à l’écran d’accueil, puis ouvrez-le pour activer les notifications.' : 'Les notifications ne sont pas disponibles dans ce navigateur.';
+      status.textContent = /iPad|iPhone|iPod/.test(navigator.userAgent) ? 'Sur iPhone ou iPad, ajoutez le site à l’écran d’accueil, puis ouvrez-le pour activer les notifications.' : android ? 'Ce navigateur ne propose pas les notifications du site. Ouvrez le site directement dans Chrome.' : 'Les notifications ne sont pas disponibles dans ce navigateur.';
     } else if (Notification.permission === 'denied') {
       button.hidden = true;
-      status.textContent = 'Les notifications sont bloquées. Autorisez-les dans les réglages de ce site dans votre navigateur.';
+      status.textContent = android ? 'Les notifications ne sont pas autorisées dans ce navigateur. Vérifiez les réglages du site et les notifications de Chrome dans les réglages Android.' : 'Les notifications sont bloquées. Autorisez-les dans les réglages de ce site dans votre navigateur.';
     } else if (subscriptionPaused) {
       button.hidden = true;
       status.textContent = 'Votre abonnement existe, mais les notifications sont désactivées. Réactivez-les avec la cloche de notifications.';
