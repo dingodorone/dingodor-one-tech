@@ -1,5 +1,5 @@
-importScripts('https://cdn.webpushr.com/sw-server.min.js');
-const CACHE = 'dingodor-v40-unified-notifications';
+importScripts('/webpushr-worker.js?v=1');
+const CACHE = 'dingodor-v41-local-push-worker';
 const ASSETS = [
   './',
   './index.html',

@@ -102,7 +102,7 @@
       status.textContent='Autorisation accordée. Activation des notifications…';
       const publicKey='BKm-wMk2Xcx2UUBRth0YXGgU4BQ85P_NR8qX6U5YTTrj7skEnKIwDsFNlQPpbzxlikl9b0ZDihe6L0apTD6OpPU';
       const app=location.pathname.startsWith('/app/');
-      const registration=await navigator.serviceWorker.register(app?'/app/sw.js':'/webpushr-sw.js',{scope:app?'/app/':'/'});
+      const registration=await navigator.serviceWorker.register(app?'/app/sw.js':'/webpushr-sw.js',{scope:app?'/app/':'/',updateViaCache:'none'});
       const decodeKey=value=>{const raw=atob(value.replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-value.length%4)%4));return Uint8Array.from(raw,c=>c.charCodeAt(0));};
       if(!registration.active) {
         await new Promise((resolve,reject)=>{
@@ -138,6 +138,10 @@
       const detail=http?'HTTP '+http[1]:['NotAllowedError','InvalidStateError','AbortError','NotSupportedError','TypeError'].includes(error?.name)?error.name:/timeout/.test(error?.message||'')?'DELAI-DEPASSE':'ECHEC';
       status.textContent=reasons[stage]+' Vous pouvez réessayer. Diagnostic : '+stage+' / '+detail+'.';
       status.dataset.diagnostic=stage+' / '+detail;
+      if(stage==='COMPOSANT-APPLICATION' && error?.message){
+        const technical=document.createElement('details');technical.innerHTML='<summary>Détail du démarrage</summary>';
+        const explanation=document.createElement('p');explanation.textContent=String(error.message).slice(0,600);technical.append(explanation);status.append(technical);
+      }
     }finally{
       working=false;button.disabled=false;document.body.classList.remove('notification-permission-active');
       if(Notification.permission==='granted'&&!confirmed)button.textContent='Activer les notifications';

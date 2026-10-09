@@ -1,1 +1,1 @@
-importScripts('https://cdn.webpushr.com/sw-server.min.js');
+importScripts('/webpushr-worker.js?v=1');
