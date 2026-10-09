@@ -907,7 +907,7 @@
 @media(max-width:350px){.cam-nav-actions,.cam-result-actions{gap:7px}.cam-nav-actions .cam-back,.cam-result-actions .cam-restart-btn{padding:8px 6px;font-size:11px}}
 </style>
 <link rel="stylesheet" href="bons-plans.css?v=1">
-<script src="/analytics.js?v=1" defer></script></head>
+<script src="/analytics.js?v=1" defer></script><style>.occasion-app-card{margin:20px 0;padding:24px;border-radius:22px;border:1px solid #16c7d83d;background:linear-gradient(145deg,#142d42,#0d1e30);color:#e8faff}.occasion-app-kicker{font-size:10px;letter-spacing:.12em;font-weight:800;color:#78eaf2}.occasion-app-card h3{font-size:23px;line-height:1.2;margin:14px 0}.occasion-app-card p,.occasion-app-info p{color:#a9c2d1;line-height:1.7;font-size:14px}.occasion-app-button{display:block;padding:14px;text-align:center;border-radius:14px;background:linear-gradient(120deg,#16c7d8,#55dee7);color:#05202b;font-weight:800;text-decoration:none;margin:22px 0 14px}.occasion-app-more{display:block;color:#78eaf2;text-align:center;font-size:13px;text-decoration:underline}.occasion-app-info{padding:4px 8px 140px}.occasion-app-info h3{font-size:18px}</style></head>
 <body>
 
 <header>
@@ -935,6 +935,7 @@
   <button class="tab" onclick="switchTab('articles', this)">Articles</button>
   <button class="tab" onclick="switchTab('bons-plans', this)">Bons plans du jour</button>
   <button class="tab" onclick="switchTab('promos', this)">Codes promo</button>
+  <button class="tab" onclick="switchTab('occasion', this)">Occasion Dingo</button>
   <button class="tab" onclick="switchTab('partenaires', this)">Boutiques partenaires</button>
   <button class="tab" onclick="switchTab('reseaux', this)">Réseaux</button>
   <button class="tab" onclick="switchTab('camera', this)">Caméras</button>
@@ -954,6 +955,7 @@
     <button class="app-shortcut" onclick="switchSection('promos')"><span>🏷️</span>Codes promo<small>Les offres du moment</small></button>
     <button class="app-shortcut" onclick="switchSection('partenaires')"><span>🛒</span>Boutiques partenaires<small>Mes liens vers les boutiques</small></button>
     <button class="app-shortcut" onclick="switchSection('camera')"><span>📹</span>Guide caméra<small>Trouver le bon modèle</small></button>
+    <button class="app-shortcut" onclick="switchSection('occasion')"><span>♻️</span>Occasion Dingo<small>Mes objets testés à petit prix</small></button>
     <button class="app-shortcut" onclick="switchSection('about')"><span>♥</span>Soutenir<small>Aider le projet</small></button>
   </div>
 
@@ -1003,6 +1005,8 @@
   <p id="app-promo-count" class="app-promo-count" aria-live="polite"></p>
   <div class="promos" id="promos-list"></div>
 </div>
+
+<div class="section" id="sec-occasion"><div class="hero"><div class="hero-label">♻️ Occasion Dingo</div><h2>Testés par moi. Prêts pour toi.</h2><p>Je revends mes anciens objets tech testés à très bon prix, pour leur donner une seconde vie.</p></div><div class="occasion-app-card"><span class="occasion-app-kicker">UNE SECONDE VIE POUR LA TECH</span><h3>Découvre mes objets disponibles</h3><p>Photos, descriptions, état et prix : tout est sur mon dressing Vinted. Les questions et les transactions se passent directement sur Vinted.</p><a class="occasion-app-button" href="https://www.vinted.be/member/269217777" target="_blank" rel="noopener noreferrer">Voir mon dressing Vinted ↗</a><a class="occasion-app-more" href="https://dingodoronetech.eu.org/occasion-dingo.html" target="_blank" rel="noopener noreferrer">Découvrir la section sur le site ↗</a></div><div class="occasion-app-info"><h3>Comment ça fonctionne ?</h3><p><strong>1.</strong> Consulte mes annonces sur Vinted.</p><p><strong>2.</strong> Choisis un objet et lis sa description.</p><p><strong>3.</strong> Pose tes questions ou achète depuis sa fiche Vinted.</p></div></div>
 
 <!-- SECTION BOUTIQUES PARTENAIRES -->
 <div class="section" id="sec-partenaires">
@@ -1459,7 +1463,7 @@ function switchTab(id, el) {
 
 // Ouvre directement un onglet précis si l'URL contient un lien du type #camera, #promos, etc.
 (function () {
-  const validTabs = ['accueil', 'articles', 'bons-plans', 'promos', 'partenaires', 'reseaux', 'camera', 'about'];
+  const validTabs = ['accueil', 'articles', 'bons-plans', 'promos', 'occasion', 'partenaires', 'reseaux', 'camera', 'about'];
   const requested = window.location.hash.replace('#', '');
   if (validTabs.includes(requested)) {
     document.addEventListener('DOMContentLoaded', () => {

@@ -1,5 +1,5 @@
 importScripts('/webpushr-worker.js?v=1');
-const CACHE = 'dingodor-v41-local-push-worker';
+const CACHE = 'dingodor-v42-occasion-dingo';
 const ASSETS = [
   './',
   './index.html',
