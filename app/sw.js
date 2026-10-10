@@ -1,5 +1,5 @@
 importScripts('/webpushr-worker.js?v=1');
-const CACHE = 'dingodor-v43-translation';
+const CACHE = 'dingodor-v44-language-bar';
 const ASSETS = [
   './',
   './index.html',
