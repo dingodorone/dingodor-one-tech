@@ -1,4 +1,6 @@
 
+(function(){if(document.getElementById('d1-translate-script'))return;const script=document.createElement('script');script.id='d1-translate-script';script.src='/translate.js?v=1';script.defer=true;document.head.append(script);}());
+
 const spotlightStyles=document.createElement('link');spotlightStyles.rel='stylesheet';spotlightStyles.href='/spotlight.css?v=1';document.head.append(spotlightStyles);
 // Statistiques partag?es : charg?es une seule fois, avec choix du visiteur.
 (function () {

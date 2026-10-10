@@ -1,9 +1,10 @@
 importScripts('/webpushr-worker.js?v=1');
-const CACHE = 'dingodor-v42-occasion-dingo';
+const CACHE = 'dingodor-v43-translation';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
+  '../translate.js?v=1',
   './bons-plans.css?v=1',
   './bons-plans.js?v=1',
   '../logo-maison.svg',
