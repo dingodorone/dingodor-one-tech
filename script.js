@@ -1,5 +1,5 @@
 
-(function(){if(document.getElementById('d1-translate-script'))return;const script=document.createElement('script');script.id='d1-translate-script';script.src='/translate.js?v=2-language-bar';script.defer=true;document.head.append(script);}());
+(function(){if(document.getElementById('d1-translate-script'))return;const script=document.createElement('script');script.id='d1-translate-script';script.src='/translate.js?v=3-header-languages';script.defer=true;document.head.append(script);}());
 // Statistiques partag?es : charg?es une seule fois, avec choix du visiteur.
 (function () {
   if (document.getElementById('dingodor-analytics-loader')) return;
