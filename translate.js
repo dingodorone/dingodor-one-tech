@@ -1,7 +1,10 @@
 (function () {
-  if (document.getElementById('dingodor-translate') || !['dingodoronetech.eu.org','localhost','127.0.0.1'].includes(location.hostname)) return;
+  if (!['dingodoronetech.eu.org','localhost','127.0.0.1'].includes(location.hostname)) return;
+  const previous=document.getElementById('dingodor-translate');
+  if (previous?.dataset.version === '2') return;
+  previous?.remove();
   const app = location.pathname.startsWith('/app/');
-  const host = document.createElement('div'); host.id='dingodor-translate'; host.className='notranslate'; host.setAttribute('translate','no');
+  const host = document.createElement('div'); host.id='dingodor-translate'; host.dataset.version='2'; host.className='notranslate'; host.setAttribute('translate','no');
   const button=document.createElement('button');button.type='button';button.className='d1-translate-trigger';button.textContent='🌐 Languages';button.setAttribute('aria-haspopup','dialog');button.setAttribute('aria-controls','d1-translate-dialog');
   const dialog=document.createElement('dialog');dialog.id='d1-translate-dialog';dialog.setAttribute('aria-labelledby','d1-translate-title');
   dialog.innerHTML='<div class="d1-translate-heading"><h2 id="d1-translate-title">🌐 Languages</h2><button class="d1-translate-close" type="button" aria-label="Fermer">×</button></div><p>Choose your language · Kies je taal · Sprache wählen</p><div class="d1-translate-languages"></div><p class="d1-translate-note"></p>';

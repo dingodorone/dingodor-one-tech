@@ -1,10 +1,10 @@
 importScripts('/webpushr-worker.js?v=1');
-const CACHE = 'dingodor-v44-language-bar';
+const CACHE = 'dingodor-v45-language-bar-version';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  '../translate.js?v=1',
+  '../translate.js?v=2-language-bar',
   './bons-plans.css?v=1',
   './bons-plans.js?v=1',
   '../logo-maison.svg',
