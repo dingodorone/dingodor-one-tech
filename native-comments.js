@@ -1,21 +1,9 @@
-// Only the publishable key is used here. Database policies enforce moderation.
-const API = 'https://akytuwyokkahgzivxqsa.supabase.co/rest/v1/article_comments';
-const KEY = 'sb_publishable_9qyZ4EEdaWtI3Don-SVYpg_kQfu-Br_';
+import {loadPublished,sendComment} from './comments-data.js?v=1';
 function node(tag, text, className) {
   const el = document.createElement(tag);
   if (text !== undefined) el.textContent = text;
   if (className) el.className = className;
   return el;
-}
-async function request(url, options = {}) {
-  const response = await fetch(url, {...options, headers: {
-    apikey: KEY, 'Content-Type': 'application/json', ...options.headers
-  }, signal: AbortSignal.timeout(20000), cache: 'no-store'});
-  if (!response.ok) {
-    if (response.status === 409) throw new Error('Ce commentaire a déjà été envoyé. Il attend peut-être votre validation.');
-    throw new Error('Connexion indisponible. Réessayez dans un instant. Votre texte est conservé.');
-  }
-  return response.status === 204 || options.method === 'POST' ? null : response.json();
 }
 export async function showNativeComments() {
   const section = document.querySelector('#comments');
@@ -56,16 +44,15 @@ export async function showNativeComments() {
   const sendStatus = node('p'); sendStatus.setAttribute('role', 'status');
   form.append(grid, body.label, trap, submit, sendStatus); card.append(form);
   section.replaceChildren(head, status, list, more, card);
-  let offset = 0;
+  let offset = 0, cursor = null;
   let loading = false;
   async function load() {
     if (loading) return;
     loading = true; more.disabled = true;
     try {
-      const query = new URLSearchParams({select:'id,author_name,body,created_at,author_reply',
-        article_slug:'eq.' + slug, approved:'eq.true',
-        order:'created_at.desc,id.desc', limit:'21', offset:String(offset)});
-      const rows = await request(API + '?' + query);
+      const page = await loadPublished(slug,cursor);
+      const rows = page.rows;
+      cursor = page.cursor;
       if (!offset) list.replaceChildren();
       for (const row of rows.slice(0, 20)) {
         const article = node('article', undefined, 'comment');
@@ -86,7 +73,7 @@ export async function showNativeComments() {
       }
       if (!offset && !rows.length) list.append(node('p', 'Aucun commentaire pour le moment. Soyez le premier à participer.', 'no-comments'));
       offset += Math.min(rows.length, 20);
-      more.hidden = rows.length <= 20;
+      more.hidden = !page.hasMore;
       more.textContent = 'Afficher les commentaires plus anciens';
       status.textContent = '';
     } catch (error) {
@@ -106,7 +93,7 @@ export async function showNativeComments() {
     }
     sending = true; submit.disabled = true; sendStatus.textContent = 'Envoi en cours…';
     try {
-      await request(API, {method:'POST', headers:{Prefer:'return=minimal'}, body:JSON.stringify(payload)});
+      await sendComment(payload);
       body.input.value = '';
       sendStatus.textContent = 'Merci ! Votre commentaire a bien été reçu. Il sera affiché après validation.';
     } catch (error) { sendStatus.textContent = error.message; }
@@ -114,3 +101,5 @@ export async function showNativeComments() {
   });
   await load();
 }
+
+

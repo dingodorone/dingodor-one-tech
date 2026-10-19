@@ -1,7 +1,7 @@
 'use strict';
 (() => {
- const endpoint='https://akytuwyokkahgzivxqsa.supabase.co/functions/v1/comments-admin';
- const publicKey='sb_publishable_9qyZ4EEdaWtI3Don-SVYpg_kQfu-Br_';
+ let moderatorPromise;
+ const firebaseModule=()=>moderatorPromise||(moderatorPromise=import('/firebase-moderator.js?v=1'));
  const open=$('comments-open'),dialog=$('comments-dialog'),list=$('comments-list'),feedback=$('comments-feedback');
  let page=0,version=0,loading=false;
  const answers=new Map(),titles=new Map();
@@ -9,11 +9,9 @@
  const say=(text,error=false)=>{feedback.textContent=text;feedback.classList.toggle('error',error);};
  async function request(payload){
   if(!token)throw Error('Connectez-vous à votre éditeur.');
-  let response;
-  try {response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',apikey:publicKey,'x-editor-token':token},body:JSON.stringify(payload),signal:AbortSignal.timeout(40000),cache:'no-store'});}catch{throw Error('Le service de commentaires ne répond pas. Votre texte est conservé.');}
-  let data;try{data=await response.json();}catch{throw Error('Réponse du service illisible. Réessayez.');}
-  if(!response.ok)throw Error(data.error||'Accès refusé. Reconnectez-vous ou réessayez.');
-  return data;
+  const m=await firebaseModule();
+  if(!await m.isConnected())throw Error('Cliquez sur « Connecter mon compte Google » pour gérer les commentaires.');
+  try{return await m.moderate(payload);}catch(e){if(e.code==='PERMISSION_DENIED'||e.code==='database/permission-denied')throw Error('Accès refusé. Utilisez le compte Google propriétaire du site.');throw e;}
  }
  async function loadTitles(){try{const r=await fetch('/data/published-posts.json',{cache:'no-store'});if(!r.ok)return;const data=await r.json();for(const item of (Array.isArray(data)?data:data.posts||[])){const slug=item.slug||item.url?.match(/\/([^/]+)\.html$/)?.[1];if(slug)titles.set(slug,item.title?.rendered||item.title||slug);}}catch{}}
  async function load(){
@@ -25,7 +23,7 @@
    for(const c of data.comments)render(c);
    if(!data.comments.length)list.append(el('p',$('comments-filter').value==='pending'?'Aucun commentaire en attente.':'Aucun commentaire dans cette sélection.'));
    $('comments-prev').disabled=page===0;$('comments-next').disabled=(page+1)*30>=data.total;
-   $('comments-count').textContent=data.total+' commentaire'+(data.total>1?'s':'')+' · page '+(page+1);
+   $('comments-count').textContent=(data.limited?'500 derniers : ': '')+data.total+' commentaire'+(data.total>1?'s':'')+' · page '+(page+1);
    say('Liste à jour. Les réponses sont publiques avec le commentaire validé.');
   }catch(e){if(id===version)say(e.message,true);}finally{if(id===version){loading=false;list.removeAttribute('aria-busy');$('comments-refresh').disabled=false;}}
  }
@@ -48,13 +46,14 @@
   button(c.approved?'Masquer':'Publier',c.approved?'hide':'approve',!c.approved);
   button(c.author_reply?'Enregistrer la réponse':'Répondre','reply');button('Supprimer','delete');card.append(actions);list.append(card);
  }
- open.onclick=async()=>{dialog.showModal();await loadTitles();page=0;await load();};
+ open.onclick=async()=>{dialog.showModal();await loadTitles();page=0;try{const m=await firebaseModule();const connected=await m.isConnected();$('comments-google').hidden=connected;$('comments-google-status').textContent=connected?'Compte Google propriétaire connecté.':'Connexion Google nécessaire pour la modération.';if(connected)await load();else{list.replaceChildren();say('Connectez votre compte Google pour consulter les messages.');}}catch{say('Impossible de charger la connexion Google. Réessayez.',true);}};
+ $('comments-google').onclick=async()=>{try{const m=await firebaseModule();await m.connect();$('comments-google').hidden=true;$('comments-google-status').textContent='Compte Google propriétaire connecté.';page=0;await load();}catch(e){say(e.code==='auth/popup-closed-by-user'?'Connexion annulée.':e.code==='auth/popup-blocked'?'Autorisez la fenêtre de connexion Google dans votre navigateur.':e.message,true);}};
  $('comments-close').onclick=()=>dialog.close();
  $('comments-refresh').onclick=()=>load();
  $('comments-filter').onchange=()=>{page=0;load();};
  $('comments-prev').onclick=()=>{if(!loading&&page>0){page--;load();}};
  $('comments-next').onclick=()=>{if(!loading){page++;load();}};
  const previous=window.editorDisconnected;
- window.editorDisconnected=()=>{version++;dialog.close();list.replaceChildren();answers.clear();say('');if(previous)previous();};
+ window.editorDisconnected=()=>{version++;dialog.close();list.replaceChildren();answers.clear();say('');if(moderatorPromise)moderatorPromise.then(m=>m.disconnect()).catch(()=>{});if(previous)previous();};
 })();
 

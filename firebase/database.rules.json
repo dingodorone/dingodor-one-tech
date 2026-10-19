@@ -1,0 +1,65 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "pending": {
+      ".read": "auth != null && auth.token.email === 'dingodorone@gmail.com' && auth.token.email_verified === true && auth.token.firebase.sign_in_provider === 'google.com'",
+      ".indexOn": [
+        "created_at",
+        "approved"
+      ],
+      "$id": {
+        ".write": "(auth != null && auth.token.email === 'dingodorone@gmail.com' && auth.token.email_verified === true && auth.token.firebase.sign_in_provider === 'google.com') || ($id.matches(/^[a-f0-9]{64}$/) && !data.exists() && newData.exists())",
+        ".validate": "newData.hasChildren(['article_slug','author_name','body','created_at','approved'])",
+        "article_slug": {
+          ".validate": "(auth != null && auth.token.email === 'dingodorone@gmail.com' && auth.token.email_verified === true && auth.token.firebase.sign_in_provider === 'google.com') || (newData.isString() && newData.val().matches(/^[a-z0-9]+(-[a-z0-9]+)*$/) && newData.val().length <= 250)"
+        },
+        "author_name": {
+          ".validate": "(auth != null && auth.token.email === 'dingodorone@gmail.com' && auth.token.email_verified === true && auth.token.firebase.sign_in_provider === 'google.com') || (newData.isString() && newData.val().length > 0 && newData.val().length <= 80)"
+        },
+        "body": {
+          ".validate": "(auth != null && auth.token.email === 'dingodorone@gmail.com' && auth.token.email_verified === true && auth.token.firebase.sign_in_provider === 'google.com') || (newData.isString() && newData.val().length >= 3 && newData.val().length <= 5000)"
+        },
+        "created_at": {
+          ".validate": "(auth != null && auth.token.email === 'dingodorone@gmail.com' && auth.token.email_verified === true && auth.token.firebase.sign_in_provider === 'google.com') || (newData.isNumber() && newData.val() > now - 300000 && newData.val() <= now + 1000)"
+        },
+        "approved": {
+          ".validate": "(auth != null && auth.token.email === 'dingodorone@gmail.com' && auth.token.email_verified === true && auth.token.firebase.sign_in_provider === 'google.com') || (newData.val() === false)"
+        },
+        "email": {
+          ".validate": "(auth != null && auth.token.email === 'dingodorone@gmail.com' && auth.token.email_verified === true && auth.token.firebase.sign_in_provider === 'google.com') || (newData.isString() && newData.val().length <= 254 && (newData.val() === '' || newData.val().matches(/^[^ @]+@[^ @]+[.][^ @]+$/)))"
+        },
+        "$other": {
+          ".validate": "(auth != null && auth.token.email === 'dingodorone@gmail.com' && auth.token.email_verified === true && auth.token.firebase.sign_in_provider === 'google.com') || (false)"
+        }
+      }
+    },
+    "published": {
+      "$slug": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email === 'dingodorone@gmail.com' && auth.token.email_verified === true && auth.token.firebase.sign_in_provider === 'google.com'",
+        ".indexOn": [
+          "created_at"
+        ],
+        "$id": {
+          ".validate": "newData.hasChildren(['author_name','body','created_at'])",
+          "author_name": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 80"
+          },
+          "body": {
+            ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 5000"
+          },
+          "created_at": {
+            ".validate": "newData.isNumber()"
+          },
+          "author_reply": {
+            ".validate": "newData.isString() && newData.val().length <= 10000"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
+    }
+  }
+}
