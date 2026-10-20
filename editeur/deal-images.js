@@ -30,7 +30,7 @@
         if (result.request_id !== request_id || result.message !== message || !Array.isArray(result.products) || JSON.stringify(result.products.map(p => p.url)) !== JSON.stringify(urls)) throw Error('La réponse ne correspond pas aux liens demandés.');
         if (mode !== 'bons-plans' || $('deal-message').value !== message) { feedback.textContent = 'Le texte a changé pendant la recherche. Relancez la récupération pour ses nouveaux liens.'; return; }
         const currentData = getData();
-        draft.preview_products = result.products.map((p, i) => ({url:p.url, title:typeof p.title === 'string' ? p.title : '', image:currentData.images?.[i] || (/^\/media\/[a-zA-Z0-9._-]+$/.test(p.image || '') ? p.image : '')}));
+        draft.preview_products = result.products.map((p, i) => ({url:p.url, title:typeof p.title === 'string' ? p.title : '', image:currentData.images?.[i] || (/^\/media\/[a-zA-Z0-9._-]+$/.test(p.image || '') ? p.image : '') || currentData.preview_products?.find(previous => previous.url === p.url)?.image || ''}));
         changed();
         const found = draft.preview_products.filter(p => p.image).length;
         feedback.textContent = found === urls.length ? 'Photos récupérées. Enregistrez le brouillon pour les conserver.' : found + ' photo(s) récupérée(s) sur ' + urls.length + '. Le marchand ne fournit pas certaines photos : vous pouvez les ajouter manuellement.';
