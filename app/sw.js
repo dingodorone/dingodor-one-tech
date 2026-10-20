@@ -1,5 +1,5 @@
 importScripts('/webpushr-worker.js?v=1');
-const CACHE = 'dingodor-v48-shared-deals';
+const CACHE = 'dingodor-v49-separate-deal-links';
 const ASSETS = [
   './',
   './index.html',
@@ -7,7 +7,7 @@ const ASSETS = [
   '../translate.js?v=3-header-languages',
   './bons-plans.css?v=1',
   './bons-plans.js?v=5-shared',
-  '../deal-view.js?v=1',
+  '../deal-view.js?v=2',
   '../logo-maison.svg',
   '../mascotte.js?v=3-apparition',
   '../assets/avatars/dingo-pensif.webp',

@@ -63,12 +63,15 @@ function render(deal, options={}){
   const url=Text.safeURL(product.url);if(!url)continue;
   const publicImage=/^\/bon-plan-media\/[a-f0-9]{64}\.(jpg|jpeg|png|webp|gif)$/.test(product.image||'');
   const privateImage=options.privateImages&&/^\/media\/[a-zA-Z0-9._-]+\.(jpg|jpeg|png|webp|gif)$/.test(product.image||'');
-  if(!publicImage&&!privateImage)continue;
-  const card=element('a','deal-product');card.href=url;card.target='_blank';card.rel='noopener noreferrer sponsored';card.setAttribute('aria-label','Voir la photo et l’offre chez le marchand');
+  const textLink=[...article.querySelectorAll('.deal-text a')].find(a=>a.href===url);
+  const linkLabel=textLink?.textContent||('Voir l’offre sur '+new URL(url).hostname);
+  const card=element('a','deal-product');card.href=url;card.target='_blank';card.rel='noopener noreferrer sponsored';card.setAttribute('aria-label',linkLabel);
   const box=element('div','deal-image');
   if(privateImage&&options.loadPrivateImage)options.loadPrivateImage(product.image,box);
-  else{const img=element('img');img.src=product.image;img.alt='Photo du produit';img.loading='lazy';img.decoding='async';box.append(img);}
-  card.append(box);pictures.append(card);
+  else if(publicImage){const img=element('img');img.src=product.image;img.alt='Photo du produit';img.loading='lazy';img.decoding='async';box.append(img);}
+  else{box.classList.add('empty');box.textContent='Photo indisponible';}
+  const info=element('div','deal-info');info.append(element('strong','',linkLabel+' ↗'));
+  card.append(box,info);pictures.append(card);
  }
  if(pictures.childNodes.length)article.append(pictures);
  return article;
