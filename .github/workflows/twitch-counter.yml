@@ -1,0 +1,37 @@
+name: Actualiser le compteur Twitch
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/update_twitch.py
+      - .github/workflows/twitch-counter.yml
+permissions:
+  contents: write
+concurrency:
+  group: twitch-public-counter
+  cancel-in-progress: false
+jobs:
+  update:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Lire le nombre public de followers
+        env:
+          TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}
+        run: python3 scripts/update_twitch.py
+      - name: Enregistrer uniquement le compteur public
+        run: |
+          git config user.name 'dingodor-twitch[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/twitch-followers.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'Actualiser le nombre public de followers Twitch'
+          git pull --rebase origin main
+          git push origin HEAD:main
