@@ -17,3 +17,5 @@
   .twitch-page .site-header nav #dingodor-translate{grid-column:1/-1;width:100%;justify-content:stretch}
   .twitch-page .site-header nav .d1-translate-trigger{width:100%;min-height:44px}
 }
+
+@media(max-width:720px){.twitch-page .twitch-follow{width:100%;max-width:360px;white-space:normal;text-align:center}.twitch-page .twitch-follow span{flex-shrink:0}}
