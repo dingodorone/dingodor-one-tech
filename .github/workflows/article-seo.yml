@@ -6,7 +6,11 @@ on:
   push:
     branches: [main]
     paths:
-      - 'scripts/**'
+      - scripts/build_articles.py
+      - scripts/native_articles.py
+      - scripts/github_articles.py
+      - scripts/deploy_branch.py
+      - scripts/verify_publication.py
       - 'data/native-candidates/**'
       - wp-content.js
       - .github/workflows/article-seo.yml
