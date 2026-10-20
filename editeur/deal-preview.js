@@ -4,9 +4,11 @@ let dealPreviewGeneration=0,dealPreviewURL=null;
 showPreview=async function(){
  if(mode!=='bons-plans'){articleShowPreview();return;}
  const generation=++dealPreviewGeneration,root=$('preview-content'),data=getData(),links=dealLinks(data.message);
+ let displayDate=data.date||new Date().toISOString();
+ if(current?.path){try{const response=await fetch('/data/bons-plans.json',{cache:'no-store'});if(response.ok){const feed=await response.json(),id='cms-'+current.path.split('/').pop().replace(/\.json$/,'');const published=feed.deals?.find(d=>d.id===id);if(published?.date)displayDate=published.date;}}catch{}}
  const approved=Array.isArray(data.preview_products)?data.preview_products:[],manual=Array.isArray(data.images)?data.images:[];
  const jobs=[],products=links.map((url,i)=>({...approved.find(p=>p.url===url),url,image:manual[i]||approved.find(p=>p.url===url)?.image||''}));
- const article=DealView.render({message:data.message,products,spotlight:data.spotlight===true,date:data.date||new Date().toISOString()},{privateImages:true,loadPrivateImage(path,box){
+ const article=DealView.render({message:data.message,products,spotlight:data.spotlight===true,date:displayDate},{privateImages:true,loadPrivateImage(path,box){
   jobs.push((async()=>{try{
    const file=await api('/contents/'+path.slice(1)),ext=path.split('.').pop().toLowerCase(),mime={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',gif:'image/gif'}[ext];
    const img=document.createElement('img');img.src='data:'+mime+';base64,'+file.content.replace(/\s/g,'');img.alt='Photo du produit';box.append(img);
