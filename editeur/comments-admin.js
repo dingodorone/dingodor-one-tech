@@ -1,7 +1,7 @@
 'use strict';
 (() => {
  let moderatorPromise;
- const firebaseModule=()=>moderatorPromise||(moderatorPromise=import('/firebase-moderator.js?v=1'));
+ const firebaseModule=()=>moderatorPromise||(moderatorPromise=import('/firebase-moderator.js?v=2-rest'));
  const open=$('comments-open'),dialog=$('comments-dialog'),list=$('comments-list'),feedback=$('comments-feedback');
  let page=0,version=0,loading=false;
  const answers=new Map(),titles=new Map();
@@ -56,4 +56,5 @@
  const previous=window.editorDisconnected;
  window.editorDisconnected=()=>{version++;dialog.close();list.replaceChildren();answers.clear();say('');if(moderatorPromise)moderatorPromise.then(m=>m.disconnect()).catch(()=>{});if(previous)previous();};
 })();
+
 
