@@ -10,7 +10,7 @@ showPreview=function(){
  const count=Math.max(links.length,manual.length,approved.length);
  for(let i=0;i<count;i++){
   const product=approved[i]||{},path=product.image||manual[i];
-  if(!path&&!product.title)continue;
+  if(!path)continue;
   const card=document.createElement('section');card.className='deal-preview-card';
   root.append(card);
   if(path){
@@ -21,7 +21,7 @@ showPreview=function(){
     }}catch{}
    }
   }
-  if(product.title){const title=document.createElement('h3');title.textContent=product.title;card.append(title);}
+
 
  }
  $('preview-dialog').showModal();
