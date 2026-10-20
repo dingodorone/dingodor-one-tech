@@ -4,7 +4,7 @@ showPreview=function(){
  if(mode!=='bons-plans'){articleShowPreview();return;}
  const root=$('preview-content'),data=getData(),links=dealLinks(data.message);
  root.replaceChildren();
- const text=document.createElement('p');text.style.whiteSpace='pre-wrap';text.textContent=data.message;root.append(text);
+ root.append(EditorLinks.render(data.message));
  const approved=Array.isArray(data.preview_products)?data.preview_products:[];
  const manual=Array.isArray(data.images)?data.images:[];
  const count=Math.max(links.length,manual.length,approved.length);

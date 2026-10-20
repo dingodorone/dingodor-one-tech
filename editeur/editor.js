@@ -34,7 +34,7 @@ $('logout').onclick=()=>{if(unsaved()&&!confirm('Se déconnecter sans enregistre
 $('new').onclick=()=>{if(unsaved()&&!confirm('Créer un article sans enregistrer le précédent ?'))return;current=null;paint(mode==='articles'?{body:'<p></p>'}:{message:'',published:false});$(mode==='articles'?'title':'deal-message').focus();};
 $('search').oninput=drawList;for(const id of ['body','title','excerpt','notes','deal-message','deal-published','seo-slug','seo-title','seo-description','categories','tags'])$(id).addEventListener('input',changed);
 $('body').addEventListener('keyup',remember);$('body').addEventListener('mouseup',remember);
-$('body').addEventListener('paste',e=>{e.preventDefault();const data=e.clipboardData;restore();document.execCommand('insertHTML',false,filteredHTML(data.getData('text/html')||data.getData('text/plain').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>')));changed();});
+$('body').addEventListener('paste',e=>{e.preventDefault();const data=e.clipboardData;restore();document.execCommand('insertHTML',false,filteredHTML(data.getData('text/html')||(window.EditorLinks ? EditorLinks.toHTML(data.getData('text/plain')) : data.getData('text/plain').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>'))));changed();});
 document.querySelectorAll('.toolbar button').forEach(b=>b.addEventListener('mousedown',e=>{remember();e.preventDefault();}));
 document.querySelectorAll('[data-command]').forEach(b=>b.onclick=()=>{restore();document.execCommand(b.dataset.command,false);changed();});
 document.querySelectorAll('[data-block]').forEach(b=>b.onclick=()=>{restore();document.execCommand('formatBlock',false,b.dataset.block);changed();});
