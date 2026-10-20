@@ -16,9 +16,7 @@ showPreview=async function(){
  await Promise.all(jobs);
  if(generation!==dealPreviewGeneration||mode!=='bons-plans'||!$('preview-dialog').open)return;
  const page='<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'self\' \'unsafe-inline\' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src \'self\' data:; base-uri \'none\'; form-action \'none\'"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Space+Grotesk:wght@600;700&display=swap"><link rel="stylesheet" href="https://dingodoronetech.eu.org/styles.css?v=3"><link rel="stylesheet" href="https://dingodoronetech.eu.org/bons-plans.css?v=5-shared"><link rel="stylesheet" href="https://dingodoronetech.eu.org/spotlight.css?v=1"><style>body{margin:0}.deals-shell{padding:16px 20px}.deal-text{white-space:normal}.deal-text p{margin:14px 0}</style></head><body><main class="deals-shell">'+article.outerHTML+'</main></body></html>';
- if(dealPreviewURL)URL.revokeObjectURL(dealPreviewURL);
- dealPreviewURL=URL.createObjectURL(new Blob([page],{type:'text/html'}));
- const frame=document.createElement('iframe');frame.sandbox='allow-same-origin';frame.title='Aperçu du bon plan — même présentation que le site';frame.src=dealPreviewURL;
+ const frame=document.createElement('iframe');frame.sandbox='allow-same-origin';frame.title='Aperçu du bon plan — même présentation que le site';frame.srcdoc=page;
  root.replaceChildren(frame);
 };
 $('preview').onclick=showPreview;
