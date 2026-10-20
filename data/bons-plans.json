@@ -1,6 +1,25 @@
 {
   "deals": [
     {
+      "spotlight": true,
+      "id": "cms-web-1792523723565-d1f5dfa4",
+      "message": "🔥 **SwitchBot K11+ Pro à 209,99 € sur Amazon France et Belgique !**\n\nUn bon plan pour la maison connectée : le robot aspirateur **SwitchBot K11+ Pro avec station de vidage automatique** est proposé à **209,99 €**, en stock chez Amazon.\n\n🇫🇷 [Voir l’offre Amazon France](https://link.amazon/B05krGS7h)\n🇧🇪 [Voir l’offre Amazon Belgique](https://link.amazon/B04iFS8Jx)",
+      "products": [
+        {
+          "url": "https://link.amazon/B05krGS7h",
+          "title": "",
+          "image": ""
+        },
+        {
+          "url": "https://link.amazon/B04iFS8Jx",
+          "title": "SwitchBot Robot aspirateur K11+ avec balai, aspiration puissante de 6000 Pa, stockage de la poussière de 90 jours, cartographie intelligente LDS à vidange automatique, design fin de 9,1 cm, fonctionne : Amazon.com.be: Cuisine et maison",
+          "image": "/bon-plan-media/b303ef82ef824131509dbb1e8b222d1c83686af06fc642a85662ddc19b6b4e04.jpg"
+        }
+      ],
+      "date": "2026-10-20T19:15:52.833956+00:00",
+      "fingerprint": "84e6cb3281a5665ee380bf0f2ba179d517d188d5541c2c20494b92d1d770cce8"
+    },
+    {
       "id": "cms-pc-20261003-125420-e75e6f",
       "message": "Bon Plan Amazon France 51.49€ The Legend of Zelda : Ocarina of Time https://t.co/9nIUEfLJqS\net une switch 2 a 419€ https://t.co/X811WztQXt",
       "products": [
