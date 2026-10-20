@@ -1,0 +1,19 @@
+/* Navigation specific to the Twitch landing page. */
+.twitch-page .site-header{height:auto;min-height:82px;flex-wrap:wrap;padding-block:16px}
+.twitch-page .site-header nav{display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;gap:12px;border:0;width:auto;order:initial;overflow:visible}
+.twitch-page .site-header nav>a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:10px 14px;border:1px solid #ffffff24;border-radius:12px;background:#ffffff08;line-height:1.35;white-space:normal;text-align:center}
+.twitch-page .site-header nav>a:hover{background:#ffffff18;color:#fff}
+.twitch-page .site-header nav>a:focus-visible{outline:3px solid #bf94ff;outline-offset:3px}
+.twitch-page .site-header nav #dingodor-translate{padding:0}
+.twitch-page .site-header nav .d1-translate-trigger{min-height:44px}
+@media(max-width:1150px){
+  .twitch-page .site-header{gap:16px;padding:16px 20px}
+  .twitch-page .site-header nav{width:100%;margin-left:0;order:3}
+}
+@media(max-width:720px){
+  .twitch-page .site-header{position:relative;gap:16px;padding:16px}
+  .twitch-page .site-header nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;overflow:visible}
+  .twitch-page .site-header nav>a{min-width:0;min-height:48px;padding:12px 8px;font-size:.9rem}
+  .twitch-page .site-header nav #dingodor-translate{grid-column:1/-1;width:100%;justify-content:stretch}
+  .twitch-page .site-header nav .d1-translate-trigger{width:100%;min-height:44px}
+}
