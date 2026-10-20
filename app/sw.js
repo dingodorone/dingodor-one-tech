@@ -1,12 +1,13 @@
 importScripts('/webpushr-worker.js?v=1');
-const CACHE = 'dingodor-v47-twitch-100';
+const CACHE = 'dingodor-v48-shared-deals';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   '../translate.js?v=3-header-languages',
   './bons-plans.css?v=1',
-  './bons-plans.js?v=1',
+  './bons-plans.js?v=5-shared',
+  '../deal-view.js?v=1',
   '../logo-maison.svg',
   '../mascotte.js?v=3-apparition',
   '../assets/avatars/dingo-pensif.webp',
