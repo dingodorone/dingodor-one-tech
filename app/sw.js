@@ -1,5 +1,5 @@
 importScripts('/webpushr-worker.js?v=1');
-const CACHE = 'dingodor-v46-header-languages';
+const CACHE = 'dingodor-v47-twitch-100';
 const ASSETS = [
   './',
   './index.html',
