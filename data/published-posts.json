@@ -2,6 +2,22 @@
   "posts": [
     {
       "spotlight": false,
+      "ID": -281289210001777,
+      "title": "Gemini débarque sur Google TV et les box Android : la révolution de la télécommande vocale est en marche",
+      "slug": "gemini-debarque-sur-google-tv-et-les-box-android-la-revolution-de-la-telecommande-vocale-est-en-marc",
+      "date": "2026-11-12T17:32:14.804707+00:00",
+      "excerpt": "L'intelligence artificielle Gemini remplace progressivement Google Assistant sur les box et téléviseurs sous Google TV. Cet article détaille les nouvelles fonctionnalités (recherche multicritères en langage naturel, intégration de l'écosystème connecté, outils multimédias avancés) et fait le point complet sur la compatibilité matérielle. Apprenez quels appareils sous Android 14 profitent de cette mise à jour majeure et pourquoi des boîtiers emblématiques comme la Nvidia Shield TV restent exclus du dispositif.",
+      "featured_image": "/article-media/12b5b969079979d74ab1cede95b33cd429084d64a737591ae1fa3bb6ab69fbc7.webp",
+      "categories": [],
+      "tags": [
+        "Gemini Google TV  Gemini box Android  Assistant vocal Android TV  Appareils comp"
+      ],
+      "url": "/publications/gemini-debarque-sur-google-tv-et-les-box-android-la-revolution-de-la-telecommande-vocale-est-en-marc.html",
+      "source": "github",
+      "sha256": "fdc702e32f0902bdd5a470488d53b84265a3d16c1894418ebd8ec4ccaca1acc6"
+    },
+    {
+      "spotlight": false,
       "ID": -37863870870319,
       "title": "Test CZUR Aura Pro : mon avis sur ce scanner de livres A3 et ses limites",
       "slug": "test-czur-aura-pro-scanner-livres-avis",
