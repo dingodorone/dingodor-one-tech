@@ -2,6 +2,20 @@
   "posts": [
     {
       "spotlight": false,
+      "ID": -87313411199745,
+      "title": "Quelle carte micro SD pour une surveillance sans faille ?",
+      "slug": "quelle-carte-micro-sd-pour-une-surveillance-sans-faille",
+      "date": "2026-11-14T13:49:51.493044+00:00",
+      "excerpt": "",
+      "featured_image": "/article-media/c320ac89c877a79afdbcf0a58fc279b54f635eea5f61f35d33f3b7d5d8111d6b.webp",
+      "categories": [],
+      "tags": [],
+      "url": "/publications/quelle-carte-micro-sd-pour-une-surveillance-sans-faille.html",
+      "source": "github",
+      "sha256": "64d401ee61dc9a0dfaea9df1499a9a26f05f407c482cda88ea742da1893fc51c"
+    },
+    {
+      "spotlight": false,
       "ID": -281289210001777,
       "title": "Gemini débarque sur Google TV et les box Android : la révolution de la télécommande vocale est en marche",
       "slug": "gemini-debarque-sur-google-tv-et-les-box-android-la-revolution-de-la-telecommande-vocale-est-en-marc",
@@ -403,16 +417,6 @@
       "title": "Les Trackers Bluetooth ? Peut-On Vraiment Suivre une Personne, retrouver un objet perdu? Je compare et donne mon avis .",
       "url": "/posts/19542-les-trackers-bluetooth-peut-on-vraiment-suivre-une-personne-retrouver-un-objet-perdu.html",
       "sha256": "cfdbd16ed5914d404edb1bee082473a5d51fbae5f997f97f9b1d948a16a12e00"
-    },
-    {
-      "ID": 19338,
-      "slug": "quelle-carte-micro-sd-pour-une-surveillance-sans-faille",
-      "date": "2025-01-17T13:12:07+01:00",
-      "excerpt": "<p>Le choix de la bonne carte micro SD est crucial pour garantir le bon fonctionnement et la fiabilité de votre caméra de surveillance. Une carte inadaptée peut entraîner des pertes d&#8217;enregistrement, des erreurs de lecture ou une usure prématurée. Mais comment bien choisir et que signifient toutes ces informations sur la carte micro SD (V10, [&hellip;]</p>\n",
-      "featured_image": "https://dingodoronetech.wordpress.com/wp-content/uploads/2025/01/carte-micro-sd-interrogation.jpg",
-      "title": "Quelle carte micro SD pour une surveillance sans faille ?",
-      "url": "/posts/19338-quelle-carte-micro-sd-pour-une-surveillance-sans-faille.html",
-      "sha256": "8d3b53d99f018bf68b0f98fe47e668b3b8029615eeece1e065f53eb97afaa577"
     },
     {
       "ID": 19325,
@@ -2052,7 +2056,7 @@
       "featured_image": "",
       "title": "Écouteurs TRANYA RIMOR USB Type C,bluetooth 5.0 et son de qualité",
       "url": "/posts/7813-ecouteurs-tranya-rimor-usb-type-cbluetooth-5-0-et-son-de-qualite.html",
-      "sha256": "c0e8c2f019efcf88b20b2642db4a5c89425690fed275f4af5ba23448e2be6fbc"
+      "sha256": "3a72720c0edd153b8f8911df7846d92f992177a248896a12e1dff53055e25f1a"
     },
     {
       "ID": 7820,
@@ -5052,7 +5056,7 @@
       "featured_image": "",
       "title": "Lampe de chevet Xiaomi bluetooth compatible capteur de température et d’humidité capteur avec affichage entrepôt européen",
       "url": "/posts/9469-lampe-de-chevet-xiaomi-bluetooth-compatible-capteur-de-temperature-et-dhumidite-capte.html",
-      "sha256": "b2976c286e1cdc181d52cef7b1de635db024aedbb5410bac86ca0210e85096ac"
+      "sha256": "3c72a7310e8e2a3399730ca427e3c61c9808b25e641b39cc9676b71b398d65fe"
     },
     {
       "ID": 9512,
@@ -6052,7 +6056,7 @@
       "featured_image": "",
       "title": "En promo : Veilleuse pour chambre d’enfant",
       "url": "/posts/10737-en-promo-veilleuse-pour-chambre-denfant.html",
-      "sha256": "5ea8d6d87f26f30c62deb4706e8fd002c9c4cace26037737e025312786043a7b"
+      "sha256": "e592a3f461160301185daaa3a2f240782c4c9b486072bed5d367796b7c760caf"
     },
     {
       "ID": 10746,
@@ -7052,7 +7056,7 @@
       "featured_image": "",
       "title": "Grosse promo : Set d’accessoire original xiaomi pour robot aspirateur xiaomi version 1 et 2",
       "url": "/posts/532-grosse-promo-set-daccessoire-original-xiaomi-pour-robot-aspirateur-xiaomi-version-1-e.html",
-      "sha256": "0bad7d201624f0a0b6de6e14fc43f32586dfbceb2bb8ec4d87f5a24797d3151b"
+      "sha256": "dac4ac5968a4762b1bd23682d811e9cc886bc2ffb56929be6a44c97be6db350e"
     },
     {
       "ID": 523,
@@ -8052,7 +8056,7 @@
       "featured_image": "",
       "title": "Perche Selfie très ingénieuse",
       "url": "/posts/1981-perche-selfie-tres-ingenieuse.html",
-      "sha256": "4f113071b3f1b1a140731ce880612690f1b2a040f3df9336a3223c94f81d1b1c"
+      "sha256": "68157408211e5ff118a979c9e7b4f297c71ebbea753cc0173ac180fd7917475d"
     },
     {
       "ID": 1999,
@@ -9052,7 +9056,7 @@
       "featured_image": "",
       "title": "Vidéo du dimanche : Écouteurs Bluetooth 5.0 IPX5 en promo",
       "url": "/posts/2963-video-du-dimanche-ecouteurs-bluetooth-5-0-ipx5-en-promo.html",
-      "sha256": "f66437144564788a8b23045b75843bb8076f2058c341f9e423a4c0b51d16e9a6"
+      "sha256": "490f800cd65a0b0082656498c6e771b4bed4f6f205da4fa1b6d28b01c4534663"
     },
     {
       "ID": 2976,
@@ -11052,7 +11056,7 @@
       "featured_image": "",
       "title": "Super prix La trottinette électrique Xiaomi M365 version europe 388.96€",
       "url": "/posts/5529-super-prix-la-trottinette-electrique-xiaomi-m365-version-europe-388-96e.html",
-      "sha256": "d9cc26b7649323647bb1a42e4ec47de4a1c25382b8d1ac7e55f049e3447d932d"
+      "sha256": "3633163d537ae49d31cc39f17fb3d99211a59143e70e6db301059b239783e333"
     },
     {
       "ID": 5558,
