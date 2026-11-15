@@ -1,6 +1,20 @@
 {
   "deals": [
     {
+      "spotlight": false,
+      "id": "cms-web-1794752327587-8b73932a",
+      "message": "[La domotique SwitchBot déjà en promo Pré Black Friday](https://link.amazon/B0dKctrMb)",
+      "products": [
+        {
+          "url": "https://link.amazon/B0dKctrMb",
+          "title": "",
+          "image": "/bon-plan-media/e1d3db5e7b7dac950da66b9cec24f534b54083160719ec62690a5e639a7c2864.webp"
+        }
+      ],
+      "date": "2026-11-15T14:20:09.116079+00:00",
+      "fingerprint": "db45d499b3ea05598407cd6eb27d40f7481dafabe0c03d9ebaa4fee2d7de532e"
+    },
+    {
       "id": "ssd-netac-sata-1to-20261101",
       "message": "🔥 **SSD Netac SATA 1 To à 85 € sur AliExpress**\n\n🇫🇷 France : code **11FR08** pour 8 € de remise dès 45 € d’achat.\n🇧🇪 Belgique : code **NWED1108** pour 8 € de remise dès 45 € d’achat.\n\n[Voir l’offre Netac SATA 1 To](https://s.click.aliexpress.com/e/_c3SR53cn)\n\nCodes annoncés valables du 1er au 18 novembre 2026, dans la limite des stocks. Vérifie le prix final et l’éligibilité du code avant paiement.",
       "products": [
