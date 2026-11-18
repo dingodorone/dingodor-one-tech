@@ -1,6 +1,20 @@
 {
   "deals": [
     {
+      "spotlight": true,
+      "id": "cms-web-1795046177429-73442805",
+      "message": "[Sélections de grosses promos Black Friday sur ma page Amazon](https://link.amazon/B0bLNsnog)",
+      "products": [
+        {
+          "url": "https://link.amazon/B0bLNsnog",
+          "title": "",
+          "image": "/bon-plan-media/243c5bd45ff33a7f0dd076d26332bb50ab20f9bd8f1144f6f9d8f1bbb04773be.webp"
+        }
+      ],
+      "date": "2026-11-18T23:58:11.021157+00:00",
+      "fingerprint": "1695fc053e850b94b4300b7f0cef372750431cd6f79acf78de3631e5d5bede0b"
+    },
+    {
       "spotlight": false,
       "id": "cms-web-1794752327587-8b73932a",
       "message": "[La domotique SwitchBot déjà en promo Pré Black Friday](https://link.amazon/B0dKctrMb)",
