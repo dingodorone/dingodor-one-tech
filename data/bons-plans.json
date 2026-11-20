@@ -1,6 +1,20 @@
 {
   "deals": [
     {
+      "spotlight": false,
+      "id": "cms-web-1795190447932-4ccc1014",
+      "message": "Envie d'ajouter le Zigbee à votre Raspberry Pi pour Home Assistant ? Profitez de cette belle promo : [https://link.amazon/B06iWUzoV](https://link.amazon/B06iWUzoV)",
+      "products": [
+        {
+          "url": "https://link.amazon/B06iWUzoV",
+          "title": "",
+          "image": "/bon-plan-media/332704c38226d26408c16de7737291603fd988a8870c53ed2ae3788405a1aa3b.webp"
+        }
+      ],
+      "date": "2026-11-20T16:01:35.139730+00:00",
+      "fingerprint": "ed24a2d717a0f2f452b104cd35ef864dd7973d120e3a1cce343e48b537f961f9"
+    },
+    {
       "spotlight": true,
       "id": "cms-web-1795046177429-73442805",
       "message": "[Sélections de grosses promos Black Friday sur ma page Amazon](https://link.amazon/B0bLNsnog)",
