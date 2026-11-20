@@ -2,6 +2,25 @@
   "deals": [
     {
       "spotlight": true,
+      "id": "cms-web-1795202141924-ca9e64ad",
+      "message": "[Console Anbernic RG 35 pour ± 30€ (35$) Entrepôt Européen (Allemagne) et assurance livraison avec paiement via paypal Plusieurs couleurs disponible](https://anbernic.com/?sca_ref=12787566.bpOwipQUzV&sca_source=https://anbernic.com/products/rg-35?variant=50921632923905)\nhttps://anbernic.com?sca_ref=12787566.bpOwipQUzV&sca_source=https://anbernic.com/products/rg-35?variant=50921632923905",
+      "products": [
+        {
+          "url": "https://anbernic.com/?sca_ref=12787566.bpOwipQUzV&sca_source=https://anbernic.com/products/rg-35?variant=50921632923905",
+          "title": "Anbernic | The best retro game console",
+          "image": "/bon-plan-media/45b6a856246730d1b717afdba113e8760828deac73527beebc169488506ffcd6.webp"
+        },
+        {
+          "url": "https://anbernic.com?sca_ref=12787566.bpOwipQUzV&sca_source=https://anbernic.com/products/rg-35?variant=50921632923905",
+          "title": "Anbernic | The best retro game console",
+          "image": "/bon-plan-media/43e4f39cfc87ca50842c78865c027b519ebf9d6a13635bba22683a6038086429.png"
+        }
+      ],
+      "date": "2026-11-20T19:16:18.578530+00:00",
+      "fingerprint": "41818294e9b3f2b042d92609647a81d8006d2d5d51a4518f5c8850f06c8702b1"
+    },
+    {
+      "spotlight": true,
       "id": "cms-web-1795190750493-77828e98",
       "message": "Kit rapsberry pi 5 4Go https://link.amazon/B0iifxwfO",
       "products": [
