@@ -1,7 +1,7 @@
 {
   "deals": [
     {
-      "spotlight": false,
+      "spotlight": true,
       "id": "cms-web-1795190750493-77828e98",
       "message": "Kit rapsberry pi 5 4Go https://link.amazon/B0iifxwfO",
       "products": [
@@ -12,7 +12,7 @@
         }
       ],
       "date": "2026-11-20T16:06:17.312980+00:00",
-      "fingerprint": "4c12318e72619a71f83e36ec0e758f382ffc16e066dd8d32b1c4d919fa4bdafc"
+      "fingerprint": "f046759308e045e0cd200266117c1d8f736e7e49afe414f5b4c31b8ba4eaa0bf"
     },
     {
       "spotlight": false,
