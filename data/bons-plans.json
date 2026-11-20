@@ -2,6 +2,20 @@
   "deals": [
     {
       "spotlight": false,
+      "id": "cms-web-1795190750493-77828e98",
+      "message": "Kit rapsberry pi 5 4Go https://link.amazon/B0iifxwfO",
+      "products": [
+        {
+          "url": "https://link.amazon/B0iifxwfO",
+          "title": "",
+          "image": "/bon-plan-media/0183a38616b6aec5406c71ba161d6dfb3a5a7fc669d319d817feb204fb62a51f.webp"
+        }
+      ],
+      "date": "2026-11-20T16:06:17.312980+00:00",
+      "fingerprint": "4c12318e72619a71f83e36ec0e758f382ffc16e066dd8d32b1c4d919fa4bdafc"
+    },
+    {
+      "spotlight": false,
       "id": "cms-web-1795190447932-4ccc1014",
       "message": "Envie d'ajouter le Zigbee à votre Raspberry Pi pour Home Assistant ? Profitez de cette belle promo : [https://link.amazon/B06iWUzoV](https://link.amazon/B06iWUzoV)",
       "products": [
