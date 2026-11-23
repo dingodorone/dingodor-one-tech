@@ -6,6 +6,7 @@ on:
   push:
     branches: [main]
     paths:
+      - scripts/update_home_fallback.py
       - scripts/build_articles.py
       - scripts/native_articles.py
       - scripts/github_articles.py
