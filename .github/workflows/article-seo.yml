@@ -53,7 +53,8 @@ jobs:
         run: |
           cp "$RUNNER_TEMP/publication/data/published-posts.json" data/published-posts.json
           cp "$RUNNER_TEMP/publication/sitemap.xml" sitemap.xml
-          git add data/published-posts.json sitemap.xml
+          python3 scripts/update_home_fallback.py data/published-posts.json
+          git add data/published-posts.json sitemap.xml index.html
           if ! git diff --cached --quiet; then
             git commit -m "Indexer les articles après vérification du déploiement"
             git push origin HEAD:main
