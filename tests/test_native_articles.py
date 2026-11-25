@@ -44,6 +44,29 @@ class NativeTests(unittest.TestCase):
             self.assertTrue((root / 'publications/native.html').exists())
             self.assertIn('data-view="github-post"', (root / 'publications/native.html').read_text(encoding='utf-8'))
 
+    def test_typography_options_survive_publication(self):
+        # Les controles de typographie de l'editeur (police, taille, classes)
+        # doivent donner le meme rendu sur le site publie.
+        self.assertEqual(native_articles.safe_text_style("font-family:'Manrope','Space Grotesk',sans-serif"),
+                         "font-family:'manrope','space grotesk',sans-serif")
+        self.assertEqual(native_articles.safe_text_style('font-family:Georgia, "Times New Roman", serif'),
+                         'font-family:georgia, "times new roman", serif')
+        self.assertEqual(native_articles.safe_text_style('font-size:22px'), 'font-size:22px')
+        # Pas de valeur exotique ou de fonction (url, expression, data)
+        self.assertEqual(native_articles.safe_text_style('font-family:url(http://x/f.woff)'), '')
+        self.assertEqual(native_articles.safe_text_style('font-size:var(--x)'), '')
+        self.assertEqual(native_articles.safe_text_style('font-size:9px'), '')
+        # Les classes de typographie sont conservees, les autres supprimees
+        cleaned = native_articles.clean('<p class="dt-text-lg unknown">A<span class="dt-font-serif">B</span></p>')
+        self.assertIn('class="dt-text-lg"', cleaned)
+        self.assertIn('class="dt-font-serif"', cleaned)
+        self.assertNotIn('unknown', cleaned)
+        # Le CSS de typographie est embarque dans la page publiee
+        page, _ = native_articles.render(dict(title='T', slug='s', date='2026-01-01T00:00:00+00:00',
+                                               body='<p class="dt-text-lg">x</p>'))
+        self.assertIn('.dt-text-lg{font-size:1.25em}', page)
+        self.assertIn('.dt-font-serif', page)
+
     def test_keeps_decorative_table_and_card_styles(self):
         # Styles decoratifs de l'article XCPE (cartes, chips, barres, bordures) : le site
         # doit publier le meme rendu que l'editeur. Les valeurs restent restreintes et
