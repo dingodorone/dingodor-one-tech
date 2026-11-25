@@ -30,6 +30,22 @@ def _len_list(value, lo, hi):
     return all(re.fullmatch(_LEN_VAL, part) for part in parts)
 
 
+_FONTS = {
+    'manrope', 'space grotesk', 'system-ui', 'georgia', 'times new roman',
+    'courier new', 'courier', 'monospace', 'serif', 'sans-serif', 'consolas',
+    'trebuchet ms', 'verdana', 'arial', 'cambria', 'segoe ui', 'roboto',
+    'calibri', 'helvetica', 'palatino', 'lucida console',
+}
+TYPOGRAPHY_CLASSES = {'dt-font-serif', 'dt-font-mono', 'dt-text-sm', 'dt-text-lg', 'dt-text-xl'}
+
+
+def _font_family_ok(value):
+    if 'url(' in value or 'expression' in value:
+        return False
+    parts = [p.strip().strip('\'"').lower() for p in value.split(',')]
+    return 1 <= len(parts) <= 5 and all(p in _FONTS for p in parts)
+
+
 def safe_text_style(value):
     rules = []
     for declaration in value.split(';'):
@@ -46,6 +62,8 @@ def safe_text_style(value):
             allowed = bool(re.fullmatch(r'normal|bold|lighter|[1-9]00', val))
         elif key == 'font-style':
             allowed = val in {'normal', 'italic', 'oblique'}
+        elif key == 'font-family':
+            allowed = _font_family_ok(val)
         elif key == 'text-decoration-line':
             allowed = val in {'underline', 'line-through', 'underline line-through', 'none'}
         elif key == 'line-height':
@@ -112,8 +130,9 @@ class SafeHTML(HTMLParser):
                     safe.append(('style', style))
             elif key == 'id' and tag in {'h2','h3','h4'} and re.fullmatch(r'[a-zA-Z][a-zA-Z0-9_-]{0,100}', value):
                 safe.append(('id', value))
-            elif key == 'class' and tag == 'div':
-                classes = [c for c in value.split() if c in {'dt-buttons','dt-callout','dt-toc','dt-gallery'}]
+            elif key == 'class' and tag in {'div', 'p', 'span', 'strong', 'h2', 'h3'}:
+                classes = [c for c in value.split() if c in
+                          {'dt-buttons','dt-callout','dt-toc','dt-gallery'} | TYPOGRAPHY_CLASSES]
                 if classes:
                     safe.append(('class', ' '.join(classes)))
             elif key == 'rel' and tag == 'a':
@@ -198,6 +217,10 @@ VIDEO_CSS = '.wp-content .dt-video{margin:1.5em auto;width:100%;max-width:900px}
 
 BLOCK_CSS = '.wp-content .dt-buttons{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0}.wp-content .dt-buttons a{display:inline-block;background:#0879ed;color:white;padding:12px 18px;border-radius:10px;text-decoration:none}.wp-content .dt-callout,.wp-content .dt-toc{background:#edf6ff;border-left:4px solid #0879ed;padding:20px;margin:20px 0}.wp-content .dt-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px}'
 
+# Classes de typographie de l'éditeur : tailles et familles lisibles, sur tout le site.
+TYPOGRAPHY_CSS = ('.wp-content .dt-text-sm{font-size:.9em}.wp-content .dt-text-lg{font-size:1.25em}.wp-content .dt-text-xl{font-size:1.6em}'
+                  '.wp-content .dt-font-serif{font-family:Georgia,"Times New Roman",serif}.wp-content .dt-font-mono{font-family:Consolas,"Courier New",monospace}')
+
 def render(data):
     from build_articles import article_html, ORIGIN
     slug = data['slug']
@@ -255,7 +278,7 @@ def render(data):
             return '<script type="application/ld+json">' + encoded + '</script>'
         page = re.sub(r'<script type="application/ld\+json">(.*?)</script>', enhance_schema, page, count=1, flags=re.S)
     post.update(taxonomy)
-    page = page.replace('</head>', '<style>' + PHOTO_CSS + VIDEO_CSS + BLOCK_CSS + '</style></head>')
+    page = page.replace('</head>', '<style>' + PHOTO_CSS + VIDEO_CSS + BLOCK_CSS + TYPOGRAPHY_CSS + '</style></head>')
     return page, {k: v for k, v in dict(post, url=path, source='github', sha256=hashlib.sha256(page.encode()).hexdigest()).items() if k != 'content'}
 
 
