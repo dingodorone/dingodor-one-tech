@@ -108,6 +108,13 @@ body.custom-landing{background:radial-gradient(circle at 80% 5%,#0d3451 0,transp
 .wp-content table td p, .wp-content table th p { margin: .35em 0; }
 .wp-content table td p:first-child, .wp-content table th p:first-child { margin-top: 0; }
 .wp-content table td p:last-child, .wp-content table th p:last-child { margin-bottom: 0; }
+/* Sur grand ecran : le tableau remplit sa largeur, sans bande blanche
+   a droite (le plafond par cellule de 300px restait actif et l etroissait). */
+@media (min-width: 601px) {
+.wp-content table { display: table; }
+.wp-content table :is(td, th) { max-width: none; }
+}
+
 @media (max-width: 600px) {
   .wp-content table :is(td, th) { min-width: 140px; padding: 12px 14px; font-size: .9rem; }
   .wp-content table::before {
