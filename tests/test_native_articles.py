@@ -44,6 +44,31 @@ class NativeTests(unittest.TestCase):
             self.assertTrue((root / 'publications/native.html').exists())
             self.assertIn('data-view="github-post"', (root / 'publications/native.html').read_text(encoding='utf-8'))
 
+    def test_keeps_decorative_table_and_card_styles(self):
+        # Styles decoratifs de l'article XCPE (cartes, chips, barres, bordures) : le site
+        # doit publier le meme rendu que l'editeur. Les valeurs restent restreintes et
+        # sans fonction CSS (pas d'url(), expression(), etc.).
+        self.assertEqual(
+            native_articles.safe_text_style('background:#e8590c;color:#fff;text-align:center;padding:16px 8px;border-radius:12px;width:25%'),
+            'background:#e8590c;color:#fff;text-align:center;padding:16px 8px;border-radius:12px;width:25%')
+        self.assertEqual(
+            native_articles.safe_text_style('background:#fff;color:#1d2433;border:1px solid #e8590c;border-radius:99px;padding:1px 10px;font-size:13px;font-weight:600;display:inline-block'),
+            'background:#fff;color:#1d2433;border:1px solid #e8590c;border-radius:99px;padding:1px 10px;font-size:13px;font-weight:600;display:inline-block')
+        self.assertEqual(
+            native_articles.safe_text_style('background:#2f9e44;color:#fff;width:90%;min-width:34px;border-radius:6px;padding:2px 8px;font-weight:700;text-align:right'),
+            'background:#2f9e44;color:#fff;width:90%;min-width:34px;border-radius:6px;padding:2px 8px;font-weight:700;text-align:right')
+        self.assertEqual(
+            native_articles.safe_text_style('width:100%;border-collapse:separate;border-spacing:8px;margin:10px 0'),
+            'width:100%;border-collapse:separate;border-spacing:8px;margin:10px 0')
+        self.assertEqual(
+            native_articles.safe_text_style('border-left:6px solid #9c36b5;padding-left:12px;color:#9c36b5'),
+            'border-left:6px solid #9c36b5;padding-left:12px;color:#9c36b5')
+        # Le filtre reste conservateur : les proprietes inconnues ou dangereuses sont toujours supprimees.
+        self.assertEqual(native_articles.safe_text_style('background:#fff;box-shadow:0 0 5px red'), 'background:#fff')
+        self.assertEqual(native_articles.safe_text_style('background:url(javascript:alert(1))'), '')
+        self.assertEqual(native_articles.safe_text_style('position:fixed;width:100%'), 'width:100%')
+        self.assertEqual(native_articles.safe_text_style('background:#fff;padding:1px url(x)'), 'background:#fff')
+
     def test_future_released_article_fails_closed(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
