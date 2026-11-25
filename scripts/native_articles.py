@@ -16,26 +16,61 @@ def safe_image_source(value):
             and url.path.lower().endswith(('.jpg','.jpeg','.png','.webp','.gif'))
             and not url.query and not url.fragment)
 
+_COLOR_VAL = (r'#[0-9a-f]{3}(?:[0-9a-f]{3})?'
+              r'|rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*'
+              r'(?:,\s*(?:0|0?\.\d+|1)\s*)?\)')
+_LEN_VAL = r'\d+(?:\.\d+)?px|\d+(?:\.\d+)?%|0'
+_BORDER_SIDE = (r'(?:\d+(?:\.\d+)?px\s+)?(?:solid|dashed|dotted|double|groove|ridge|inset|outset)\s+' + _COLOR_VAL)
+
+
+def _len_list(value, lo, hi):
+    parts = value.split()
+    if not lo <= len(parts) <= hi:
+        return False
+    return all(re.fullmatch(_LEN_VAL, part) for part in parts)
+
+
 def safe_text_style(value):
     rules = []
     for declaration in value.split(';'):
         key, sep, val = declaration.partition(':')
         key, val = key.strip().lower(), val.strip().lower()
         allowed = False
-        if key in {'color', 'background-color'}:
-            allowed = bool(re.fullmatch(r'#[0-9a-f]{3}(?:[0-9a-f]{3})?|rgb\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\)', val))
+        if key in {'color', 'background-color', 'background'}:
+            allowed = bool(re.fullmatch(_COLOR_VAL, val))
         elif key == 'font-size':
             allowed = bool(re.fullmatch(r'(?:1[2-9]|[2-5][0-9]|6[0-4])px', val))
         elif key == 'text-align':
-            allowed = val in {'left','center','right','justify'}
+            allowed = val in {'left', 'center', 'right', 'justify'}
         elif key == 'font-weight':
-            allowed = val in {'normal','bold','400','700'}
+            allowed = bool(re.fullmatch(r'normal|bold|lighter|[1-9]00', val))
         elif key == 'font-style':
-            allowed = val in {'normal','italic'}
+            allowed = val in {'normal', 'italic', 'oblique'}
         elif key == 'text-decoration-line':
-            allowed = val in {'underline','line-through','underline line-through','none'}
+            allowed = val in {'underline', 'line-through', 'underline line-through', 'none'}
         elif key == 'line-height':
-            allowed = val in {'1','1.25','1.5','1.75','2'}
+            match = re.fullmatch(r'(?:\d+(?:\.\d+)?|0\.\d+)', val)
+            allowed = bool(match) and 0.5 <= float(val) <= 4
+        elif key == 'border-collapse':
+            allowed = val in {'collapse', 'separate'}
+        elif key == 'border-spacing':
+            allowed = _len_list(val, 1, 2)
+        elif key in {'padding', 'margin'}:
+            allowed = _len_list(val, 1, 4)
+        elif key in {'padding-left', 'padding-right', 'padding-top', 'padding-bottom',
+                     'margin-left', 'margin-right', 'margin-top', 'margin-bottom',
+                     'min-width'}:
+            allowed = bool(re.fullmatch(_LEN_VAL, val))
+        elif key == 'border-radius':
+            allowed = _len_list(val, 1, 4)
+        elif key in {'border', 'border-left', 'border-bottom', 'border-right', 'border-top'}:
+            allowed = bool(re.fullmatch(_BORDER_SIDE, val))
+        elif key == 'width':
+            allowed = bool(re.fullmatch(r'\d+(?:\.\d+)?%|\d+(?:\.\d+)?px|auto', val))
+        elif key == 'display':
+            allowed = val in {'block', 'inline', 'inline-block', 'flex', 'grid', 'table'}
+        elif key == 'vertical-align':
+            allowed = val in {'top', 'middle', 'bottom', 'baseline'}
         if sep and allowed:
             rules.append(key + ':' + val)
     return ';'.join(rules)
