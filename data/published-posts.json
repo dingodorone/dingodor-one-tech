@@ -1,33 +1,6 @@
 {
   "posts": [
     {
-      "spotlight": true,
-      "ID": -821919274525,
-      "title": "1,3 million de box Android TV infectées : la vôtre est-elle concernée ?",
-      "slug": "1-3-million-de-box-android-tv-infectees-la-votre-est-elle-concernee",
-      "date": "2026-11-25T19:28:56.080674+00:00",
-      "excerpt": "Des box Android TV vendues à bas prix servaient à vendre votre connexion à des tiers. Voici les modèles relevés, comment vérifier la vôtre et que faire si elle est touchée.",
-      "featured_image": "/article-media/400ebdc5615d8305aa3d6661a50ed22dd6ca50d3d0162475d3f997ac40de3bc0.webp",
-      "categories": [
-        "Sécurité",
-        "Box TV"
-      ],
-      "tags": [
-        "XCPE",
-        "Videostrong",
-        "MECOOL",
-        "Android TV",
-        "botnet",
-        "box TV infectée",
-        "porte dérobée",
-        "Play Protect",
-        "Synthient"
-      ],
-      "url": "/publications/1-3-million-de-box-android-tv-infectees-la-votre-est-elle-concernee.html",
-      "source": "github",
-      "sha256": "574d0ee141b4232d1a281fb3ad3e9025f0afb55f5f3f821ff27da7fe8b76c649"
-    },
-    {
       "spotlight": false,
       "ID": -87313411199745,
       "title": "Quelle carte micro SD pour une surveillance sans faille ?",
