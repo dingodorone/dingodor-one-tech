@@ -67,6 +67,7 @@ function render(deal, options={}){
   const linkLabel=textLink?.textContent||('Voir l’offre sur '+new URL(url).hostname);
   const card=element('a','deal-product');card.href=url;card.target='_blank';card.rel='noopener noreferrer sponsored';card.setAttribute('aria-label',linkLabel);
   const box=element('div','deal-image');
+  const size=Number(product.width);if(size===50||size===75){card.style.gridColumn='1 / -1';card.style.width=size+'%';card.style.justifySelf='center';box.classList.add('deal-image-auto');}
   if(privateImage&&options.loadPrivateImage)options.loadPrivateImage(product.image,box);
   else if(publicImage){const img=element('img');img.src=product.image;img.alt='Photo du produit';img.loading='lazy';img.decoding='async';box.append(img);}
   else{box.classList.add('empty');box.textContent='Photo indisponible';}
