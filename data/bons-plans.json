@@ -2,6 +2,21 @@
   "deals": [
     {
       "spotlight": true,
+      "id": "cms-web-1795656533281-7c33e3a0",
+      "message": "[Manette XBOX 42.44€](https://link.amazon/B00xs1rdA)",
+      "products": [
+        {
+          "url": "https://link.amazon/B00xs1rdA",
+          "title": "",
+          "image": "/bon-plan-media/4c9acbc91895e51eacd23cdb3fe04503957f1c4ebcbae82eff1aa5416d370d79.webp",
+          "width": 50
+        }
+      ],
+      "date": "2026-11-26T01:57:02.867368+00:00",
+      "fingerprint": "a43f8d54cb61994566e2f6c1ec771b4dbdf70ec4e31e136cd5a3a87a99c392ce"
+    },
+    {
+      "spotlight": true,
       "id": "cms-web-1795202141924-ca9e64ad",
       "message": "[Console Anbernic RG 35 pour ± 30€ (35$) Entrepôt Européen (Allemagne) et assurance livraison avec paiement via paypal Plusieurs couleurs disponible](https://anbernic.com/?sca_ref=12787566.bpOwipQUzV&sca_source=https://anbernic.com/products/rg-35?variant=50921632923905)\nhttps://anbernic.com?sca_ref=12787566.bpOwipQUzV&sca_source=https://anbernic.com/products/rg-35?variant=50921632923905",
       "products": [
