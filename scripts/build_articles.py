@@ -68,6 +68,8 @@ def article_html(post, url):
     structured = {"@context": "https://schema.org", "@type": "BlogPosting", "headline": title,
                   "datePublished": post["date"], "dateModified": post.get("modified") or post["date"],
                   "author": {"@type": "Person", "name": "Dingodor One Tech"},
+                  "publisher": {"@type": "Organization", "name": "Dingodor One Tech",
+                                 "url": ORIGIN + "/", "logo": {"@type": "ImageObject", "url": ORIGIN + "/logo-maison.svg"}},
                   "mainEntityOfPage": url, "description": excerpt}
     if image.startswith("https://"):
         structured["image"] = image
@@ -79,7 +81,7 @@ def article_html(post, url):
     content = post.get("content") or "<p>Contenu indisponible pour le moment.</p>"
     return f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="/favicon.svg?v=maison-1" type="image/svg+xml"><link rel="canonical" href="{url}"><meta name="description" content="{description}">
-<meta property="og:type" content="article"><meta property="og:title" content="{html.escape(title, quote=True)}"><meta property="og:description" content="{description}"><meta property="og:url" content="{url}">{social_image}
+<meta property="og:type" content="article"><meta property="og:site_name" content="Dingodor One Tech"><meta property="og:title" content="{html.escape(title, quote=True)}"><meta property="og:description" content="{description}"><meta property="og:url" content="{url}">{social_image}
 <title>{safe_title} — Dingodor One Tech</title><link rel="stylesheet" href="/content.css?v=15-tables"><script type="application/ld+json">{schema}</script></head>
 <body data-view="static-post" data-post-id="{int(post['ID'])}"><a class="skip" href="#contenu">Aller au contenu</a>
 <header class="site-header"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><span>Dingodor <strong>One Tech</strong></span></a><button class="menu-button" type="button" aria-expanded="false" aria-controls="navigation">Menu</button><nav id="navigation"><a href="/">Accueil</a><a href="/articles.html">Articles</a><a href="/guide-camera.html">Guide caméra</a><a href="/page.html?slug=code-promo-2">Codes promo</a><a href="/partenaires.html">Partenaires</a><a class="nav-contact" href="/page.html?slug=contact">✉ Contact</a></nav></header>
