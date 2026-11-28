@@ -18,7 +18,7 @@ API = "https://public-api.wordpress.com/rest/v1.1/sites/dingodoronetech.wordpres
 FIELDS = "ID,slug,title,date,modified,excerpt,content,featured_image,status,type"
 STATIC_URLS = ["/", "/articles.html", "/guide-camera.html", "/partenaires.html",
                "/page.html?slug=code-promo-2", "/page.html?slug=contact",
-               "/twitch.html", "/alarme-pg107.html"]
+               "/twitch.html", "/alarme-pg107.html", "/go.html", "/soutien.html"]
 
 
 def plain(value):
