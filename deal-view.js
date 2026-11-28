@@ -12,7 +12,7 @@ const Text = (() => {
       if (match[2] || match[3]) {
         const raw = match[2] || match[3].replace(/[.,;!]+$/, ''), url = safeURL(raw);
         if (url) {
-          const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer sponsored'; a.textContent = match[1] || raw; parent.append(a);
+          const a = document.createElement('a'); a.href = 'https://dingodoronetech.eu.org/go.html?u=' + encodeURIComponent(url); a.target = '_blank'; a.rel = 'noopener'; a.textContent = match[1] || raw; parent.append(a);
           if (match[3]) parent.append(document.createTextNode(match[3].slice(raw.length)));
         } else parent.append(document.createTextNode(match[0]));
       } else {
@@ -63,9 +63,10 @@ function render(deal, options={}){
   const url=Text.safeURL(product.url);if(!url)continue;
   const publicImage=/^\/bon-plan-media\/[a-f0-9]{64}\.(jpg|jpeg|png|webp|gif)$/.test(product.image||'');
   const privateImage=options.privateImages&&/^\/media\/[a-zA-Z0-9._-]+\.(jpg|jpeg|png|webp|gif)$/.test(product.image||'');
-  const textLink=[...article.querySelectorAll('.deal-text a')].find(a=>a.href===url);
+  const goHref='https://dingodoronetech.eu.org/go.html?u='+encodeURIComponent(url);
+ const textLink=[...article.querySelectorAll('.deal-text a')].find(a=>a.href===goHref);
   const linkLabel=textLink?.textContent||('Voir l’offre sur '+new URL(url).hostname);
-  const card=element('a','deal-product');card.href=url;card.target='_blank';card.rel='noopener noreferrer sponsored';card.setAttribute('aria-label',linkLabel);
+  const card=element('a','deal-product');card.href=goHref;card.target='_blank';card.rel='noopener';card.setAttribute('aria-label',linkLabel+' — ouverture via Dingodor');card.dataset.target=url;
   const box=element('div','deal-image');
   const size=Number(product.width);if(size===50||size===75){card.style.gridColumn='1 / -1';card.style.width=size+'%';card.style.justifySelf='center';box.classList.add('deal-image-auto');}
   if(privateImage&&options.loadPrivateImage)options.loadPrivateImage(product.image,box);
