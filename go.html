@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<meta name="description" content="Redirection vers le marchand.">
+<title>Redirection vers le marchand — Dingodor One Tech</title>
+<link rel="icon" href="/favicon.svg?v=maison-1" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css?v=2">
+<style>
+body{display:flex;min-height:100vh;align-items:center;justify-content:center;background:var(--bg,#07111f);font-family:Manrope,system-ui,sans-serif}
+.go-card{max-width:420px;width:calc(100% - 32px);background:#0e1b30;border:1px solid #1e3a5c;border-radius:18px;padding:28px;text-align:center;color:#e8f0fa}
+.go-card h1{font-size:1.05rem;font-weight:800;margin:0 0 6px}
+.go-card .go-sub{color:#9db4cc;font-size:.85rem;line-height:1.5;margin:0 0 18px}
+.go-card .go-target{font-weight:800;color:#4db8ff;word-break:break-all}
+.go-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.go-actions a,.go-actions button{display:inline-flex;align-items:center;gap:6px;font:700 .9rem Manrope,system-ui,sans-serif;padding:10px 18px;border-radius:10px;text-decoration:none;cursor:pointer}
+.go-primary{background:#0c78ff;color:#fff;border:0}
+.go-primary:hover{background:#2e8bff}
+.go-copy{background:transparent;color:#4db8ff;border:1px solid #2b5a8c}
+.go-copy:hover{background:#12233c}
+.go-note{margin:18px 0 0;font-size:.75rem;color:#7d95ad;line-height:1.5}
+.go-wait{margin-top:14px;font-size:.8rem;color:#7d95ad}
+.go-wait .spinner{display:inline-block;width:12px;height:12px;border:2px solid #2b5a8c;border-top-color:#4db8ff;border-radius:50%;animation:gospace .8s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes gospace{to{transform:rotate(360deg)}}
+.go-error .go-target{color:#ff7a7a}
+</style>
+</head>
+<body>
+<main class="go-card" id="go-card" role="dialog" aria-live="polite">
+<h1 id="go-title">Redirection…</h1>
+<p class="go-sub">Tu vas quitter <strong>Dingodor One Tech</strong> pour le marchand :</p>
+<p class="go-target" id="go-target">…</p>
+<div class="go-actions">
+<a id="go-now" class="go-primary" href="#" role="button">Aller au marchand</a>
+<button id="go-copy" class="go-copy" type="button">Copier le lien</button>
+</div>
+<p class="go-wait" id="go-wait"><span class="spinner"></span>Ouverture automatique dans quelques secondes…</p>
+<p class="go-note">Si ta page reste bloquée ou ne s'ouvre pas (bloqueur de publicités, navigation privée), <strong>copie le lien</strong> puis colle-le dans un nouvel onglet : l'offre reste la même et le lien de suivi reste intact.</p>
+</main>
+<script>
+(function () {
+  'use strict';
+  var u = new URLSearchParams(location.search).get('u') || '';
+  var host = '', ok = false;
+  try {
+    var parsed = new URL(u);
+    if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username) throw new Error('bad');
+    host = parsed.hostname;
+    ok = !['localhost', '127.0.0.1'].includes(host) && !host.endsWith('.local');
+  } catch (e) { ok = false; }
+  var title = document.getElementById('go-title');
+  var target = document.getElementById('go-target');
+  var now = document.getElementById('go-now');
+  var wait = document.getElementById('go-wait');
+  var copyBtn = document.getElementById('go-copy');
+  if (!ok || !u) {
+    document.getElementById('go-card').classList.add('go-error');
+    title.textContent = 'Lien invalide';
+    target.textContent = 'Ce lien de redirection est invalide ou manquant.';
+    now.style.display = 'none';
+    wait.style.display = 'none';
+    var back = document.createElement('a');
+    back.className = 'go-primary'; back.href = '/'; back.textContent = 'Retour à l’accueil'; back.style.display = 'inline-flex';
+    document.querySelector('.go-actions').append(back);
+    return;
+  }
+  target.textContent = host;
+  now.href = u; now.target = '_blank'; now.rel = 'noopener noreferrer';
+  setTimeout(function () { window.location.replace(u); }, 2500);
+  var safeHost = String(host).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  wait.innerHTML = '<span class="spinner"></span>Ouverture automatique vers ' + safeHost + '…';
+  copyBtn.addEventListener('click', function () {
+    function done() { copyBtn.textContent = 'Lien copié ✓'; setTimeout(function () { copyBtn.textContent = 'Copier le lien'; }, 2000); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(u).then(done, function () { fallbackCopy(u); done(); });
+    } else { fallbackCopy(u); done(); }
+    function fallbackCopy(text) {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.append(ta); ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      ta.remove();
+    }
+  });
+})();
+</script>
+</body>
+</html>
