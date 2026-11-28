@@ -1,5 +1,5 @@
 importScripts('/webpushr-worker.js?v=1');
-const CACHE = 'dingodor-v51-go-links';
+const CACHE = 'dingodor-v52-expire';
 
 const ASSETS = [
 
@@ -12,7 +12,7 @@ const ASSETS = [
 
   './bons-plans.css?v=2-deal-size',
 
-  './bons-plans.js?v=5-shared',
+  './bons-plans.js?v=6-expire',
   '../deal-view.js?v=4-go',
 
   '../logo-maison.svg',
