@@ -1,5 +1,5 @@
 importScripts('/webpushr-worker.js?v=1');
-const CACHE = 'dingodor-v50-deal-size';
+const CACHE = 'dingodor-v51-go-links';
 
 const ASSETS = [
 
@@ -13,9 +13,10 @@ const ASSETS = [
   './bons-plans.css?v=2-deal-size',
 
   './bons-plans.js?v=5-shared',
-  '../deal-view.js?v=3-deal-size',
+  '../deal-view.js?v=4-go',
 
   '../logo-maison.svg',
+  '../go.html',
 
   '../mascotte.js?v=3-apparition',
 
