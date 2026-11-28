@@ -3,17 +3,23 @@
     {
       "spotlight": true,
       "id": "cms-web-1795656533281-7c33e3a0",
-      "message": "[Manette XBOX 42.44€](https://link.amazon/B00xs1rdA)",
+      "message": "[Manette XBOX 39.99[Amazon Belgique](https://link.amazon/B022UqIZC)€] [Amazon France](https://link.amazon/B00xs1rdA)",
       "products": [
         {
-          "url": "https://link.amazon/B00xs1rdA",
+          "url": "https://link.amazon/B022UqIZC€",
           "title": "",
           "image": "/bon-plan-media/4c9acbc91895e51eacd23cdb3fe04503957f1c4ebcbae82eff1aa5416d370d79.webp",
           "width": 50
+        },
+        {
+          "url": "https://link.amazon/B00xs1rdA",
+          "title": "",
+          "image": "",
+          "width": 100
         }
       ],
       "date": "2026-11-26T01:57:02.867368+00:00",
-      "fingerprint": "a43f8d54cb61994566e2f6c1ec771b4dbdf70ec4e31e136cd5a3a87a99c392ce"
+      "fingerprint": "518c113e82a1e9f4074c542d97aa381008075066cb75d7c663bafb56e639bab1"
     },
     {
       "spotlight": true,
