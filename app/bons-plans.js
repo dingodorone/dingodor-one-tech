@@ -15,7 +15,7 @@
       if (!response.ok) throw new Error('feed');
       const data = await response.json();
       if (!Array.isArray(data.deals)) throw new Error('format');
-      const deals = data.deals.filter(d => typeof d.message === 'string' && Array.isArray(d.products) && !Number.isNaN(Date.parse(d.date))).sort((a,b) => Date.parse(b.date)-Date.parse(a.date));
+      const deals = data.deals.filter(d => typeof d.message === 'string' && Array.isArray(d.products) && !Number.isNaN(Date.parse(d.date)) && (!d.expire_at || Date.parse(d.expire_at) > Date.now())).sort((a,b) => Date.parse(b.date)-Date.parse(a.date));
       feed.replaceChildren();
       if (!deals.length) {
         const empty = el('section', 'deal-empty'); empty.append(el('h2', '', 'Les prochains bons plans arrivent ici.'), el('p', '', 'En attendant, retrouve les codes promo disponibles.'));
